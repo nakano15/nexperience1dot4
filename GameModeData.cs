@@ -28,6 +28,7 @@ namespace nexperience1dot4
         public float HealthPercentageChange = 1f, ManaPercentageChange = 1f;
         public float GenericDamagePercentage = 1, MeleeDamagePercentage = 1, RangedDamagePercentage = 1, MagicDamagePercentage = 1, SummonDamagePercentage = 1;
         public float MeleeCriticalPercentage = 1f, RangedCriticalPercentage = 1f, MagicCriticalPercentage = 1f;
+        public float MeleeSpeedPercentage = 1f;
 
         private byte BiomeUpdateDelay = 0;
         private const byte MaxBiomeUpdateDelay = 8;
@@ -100,10 +101,36 @@ namespace nexperience1dot4
             UpdateBiomeCheck(player);
             UpdateEffectiveLevel();
             MeleeDamagePercentage = RangedDamagePercentage = MagicDamagePercentage = SummonDamagePercentage = GenericDamagePercentage = 
-                MeleeCriticalPercentage = RangedCriticalPercentage = MagicCriticalPercentage = 1;
+                MeleeCriticalPercentage = RangedCriticalPercentage = MagicCriticalPercentage = MeleeSpeedPercentage = 1;
             GetBase.UpdatePlayerStatus(player, this);
 
-            player.GetDamage(DamageClass.Melee) *= MeleeDamagePercentage;
+            foreach(StatusTranslator st in nexperience1dot4.GetStatusLists())
+            {
+                switch(st.GetClassToCountAs)
+                {
+                    case StatusTranslator.DC_Generic:
+                        player.GetDamage(st.GetDamageClass) *= GenericDamagePercentage;
+                        break;
+                    case StatusTranslator.DC_Melee:
+                        player.GetDamage(st.GetDamageClass) *= MeleeDamagePercentage;
+                        player.GetCritChance(st.GetDamageClass) *= MeleeCriticalPercentage;
+                        player.GetAttackSpeed(st.GetDamageClass) *= MeleeSpeedPercentage;
+                        break;
+                    case StatusTranslator.DC_Ranged:
+                        player.GetDamage(st.GetDamageClass) *= RangedDamagePercentage;
+                        player.GetCritChance(st.GetDamageClass) *= RangedCriticalPercentage;
+                        break;
+                    case StatusTranslator.DC_Magic:
+                        player.GetDamage(st.GetDamageClass) *= MagicDamagePercentage;
+                        player.GetCritChance(st.GetDamageClass) *= MagicCriticalPercentage;
+                        break;
+                    case StatusTranslator.DC_Summon:
+                        player.GetDamage(st.GetDamageClass) *= SummonDamagePercentage;
+                        break;
+                }
+            }
+
+            /*player.GetDamage(DamageClass.Melee) *= MeleeDamagePercentage;
             player.GetDamage(DamageClass.Ranged) *= RangedDamagePercentage;
             player.GetDamage(DamageClass.Magic) *= MagicDamagePercentage;
             player.GetDamage(DamageClass.Summon) *= SummonDamagePercentage;
@@ -113,7 +140,7 @@ namespace nexperience1dot4
             player.GetCritChance(DamageClass.Melee) = (int)(player.GetCritChance(DamageClass.Melee) * MeleeCriticalPercentage);
             player.GetCritChance(DamageClass.Ranged) = (int)(player.GetCritChance(DamageClass.Ranged) * RangedCriticalPercentage);
             player.GetCritChance(DamageClass.Magic) = (int)(player.GetCritChance(DamageClass.Magic) * MagicCriticalPercentage);
-
+*/
             HealthPercentageChange = (float)player.statLifeMax2 / player.statLifeMax;
             ManaPercentageChange = (float)player.statManaMax2 / player.statManaMax;
             if (LastMaxLife > 0 && player.statLifeMax2 != LastMaxLife)
@@ -164,8 +191,8 @@ namespace nexperience1dot4
 
         public void UpdateEffectiveStatus()
         {
-            int EffectiveLevelStatus = (int)(GetBase.InitialStatusPoints + GetBase.StatusPointsPerLevel * GetEffectiveLevel),
-                LevelStatus = (int)(GetBase.InitialStatusPoints + GetBase.StatusPointsPerLevel * GetLevel);
+            int EffectiveLevelStatus = (int)(GetBase.InitialStatusPoints + GetBase.InitialStatusPointsDistribution * MyStatus.Length + GetBase.StatusPointsPerLevel * GetEffectiveLevel),
+                LevelStatus = (int)(GetBase.InitialStatusPoints+ GetBase.InitialStatusPointsDistribution * MyStatus.Length + GetBase.StatusPointsPerLevel * GetLevel);
             int TotalStatusCount = 0;
             foreach(PlayerStatusInfo si in MyStatus)
             {

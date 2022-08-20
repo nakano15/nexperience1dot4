@@ -12,12 +12,16 @@ namespace nexperience1dot4
         public string GetName { get { return Name; } }
         public string GetDescription { get { return Description; } }
         private string Name = "", ShortName = "", Description = "";
+        private byte InitialStatusPoints = 0;
+        private int MaxStatusPoints = int.MaxValue;
 
-        public GameModeStatusInfo(string Name, string Description, string ShortName = "")
+        public GameModeStatusInfo(string Name, string Description, string ShortName = "", byte InitialStatusPoints = 0, int MaxStatusPoints = int.MaxValue)
         {
             this.Name = Name;
             this.Description = Description;
             this.ShortName = ShortName;
+            this.InitialStatusPoints = InitialStatusPoints;
+            this.MaxStatusPoints = MaxStatusPoints;
         }
 
         public GameModeStatusInfo()

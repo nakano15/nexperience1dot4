@@ -6,16 +6,19 @@ namespace nexperience1dot4
     {
         private string BiomeName;
         private int MinLevel, MaxLevel;
+        private int NightMinLevel, NightMaxLevel;
         private IsBiomeActiveDel IsBiomeActive;
         public delegate bool IsBiomeActiveDel(Terraria.Player player);
 
         public string GetBiomeName { get { return BiomeName; } }
 
-        public BiomeLevelStruct(string Name, int MinLv, int MaxLv, IsBiomeActiveDel ActivateReq)
+        public BiomeLevelStruct(string Name, int MinLv, int MaxLv, IsBiomeActiveDel ActivateReq, int NightMinLv = -1, int NightMaxLv = -1)
         {
             BiomeName = Name;
             MinLevel = MinLv;
             MaxLevel = MaxLv;
+            NightMinLevel = NightMinLv;
+            NightMaxLevel = NightMaxLv;
             IsBiomeActive = ActivateReq;
         }
 
@@ -24,10 +27,10 @@ namespace nexperience1dot4
             return IsBiomeActive(refPlayer);
         }
 
-        public int GetMinLevel { get { return MinLevel; } }
+        public int GetMinLevel { get { if(!Main.dayTime && NightMinLevel > -1) return NightMinLevel; return MinLevel; } }
 
-        public int GetMaxLevel { get { return MaxLevel; } }
+        public int GetMaxLevel { get { if(!Main.dayTime && NightMaxLevel > -1) return NightMaxLevel; return MaxLevel; } }
 
-        public int GetRandomLevel { get { return Main.rand.Next(MinLevel, MaxLevel + 1); } }
+        public int GetRandomLevel { get { return Main.rand.Next(GetMinLevel, GetMaxLevel + 1); } }
     }
 }

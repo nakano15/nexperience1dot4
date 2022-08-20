@@ -53,7 +53,6 @@ namespace nexperience1dot4.Game_Modes
             AddBiome("Underworld", 15, 20, delegate (Player player) { return player.ZoneUnderworldHeight; });
             //hm
 
-
             //desu
             AddBiome("Desu", 9999, 9999, delegate (Player player) { return player.ZoneDungeon && !NPC.downedBoss3; }, false);
         }

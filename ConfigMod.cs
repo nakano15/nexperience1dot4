@@ -38,6 +38,15 @@ namespace nexperience1dot4
         [Range(0, 1f)]
         public float StatusWindowOpacity;
 
+        [Label("N Terraria Graveyard Biome")]
+        [Tooltip("Yes! Yes! Yes!")]
+        [DefaultValue(true)]
+        public bool NTerrariaGraveyard;
+
+        [Label("Zombies Drops Tombstones?")]
+        [DefaultValue(true)]
+        public bool ZombieDroppingTombstone;
+
         public override void OnLoaded()
         {
             /*DeathExpPenalty = nexperience1dot4.DeathExpPenalty;
@@ -52,6 +61,8 @@ namespace nexperience1dot4
             nexperience1dot4.EnableBiomeLevelCapper = EnableBiomeLevelCapper;
             nexperience1dot4.InfiniteLeveling = InfiniteLeveling;
             nexperience1dot4.ExpRate = ExpRate * 0.01f;
+            nexperience1dot4.NTerrariaGraveyard = NTerrariaGraveyard;
+            nexperience1dot4.ZombiesDroppingTombstones = ZombieDroppingTombstone;
             Interfaces.LevelInfos.Transparency = StatusWindowOpacity;
         }
     }

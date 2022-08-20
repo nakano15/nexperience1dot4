@@ -53,10 +53,11 @@ namespace nexperience1dot4.Interfaces
         private static void InventoryInterface(PlayerMod player, GameModeData data)
         {
             if(!LastInterfaceOpened){
-                StatusColumns = (byte)(Math.Min(4, data.GetBase.GameModeStatus.Length / StatusRows + 1));
+                StatusColumns = (byte)(Math.Min(4, MathF.Ceiling((float)data.GetBase.GameModeStatus.Length / 6)));
+                StatusRows = (byte)(MathF.Ceiling((float)data.GetBase.GameModeStatus.Length / StatusColumns));
                 StatusDistance = 1f / (StatusColumns + 1);
                 PointsSpent = new int[data.GetBase.GameModeStatus.Length];
-                PageCount = (byte)(data.GetBase.GameModeStatus.Length / (StatusColumns * StatusRows) + 1);
+                PageCount = (byte)(MathF.Ceiling((float)data.GetBase.GameModeStatus.Length / (StatusColumns * StatusRows)));
             }
             string MouseOverText = "";
             const int Width = 480, Height = 220;

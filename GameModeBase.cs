@@ -10,6 +10,7 @@ namespace nexperience1dot4
         public virtual GameModeStatusInfo[] GameModeStatus { get { return new GameModeStatusInfo[0]; } }
         public virtual float StatusPointsPerLevel { get { return 1; } }
         public virtual float InitialStatusPoints { get { return 0; } }
+        public virtual float InitialStatusPointsDistribution { get { return 0; } }
         private Dictionary<int, MobLevelStruct> GameModeMobLevels = new Dictionary<int, MobLevelStruct>();
         private int MaxLevel = 1;
         private bool MaxLevelForced = false;
@@ -30,7 +31,12 @@ namespace nexperience1dot4
 
         public void AddBiome(string Name, int MinLevel, int MaxLevel, BiomeLevelStruct.IsBiomeActiveDel BiomeActiveReq, bool CountsTowardsLevelCap = true)
         {
-            BiomeLevelStruct biome = new BiomeLevelStruct(Name, MinLevel, MaxLevel, BiomeActiveReq);
+            AddBiome(Name, MinLevel, MaxLevel, -1, -1, BiomeActiveReq, CountsTowardsLevelCap);
+        }
+
+        public void AddBiome(string Name, int MinLevel, int MaxLevel, int NightMinLevel, int NightMaxLevel, BiomeLevelStruct.IsBiomeActiveDel BiomeActiveReq, bool CountsTowardsLevelCap = true)
+        {
+            BiomeLevelStruct biome = new BiomeLevelStruct(Name, MinLevel, MaxLevel, BiomeActiveReq, NightMinLevel, NightMaxLevel);
             int Position = -1;
             for(int i = 0; i < BiomeLevels.Count; i++)
             {
@@ -90,6 +96,35 @@ namespace nexperience1dot4
         public virtual int GetLevelExp(int Level)
         {
             return 100 * Level * Level;
+        }
+
+        protected int CalculateOverflowedExpStack(int Level, int[] ExpTable){
+            int MaxLevel = ExpTable.Length;
+            int CurLevel = Level;
+            int Result = 0;
+            while(CurLevel >= MaxLevel)
+            {
+                CurLevel -= MaxLevel;
+                try{
+                    checked{
+                        Result += ExpTable[MaxLevel];
+                    }
+                }
+                catch
+                {
+                    return int.MaxValue;
+                }
+            }
+            try{
+                checked{
+                    Result += ExpTable[CurLevel];
+                }
+            }
+            catch
+            {
+                return int.MaxValue;
+            }
+            return Result;
         }
     }
 }
