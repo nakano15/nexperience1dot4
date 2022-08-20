@@ -15,6 +15,7 @@ namespace nexperience1dot4
         public static NPCSpawnInfo? GetLastSpawnInfo { get { return LastSpawnInfo; } }
 
         private static int LastHealthBackup = 0, LastTypeBackup = 0;
+        private int OriginalHP = 100;
 
         public override bool InstancePerEntity => true;
         public override bool IsCloneable => false;
@@ -23,8 +24,14 @@ namespace nexperience1dot4
 
         public GameModeData GetData { get { return MobStatus; } }
 
+        public static float GetNpcProjectileDamage(NPC npc)
+        {
+            return npc.GetGlobalNPC<NpcMod>().MobStatus.ProjectileNpcDamagePercentage;
+        }
+
         public override void SetDefaults(NPC npc)
         {
+            OriginalHP = npc.lifeMax;
             MobStatus = new GameModeData(nexperience1dot4.GetActiveGameModeID);
             MobStatus.SpawnNpcLevel(npc);
             MobStatus.UpdateNPC(npc);
@@ -46,11 +53,15 @@ namespace nexperience1dot4
             OriginNpc = npc;
             LastTypeBackup = npc.type;
             LastHealthBackup = npc.life;
+            npc.lifeMax = OriginalHP;
+            npc.damage = npc.defDamage;
+            npc.defense = npc.defDefense;
         }
 
         public override void PostAI(NPC npc)
         {
             OriginNpc = null;
+            MobStatus.UpdateNPC(npc);
             if(npc.type != LastTypeBackup){
                 npc.life = LastHealthBackup;
             }

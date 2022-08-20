@@ -122,12 +122,22 @@ namespace nexperience1dot4.Game_Modes
             int Level = data.GetEffectiveLevel;
             npc.damage += (int)(npc.damage * Level * 0.15f);
             npc.defense += (int)(npc.defense * Level * 0.15f);
+            data.ProjectileNpcDamagePercentage += Level * 0.15f;
             if(npc.lifeMax > 5)
             {
-                npc.lifeMax += (int)(npc.lifeMax * Level * 0.1f);
+                npc.lifeMax += (int)(npc.lifeMax * Level * 0.15f);
             }
-
-            if(npc.lifeMax > 5) data.SetExpReward(npc.lifeMax + (npc.damage + npc.defense) * 8);
+            if(npc.lifeMax > 5)
+            {
+                float ExpReward = npc.lifeMax + (npc.damage + npc.defense) * 8;
+                const int ExpReductionMaxLevel = 60;
+                const float ExpReductionPercentage = 1f / ExpReductionMaxLevel;
+                if(Level < ExpReductionMaxLevel)
+                {
+                    ExpReward -= ExpReward * ((ExpReductionMaxLevel - Level) * ExpReductionPercentage);
+                }
+                data.SetExpReward(ExpReward);
+            }
         }
 
         public override void OnUnload()
@@ -148,7 +158,7 @@ namespace nexperience1dot4.Game_Modes
             //Desert
             AddBiome("Desert", 1, 7, 8, 15, delegate (Player p){ return p.ZoneDesert;});
             AddBiome("Antlion Hive", 18, 24, delegate (Player p){ return p.ZoneUndergroundDesert;});
-            AddBiome("Beach", 27, 32, delegate (Player p){ return p.ZoneBeach;});
+            AddBiome("Beach", 1, 7, 7, 14, delegate (Player p){ return p.ZoneBeach;});
             //Graveyard
             AddBiome("Graveyard", 20, 30, delegate (Player p){ return p.ZoneGraveyard;});
             //Corruption
@@ -161,7 +171,7 @@ namespace nexperience1dot4.Game_Modes
             AddBiome("Underground Jungle", 34, 40, delegate (Player p){ return p.ZoneJungle && (p.ZoneDirtLayerHeight || p.ZoneRockLayerHeight);});
             //
             AddBiome("Dungeon", 40, 50, delegate (Player p){ return p.ZoneDungeon;});
-            AddBiome("Desu~", 9999, 9999, delegate (Player p){ return p.ZoneDungeon && !NPC.downedBoss3;});
+            AddBiome("Desu~", 9999, 9999, delegate (Player p){ return p.ZoneDungeon && !NPC.downedBoss3;}, false);
             //Underworld
             AddBiome("Underworld", 50, 60, delegate (Player p){ return p.ZoneUnderworldHeight;});
 
@@ -192,16 +202,16 @@ namespace nexperience1dot4.Game_Modes
             //Jungle
             AddBiome("Jungle", 80, 87, delegate (Player p){ return Main.hardMode && p.ZoneJungle;});
             AddBiome("Underground Jungle", 88, 100, delegate (Player p){ return Main.hardMode && p.ZoneJungle && p.ZoneRockLayerHeight;});
-            AddBiome("Lihzahrd Temple", 100, 115, delegate (Player p){ return Main.hardMode && p.ZoneLihzhardTemple;});
+            AddBiome("Lihzahrd Temple", 100, 110, delegate (Player p){ return Main.hardMode && p.ZoneLihzhardTemple;});
             //
-            AddBiome("Dungeon", 115, 130, delegate (Player p){ return Main.hardMode && NPC.downedPlantBoss && p.ZoneDungeon;});
+            AddBiome("Dungeon", 110, 120, delegate (Player p){ return Main.hardMode && NPC.downedPlantBoss && p.ZoneDungeon;});
             //Underworld
             AddBiome("Underworld", 80, 90, delegate (Player p){ return Main.hardMode && p.ZoneUnderworldHeight && NPC.downedMechBossAny;});
             //Towers
-            AddBiome("Stardust Tower", 130, 140, delegate (Player p){ return p.ZoneTowerStardust;});
-            AddBiome("Nebula Tower", 130, 140, delegate (Player p){ return p.ZoneTowerNebula;});
-            AddBiome("Solar Tower", 130, 140, delegate (Player p){ return p.ZoneTowerSolar;});
-            AddBiome("Vortex Tower", 130, 140, delegate (Player p){ return p.ZoneTowerVortex;});
+            AddBiome("Stardust Tower", 140, 150, delegate (Player p){ return p.ZoneTowerStardust;});
+            AddBiome("Nebula Tower", 140, 150, delegate (Player p){ return p.ZoneTowerNebula;});
+            AddBiome("Solar Tower", 140, 150, delegate (Player p){ return p.ZoneTowerSolar;});
+            AddBiome("Vortex Tower", 140, 150, delegate (Player p){ return p.ZoneTowerVortex;});
 
         }
 
@@ -229,17 +239,17 @@ namespace nexperience1dot4.Game_Modes
             AddMobLevel(252, 70); //Parrot
             AddMobLevel(491, 85); //Flying Dutchman
             //Martian Madness
-            AddMobLevel(381, 103); //Martian Ranger
-            AddMobLevel(382, 103); //Martian Ranger
-            AddMobLevel(383, 110); //Martian Officer
-            AddMobLevel(385, 100); //Martian Grunty
-            AddMobLevel(386, 105); //Martian Engineer
-            AddMobLevel(387, 105); //Tesla Turret
-            AddMobLevel(388, 106); //Gigazapper
-            AddMobLevel(390, 110); //Scutlix Gunner
-            AddMobLevel(391, 110); //Scutlix
-            AddMobLevel(520, 112); //Martian Walker
-            AddMobLevel(395, 115); //Martian Saucer
+            AddMobLevel(381, 113); //Martian Ranger
+            AddMobLevel(382, 113); //Martian Ranger
+            AddMobLevel(383, 120); //Martian Officer
+            AddMobLevel(385, 110); //Martian Grunty
+            AddMobLevel(386, 115); //Martian Engineer
+            AddMobLevel(387, 115); //Tesla Turret
+            AddMobLevel(388, 116); //Gigazapper
+            AddMobLevel(390, 120); //Scutlix Gunner
+            AddMobLevel(391, 120); //Scutlix
+            AddMobLevel(520, 122); //Martian Walker
+            AddMobLevel(395, 125); //Martian Saucer
             //Solar Eclipse
             AddMobLevel(166, 70); //Swamp Thing
             AddMobLevel(158, 75); //Vampire
@@ -315,22 +325,22 @@ namespace nexperience1dot4.Game_Modes
             
             AddMobLevel(636, 120); //Empress of Light
             
-            AddMobLevel(370, 140); //Duke Fishron
-            AddMobLevel(371, 140); //Duke Fishron
-            AddMobLevel(372, 140); //Duke Fishron
-            AddMobLevel(373, 140); //Duke Fishron
+            AddMobLevel(370, 130); //Duke Fishron
+            AddMobLevel(371, 130); //Duke Fishron
+            AddMobLevel(372, 130); //Duke Fishron
+            AddMobLevel(373, 130); //Duke Fishron
             
-            AddMobLevel(439, 130); //Lunatic Cultist
-            AddMobLevel(440, 130);
-            AddMobLevel(454, 130);
-            AddMobLevel(455, 130);
-            AddMobLevel(456, 130);
-            AddMobLevel(457, 130);
-            AddMobLevel(458, 130);
-            AddMobLevel(459, 130);
-            AddMobLevel(521, 130);
-            AddMobLevel(522, 130);
-            AddMobLevel(523, 130);
+            AddMobLevel(439, 140); //Lunatic Cultist
+            AddMobLevel(440, 140);
+            AddMobLevel(454, 140);
+            AddMobLevel(455, 140);
+            AddMobLevel(456, 140);
+            AddMobLevel(457, 140);
+            AddMobLevel(458, 140);
+            AddMobLevel(459, 140);
+            AddMobLevel(521, 140);
+            AddMobLevel(522, 140);
+            AddMobLevel(523, 140);
             
             AddMobLevel(396, 150); //Moon Lord
             AddMobLevel(397, 150);
@@ -338,14 +348,80 @@ namespace nexperience1dot4.Game_Modes
             AddMobLevel(400, 150);
             AddMobLevel(401, 150);
             
-            AddMobLevel(493, 140); //Towers
-            AddMobLevel(507, 140);
-            AddMobLevel(422, 140);
-            AddMobLevel(517, 140);
+            AddMobLevel(493, 145); //Towers
+            AddMobLevel(507, 145);
+            AddMobLevel(422, 145);
+            AddMobLevel(517, 145);
 
             AddMobLevel(87, 70); //Wyvern
 
+            //Blood Moon Minibosses
+            AddMobLevel(618, 70); //Dreadnautilus
+            AddMobLevel(619, 70); //Blood Squid
+
             //Add Event Mobs
+            //DD2
+            AddMobLevel(new int[]{
+                NPCID.DD2DarkMageT1,
+                NPCID.DD2GoblinBomberT1,
+                NPCID.DD2WyvernT1,
+                NPCID.DD2GoblinT1,
+                NPCID.DD2SkeletonT1,
+                NPCID.DD2JavelinstT1
+            }, 30); //Tier 1
+            AddMobLevel(new int[]{
+                NPCID.DD2OgreT2,
+                NPCID.DD2DrakinT2,
+                NPCID.DD2GoblinT2,
+                NPCID.DD2WyvernT2,
+                NPCID.DD2JavelinstT2,
+                NPCID.DD2KoboldFlyerT2,
+                NPCID.DD2WitherBeastT2,
+                NPCID.DD2GoblinBomberT2,
+                NPCID.DD2KoboldWalkerT2
+            }, 70); //Tier 2
+            AddMobLevel(new int[]{
+                NPCID.DD2OgreT3,
+                NPCID.DD2DrakinT3,
+                NPCID.DD2GoblinT3,
+                NPCID.DD2WyvernT3,
+                NPCID.DD2DarkMageT3,
+                NPCID.DD2SkeletonT3,
+                NPCID.DD2JavelinstT3,
+                NPCID.DD2KoboldFlyerT3,
+                NPCID.DD2WitherBeastT3,
+                NPCID.DD2GoblinBomberT3,
+                NPCID.DD2KoboldWalkerT3,
+                NPCID.DD2LightningBugT3
+            }, 100); //Tier 3
+            AddMobLevel(NPCID.DD2EterniaCrystal, 20);
+            AddMobLevel(NPCID.DD2EterniaCrystal, 70, Terraria.GameContent.Events.DD2Event.ReadyForTier2);
+            AddMobLevel(NPCID.DD2EterniaCrystal, 100, Terraria.GameContent.Events.DD2Event.ReadyForTier3);
+            
+            AddMobLevel(NPCID.DD2Betsy, 100);
+
+            //Pumpkin Moon
+            AddMobLevel(new int[]{305, 306, 307, 308, 309, 310, 311, 312, 313, 314}, 120); //Scarecrows
+            AddMobLevel(326, 124); //Splinterling
+            AddMobLevel(329, 128); //Hellhound
+            AddMobLevel(330, 132); //Poltergeist
+            AddMobLevel(315, 136); //Headless Horseman
+            AddMobLevel(325, 140); //Mourning Wood
+            AddMobLevel(new int[]{327, 328}, 140); //Pumpking
+
+            //Frost Legion
+            AddMobLevel(341, 130); //Present Mimic
+            AddMobLevel(new int[]{338,339,340}, 120); //Zombie Elf
+            AddMobLevel(342, 128); //Gingerbread Man
+            AddMobLevel(350, 124); //Elf Archer
+            AddMobLevel(new int[]{348, 349}, 128); //Nutcracker
+            AddMobLevel(344, 140); //Everscream
+            AddMobLevel(347, 132); //Elf Copter
+            AddMobLevel(346, 140); //Santa-NK1
+            AddMobLevel(351, 136); //Krampus
+            AddMobLevel(352, 128); //Flocko
+            AddMobLevel(343, 136); //Yeti
+            AddMobLevel(345, 140); //Ice Queen
         }
     }
 }

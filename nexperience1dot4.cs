@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using System.IO;
 
 namespace nexperience1dot4
 {
@@ -131,5 +132,9 @@ namespace nexperience1dot4
         }
         #endregion;
 
+        public override void HandlePacket(BinaryReader reader, int whoAmI)
+        {
+            
+        }
     }
 }

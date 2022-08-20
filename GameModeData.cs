@@ -29,6 +29,7 @@ namespace nexperience1dot4
         public float GenericDamagePercentage = 1, MeleeDamagePercentage = 1, RangedDamagePercentage = 1, MagicDamagePercentage = 1, SummonDamagePercentage = 1;
         public float MeleeCriticalPercentage = 1f, RangedCriticalPercentage = 1f, MagicCriticalPercentage = 1f;
         public float MeleeSpeedPercentage = 1f;
+        public float ProjectileNpcDamagePercentage{get{ return GenericDamagePercentage;} set{ GenericDamagePercentage = value; }}
 
         private byte BiomeUpdateDelay = 0;
         private const byte MaxBiomeUpdateDelay = 8;
@@ -130,17 +131,6 @@ namespace nexperience1dot4
                 }
             }
 
-            /*player.GetDamage(DamageClass.Melee) *= MeleeDamagePercentage;
-            player.GetDamage(DamageClass.Ranged) *= RangedDamagePercentage;
-            player.GetDamage(DamageClass.Magic) *= MagicDamagePercentage;
-            player.GetDamage(DamageClass.Summon) *= SummonDamagePercentage;
-            player.GetDamage(DamageClass.Throwing) *= RangedDamagePercentage;
-            player.GetDamage(DamageClass.Generic) *= GenericDamagePercentage;
-
-            player.GetCritChance(DamageClass.Melee) = (int)(player.GetCritChance(DamageClass.Melee) * MeleeCriticalPercentage);
-            player.GetCritChance(DamageClass.Ranged) = (int)(player.GetCritChance(DamageClass.Ranged) * RangedCriticalPercentage);
-            player.GetCritChance(DamageClass.Magic) = (int)(player.GetCritChance(DamageClass.Magic) * MagicCriticalPercentage);
-*/
             HealthPercentageChange = (float)player.statLifeMax2 / player.statLifeMax;
             ManaPercentageChange = (float)player.statManaMax2 / player.statManaMax;
             if (LastMaxLife > 0 && player.statLifeMax2 != LastMaxLife)
@@ -232,6 +222,7 @@ namespace nexperience1dot4
         public void UpdateNPC(NPC npc)
         {
             _EffectiveLevel = _Level;
+            ProjectileNpcDamagePercentage = 1;
             GetBase.UpdateNpcStatus(npc, this);
             if(npc.lifeMax != LastMaxLife)
             {

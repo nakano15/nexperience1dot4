@@ -61,20 +61,32 @@ namespace nexperience1dot4
             return b;
         }
 
-        public void AddMobLevel(int MobID, int Level, bool CountsTowardsLevelCap = true)
+        public void AddMobLevel(int MobID, int Level, bool CountsTowardsLevelCap = true, System.Func<bool> Requirement = null)
         {
-            MobLevelStruct moblvlinfo = new MobLevelStruct() { Level = Level };
-            if (GameModeMobLevels.ContainsKey(MobID))
-                GameModeMobLevels.Remove(MobID);
-            GameModeMobLevels.Add(MobID, moblvlinfo);
+            if (GameModeMobLevels.ContainsKey(MobID)){
+                GameModeMobLevels[MobID].AddMobLevel(Level, Requirement);
+                //GameModeMobLevels.Remove(MobID);
+            }
+            else
+            {
+                MobLevelStruct moblvlinfo = new MobLevelStruct();
+                moblvlinfo.AddMobLevel(Level, Requirement);
+                GameModeMobLevels.Add(MobID, moblvlinfo);
+            }
             if (CountsTowardsLevelCap)
                 UpdateLevelCap(Level);
+        }
+        
+        public void AddMobLevel(int[] MobIDs, int Level, bool CountsTowardsLevelCap = true, System.Func<bool> Requirement = null)
+        {
+            foreach(int ID in MobIDs)
+                AddMobLevel(ID, Level, CountsTowardsLevelCap, Requirement);
         }
 
         public int GetMobLevel(NPC npc)
         {
             if (GameModeMobLevels.ContainsKey(npc.type))
-                return GameModeMobLevels[npc.type].Level;
+                return GameModeMobLevels[npc.type].TakeLevel();
             return 0;
         }
 
