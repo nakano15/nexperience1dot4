@@ -16,6 +16,7 @@ namespace nexperience1dot4
 
         private static int LastHealthBackup = 0, LastTypeBackup = 0;
         private int OriginalHP = 100;
+        private bool FirstUpdate = false;
 
         public override bool InstancePerEntity => true;
         public override bool IsCloneable => false;
@@ -29,13 +30,24 @@ namespace nexperience1dot4
             return npc.GetGlobalNPC<NpcMod>().MobStatus.ProjectileNpcDamagePercentage;
         }
 
+        internal static void UpdateNpcStatus(NPC n)
+        {
+            if(!n.active) return;
+            NpcMod npc = n.GetGlobalNPC<NpcMod>();
+            npc.MobStatus.ChangeGameMode(nexperience1dot4.GetActiveGameModeID);
+            npc.MobStatus.SpawnNpcLevel(n);
+            npc.MobStatus.UpdateNPC(n);
+        }
+
         public override void SetDefaults(NPC npc)
         {
             OriginalHP = npc.lifeMax;
-            MobStatus = new GameModeData(nexperience1dot4.GetActiveGameModeID);
+            if(MobStatus == null) MobStatus = new GameModeData(nexperience1dot4.GetActiveGameModeID);
+            else MobStatus.ChangeGameMode(nexperience1dot4.GetActiveGameModeID);
             MobStatus.SpawnNpcLevel(npc);
-            MobStatus.UpdateNPC(npc);
+            //MobStatus.UpdateNPC(npc);
             npc.life = npc.lifeMax;
+            FirstUpdate = true;
         }
 
         public static int GetNpcLevel(NPC npc)
@@ -50,6 +62,13 @@ namespace nexperience1dot4
 
         public override void AI(NPC npc)
         {
+            if(FirstUpdate)
+            {
+                FirstUpdate = false;
+                NetplayMod.SendNpcLevel(npc.whoAmI, -1, Main.myPlayer);
+                MobStatus.UpdateNPC(npc);
+                npc.life = npc.lifeMax;
+            }
             OriginNpc = npc;
             LastTypeBackup = npc.type;
             LastHealthBackup = npc.life;
@@ -62,9 +81,10 @@ namespace nexperience1dot4
         {
             OriginNpc = null;
             MobStatus.UpdateNPC(npc);
-            if(npc.type != LastTypeBackup){
+            if(LastTypeBackup > 0 && npc.type != LastTypeBackup){
                 npc.life = LastHealthBackup;
             }
+            LastTypeBackup = 0;
         }
 
         public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
@@ -79,6 +99,7 @@ namespace nexperience1dot4
 
         public override void OnKill(NPC npc)
         {
+            TombstoneGenerator(npc, Main.LocalPlayer.whoAmI);
             DistributeExp(npc);
         }
 
@@ -88,7 +109,22 @@ namespace nexperience1dot4
             for(byte p = 0; p < 255; p++)
             {
                 if (killedNPC.playerInteraction[p])
-                    Players.Add(Main.player[p]);
+                {
+                    Player player = Main.player[p];
+                    if(!Players.Contains(player))
+                    {
+                        Players.Add(player);
+                    }
+                    if(player.team > 0)
+                    {
+                        for(byte p2 = 0; p2 < 255; p2++)
+                        {
+                            Player otherplayer = Main.player[p2];
+                            if(p == p2 || Players.Contains(otherplayer) || !otherplayer.active || otherplayer.team != player.team || Math.Abs(otherplayer.Center.X - player.Center.X) > 1500 || Math.Abs(otherplayer.Center.Y - player.Center.Y) > 1500) continue;
+                            Players.Add(otherplayer);
+                        }
+                    }
+                }
             }
             if (Players.Count == 0) return;
             float ExpDistribution = 1f / Players.Count + (Players.Count - 1) * 0.1f;
@@ -116,12 +152,6 @@ namespace nexperience1dot4
                 spawnRate = (int)(spawnRate * 0.5f);
                 maxSpawns *= 2;
             }
-        }
-
-        public override bool SpecialOnKill(NPC npc)
-        {
-            TombstoneGenerator(npc, Main.LocalPlayer.whoAmI);
-            return base.SpecialOnKill(npc);
         }
 
         public void TombstoneGenerator(NPC npc, int plr)

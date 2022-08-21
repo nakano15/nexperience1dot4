@@ -10,7 +10,7 @@ namespace nexperience1dot4
 
         public string GetGameModeID { get { return GameModeID; } }
         private string GameModeID = "";
-        public int GetLevel { get { return _Level; } }
+        public int GetLevel { get { return _Level; } private set{_Level = value;} }
         private int _Level = 1;
         public int GetExp { get { return _Exp; } }
         private int _Exp = 0;
@@ -34,6 +34,10 @@ namespace nexperience1dot4
         private byte BiomeUpdateDelay = 0;
         private const byte MaxBiomeUpdateDelay = 8;
 
+        public void SetLevel(int NewLevel){
+            GetLevel = NewLevel;
+        }
+
         public GameModeData(string GameModeID)
         {
             this.GameModeID = GameModeID;
@@ -43,6 +47,10 @@ namespace nexperience1dot4
         public GameModeData(byte GameModeID, Terraria.ModLoader.IO.TagCompound tag, int ModVersion)
         {
             LoadGameMode(GameModeID, tag, ModVersion);
+        }
+
+        public void ChangeGameMode(string NewGameMode){
+            this.GameModeID = NewGameMode;
         }
 
         public void CheckMyBiome(Player player)
@@ -285,6 +293,12 @@ namespace nexperience1dot4
                 Count = _StatusPoints;
             MyStatus[StatusIndex].StatusValue += Count;
             _StatusPoints -= Count;
+        }
+
+        internal void ChangeStatusValue(byte StatusIndex, int Count)
+        {
+            if(StatusIndex >= MyStatus.Length) return;
+            MyStatus[StatusIndex].StatusValue = Count;
         }
 
         public void SetExpReward(float Value)

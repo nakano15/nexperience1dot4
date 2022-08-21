@@ -11,6 +11,7 @@ namespace nexperience1dot4
 {
 	public class nexperience1dot4 : Mod
 	{
+        private static Mod ThisMod;
         public const string ContentPath = "nexperience1dot4/Content/";
 		private static Dictionary<string, GameModeBase> GameModes = new Dictionary<string, GameModeBase>();
         private static List<StatusTranslator> StatusList = new List<StatusTranslator>();
@@ -21,6 +22,12 @@ namespace nexperience1dot4
         internal static bool EnableBiomeLevelCapper = true, InfiniteLeveling = false, NTerrariaGraveyard = false, ZombiesDroppingTombstones = false;
         internal static float ExpRate = 1f;
         internal static Asset<Texture2D> HandyTexture, LevelArrowTexture;
+        public static ModPacket packet{
+            get
+            {
+                return ThisMod.GetPacket();
+            }
+        }
 
         public override void PostSetupContent()
         {
@@ -28,6 +35,7 @@ namespace nexperience1dot4
 
         public override void Load()
         {
+            ThisMod = this;
             HandyTexture = ModContent.Request<Texture2D>(ContentPath + "Interface/WhiteDot");
             LevelArrowTexture = ModContent.Request<Texture2D>(ContentPath + "Interface/LevelArrow");
             AddDamageClass(DamageClass.Generic, StatusTranslator.DC_Generic);
@@ -114,6 +122,24 @@ namespace nexperience1dot4
             return DefaultGameMode;
         }
 
+        public static bool HasGameMode(string ID)
+        {
+            return GameModes.ContainsKey(ID);
+        }
+
+        public static bool ChangeActiveGameMode(string ID)
+        {
+            if(GameModes.ContainsKey(ID)){
+                ActiveGameMode = ID;
+                for(byte i = 0; i < 200; i++)
+                {
+                    NpcMod.UpdateNpcStatus(Main.npc[i]);
+                }
+                return true;
+            }
+            return false;
+        }
+
         public static string GetActiveGameModeID { get { return ActiveGameMode; } }
 
         public static GameModeBase GetActiveGameMode()
@@ -134,7 +160,7 @@ namespace nexperience1dot4
 
         public override void HandlePacket(BinaryReader reader, int whoAmI)
         {
-            
+            NetplayMod.ReceivedMessages(reader, whoAmI);
         }
     }
 }

@@ -14,6 +14,15 @@ namespace nexperience1dot4
 
         private List<GameModeData> MyGameModes = new List<GameModeData>();
         public GameModeData GetCurrentGamemode { get { return MyGameModes[CurrentGameMode]; } }
+        public GameModeData GetPlayerGamemode(string GameModeID)
+        {
+            foreach(GameModeData gmd in MyGameModes)
+            {
+                if(gmd.GetGameModeID == GameModeID)
+                    return gmd;
+            }
+            return null;
+        }
         private byte CurrentGameMode = 0;
         public float GetHealthPercentageChange { get { return GetCurrentGamemode.HealthPercentageChange; } }
         public float GetManaPercentageChange { get { return GetCurrentGamemode.ManaPercentageChange; } }
@@ -30,6 +39,11 @@ namespace nexperience1dot4
         public override void ResetEffects()
         {
             ExpPercentage = 1;
+        }
+
+        public override void OnEnterWorld(Player player)
+        {
+            NetplayMod.AskForGameMode(player.whoAmI);
         }
 
         public override void PreUpdate()
@@ -65,6 +79,12 @@ namespace nexperience1dot4
         public override void GetHealMana(Item item, bool quickHeal, ref int healValue)
         {
             healValue = (int)(healValue * GetManaPercentageChange);
+        }
+
+        public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+        {
+            Main.NewText("Damage Received: " + damage);
+            return false;
         }
 
         public override void Initialize()
@@ -137,13 +157,17 @@ namespace nexperience1dot4
         {
             int LastLevel = GetCurrentGamemode.GetLevel;
             GetCurrentGamemode.ChangeExp(Exp);
-            if(LastLevel > GetCurrentGamemode.GetLevel)
-            {
-                if(Player.whoAmI == Main.myPlayer){
-                    Rectangle rect = new Rectangle((int)Player.Center.X, (int)Player.Top.Y - 16, 4,4);
-                    CombatText.NewText(rect, Microsoft.Xna.Framework.Color.Cyan, "Level " + GetCurrentGamemode.GetLevel+ "!", true);
+            if(Player.whoAmI == Main.myPlayer){
+                if(LastLevel > GetCurrentGamemode.GetLevel)
+                {
+                        Rectangle rect = new Rectangle((int)Player.Center.X, (int)Player.Top.Y - 8, 4,4);
+                        CombatText.NewText(rect, Microsoft.Xna.Framework.Color.Cyan, "Level " + GetCurrentGamemode.GetLevel+ "!", true);
                 }
                 //    Main.NewText("Achieved level " + GetLevel + "!",Microsoft.Xna.Framework.Color.Cyan);
+            }
+            else
+            {
+                NetplayMod.SendExpToPlayer(Player.whoAmI, Exp, Main.myPlayer);
             }
         }
 
