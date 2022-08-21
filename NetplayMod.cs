@@ -162,10 +162,11 @@ namespace nexperience1dot4
 
         private static ModPacket CreatePacket(MessageType message)
         {
-            if(Main.netMode == 0) return null;
+            return null; //Disabled for now.
+            /*if(Main.netMode == 0) return null;
             ModPacket packet = nexperience1dot4.packet;
             packet.Write((byte)message);
-            return packet;
+            return packet;*/
         }
 
         public enum MessageType : byte

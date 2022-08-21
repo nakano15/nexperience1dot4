@@ -66,8 +66,6 @@ namespace nexperience1dot4
             {
                 FirstUpdate = false;
                 NetplayMod.SendNpcLevel(npc.whoAmI, -1, Main.myPlayer);
-                MobStatus.UpdateNPC(npc);
-                npc.life = npc.lifeMax;
             }
             OriginNpc = npc;
             LastTypeBackup = npc.type;

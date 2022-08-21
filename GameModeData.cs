@@ -30,6 +30,7 @@ namespace nexperience1dot4
         public float MeleeCriticalPercentage = 1f, RangedCriticalPercentage = 1f, MagicCriticalPercentage = 1f;
         public float MeleeSpeedPercentage = 1f;
         public float ProjectileNpcDamagePercentage{get{ return GenericDamagePercentage;} set{ GenericDamagePercentage = value; }}
+        public bool NpcIsFirstFrame{get{return MeleeDamagePercentage != 0; } set{ MeleeDamagePercentage = value ? 1 : 0; }}
 
         private byte BiomeUpdateDelay = 0;
         private const byte MaxBiomeUpdateDelay = 8;
@@ -232,7 +233,12 @@ namespace nexperience1dot4
             _EffectiveLevel = _Level;
             ProjectileNpcDamagePercentage = 1;
             GetBase.UpdateNpcStatus(npc, this);
-            if(npc.lifeMax != LastMaxLife)
+            if(NpcIsFirstFrame)
+            {
+                NpcIsFirstFrame = false;
+                npc.life = npc.lifeMax;
+            }
+            if(npc.lifeMax != LastMaxLife )
             {
                 HealthPercentageChange = (float)npc.lifeMax / OriginalHP;
                 LastMaxLife = npc.lifeMax;
@@ -243,6 +249,7 @@ namespace nexperience1dot4
         {
             _Level = GetBase.GetMobLevel(npc);
             OriginalHP = npc.lifeMax;
+            NpcIsFirstFrame = true;
             if (_Level == 0)
             {
                 if (npc.realLife > -1)
