@@ -81,12 +81,6 @@ namespace nexperience1dot4
             healValue = (int)(healValue * GetManaPercentageChange);
         }
 
-        public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
-        {
-            Main.NewText("Damage Received: " + damage);
-            return false;
-        }
-
         public override void Initialize()
         {
             foreach (string gamemode in nexperience1dot4.GetGameModeIDs)
@@ -116,6 +110,16 @@ namespace nexperience1dot4
         public override void Kill(double damage, int hitDirection, bool pvp, Terraria.DataStructures.PlayerDeathReason damageSource)
         {
             DeathExpPenalty();
+        } 
+        
+        public static int GetPlayerLevel(Player player){
+            return GetPlayerLevel(player.whoAmI);
+        }
+
+        public static int GetPlayerLevel(int PlayerID){
+            if(PlayerID > 255 || PlayerID < 0)
+                return 1;
+            return Main.player[PlayerID].GetModPlayer<PlayerMod>().GetCurrentGamemode.GetLevel;
         }
 
         private void DeathExpPenalty()
@@ -133,19 +137,48 @@ namespace nexperience1dot4
             if (Exp == 0)
                 return;
             PlayerMod pm = player.GetModPlayer<PlayerMod>();
-            Exp = (int)(Math.Max(1, Exp * nexperience1dot4.ExpRate * pm.ExpPercentage));
+            float ExtraPercentage = pm.GetExtraExpPercentage();
+            int BoostedExp = (int)(Math.Max(1, Exp * nexperience1dot4.ExpRate * ExtraPercentage));
             if (player.whoAmI == Main.myPlayer)
             {
-                SpawnExpText(player, Exp, sourcerect);
+                SpawnExpText(player, Exp, ExtraPercentage, sourcerect);
             }
-            pm.AddExp(Exp);
+            pm.AddExp(BoostedExp);
         }
 
-        public static void SpawnExpText(Player player, int Exp, Rectangle source = default(Rectangle)){
-                if (source == default(Rectangle))
-                    source = player.getRect();
-                Color color = (Exp == 0 ? Color.White : (Exp > 0 ? Color.Cyan : Color.DarkRed));
-                CombatText.NewText(source, color, "Exp " + Exp, true);
+        public float GetExtraExpPercentage()
+        {
+            return ExpPercentage;
+        }
+
+        public static void SpawnExpText(Player player, int RawExp, float ExtraExpPercent = 1, Rectangle source = default(Rectangle)){
+            if (source == default(Rectangle))
+                source = player.getRect();
+            Color color = (RawExp == 0 ? Color.White : (RawExp > 0 ? Color.Cyan : Color.DarkRed));
+            PlayerMod pm = player.GetModPlayer<PlayerMod>();
+            string ExpText = "Exp ";
+            if(!nexperience1dot4.DisplayExpRewardAsPercentage)
+                ExpText += RawExp.ToString();
+            else
+            {
+                float Percentage = (float)MathF.Round((float)RawExp * 100 / pm.GetCurrentGamemode.GetMaxExp, 2);
+                if(Percentage < 0.01f)
+                {
+                    ExpText += "< 0.01%";
+                }
+                else
+                {
+                    ExpText += Percentage + "%";
+                }
+            }
+            //Add extra exp percentage show.
+            if(ExtraExpPercent != 1)
+            {
+                ExtraExpPercent -= 1;
+                int PercentValue = (int)(ExtraExpPercent * 100);
+                ExpText += " (" + PercentValue + "%)";
+            }
+            CombatText.NewText(source, color, ExpText, true);
         }
 
         public static BiomeLevelStruct GetPlayerBiomeLevel(Player player)

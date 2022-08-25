@@ -7,12 +7,11 @@ namespace nexperience1dot4
         private string BiomeName;
         private int MinLevel, MaxLevel;
         private int NightMinLevel, NightMaxLevel;
-        private IsBiomeActiveDel IsBiomeActive;
-        public delegate bool IsBiomeActiveDel(Terraria.Player player);
-
+        private System.Func<Player, bool> IsBiomeActive;
+        
         public string GetBiomeName { get { return BiomeName; } }
 
-        public BiomeLevelStruct(string Name, int MinLv, int MaxLv, IsBiomeActiveDel ActivateReq, int NightMinLv = -1, int NightMaxLv = -1)
+        public BiomeLevelStruct(string Name, int MinLv, int MaxLv, System.Func<Player, bool> ActivateReq, int NightMinLv = -1, int NightMaxLv = -1)
         {
             BiomeName = Name;
             MinLevel = MinLv;

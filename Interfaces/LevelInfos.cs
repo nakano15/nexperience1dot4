@@ -22,6 +22,11 @@ namespace nexperience1dot4.Interfaces
         private static byte CurrentPage = 0;
         private static float StatusDistance = 1;
         private static int[] PointsSpent = new int[0];
+        private static bool Collapsed = false, MouseOverButton = false;
+
+        public static void OnUnload(){
+            PointsSpent = null;
+        }
 
         public LevelInfos(string name, GameInterfaceDrawMethod drawMethod, InterfaceScaleType scaleType = InterfaceScaleType.UI) : base(name, DrawInterface, scaleType)
         {
@@ -59,14 +64,40 @@ namespace nexperience1dot4.Interfaces
                 PointsSpent = new int[data.GetBase.GameModeStatus.Length];
                 PageCount = (byte)(MathF.Ceiling((float)data.GetBase.GameModeStatus.Length / (StatusColumns * StatusRows)));
             }
+            Color bg = new Color (55, 74, 133);
             string MouseOverText = "";
             const int Width = 480, Height = 220;
             Vector2 DrawPosition = new Vector2(Main.screenWidth * 0.5f , Main.screenHeight - Height);
             int DrawX = (int)(DrawPosition.X- Width * 0.5f), DrawY = (int)DrawPosition.Y;
             if(Main.mouseX >= DrawX && Main.mouseX < DrawX + Width && Main.mouseY >= DrawY && Main.mouseY < DrawY + Height)
                 player.Player.mouseInterface = true;
-            Main.spriteBatch.Draw(nexperience1dot4.HandyTexture.Value, new Rectangle(DrawX - 1, DrawY - 1, Width + 2, Height + 2), Color.Black * Transparency);
-            Main.spriteBatch.Draw(nexperience1dot4.HandyTexture.Value, new Rectangle(DrawX + 1, DrawY + 1, Width - 2, Height - 2), Color.Blue* Transparency);
+            if(Collapsed){
+                Main.spriteBatch.Draw(nexperience1dot4.HandyTexture.Value, new Rectangle(DrawX - 1, DrawY - 1, Width + 2, Height + 2), Color.Black * Transparency);
+                Main.spriteBatch.Draw(nexperience1dot4.HandyTexture.Value, new Rectangle(DrawX + 1, DrawY + 1, Width - 2, Height - 2), bg * Transparency);
+            }
+            {
+                const int StatusButtonWidth = 90, StatusButtonHeight = 30;
+                Vector2 StatusButtonPosition = new Vector2(DrawPosition.X - Width * 0.5f, DrawPosition.Y - StatusButtonHeight);
+                if(!Collapsed)
+                    StatusButtonPosition.Y = Main.screenHeight - StatusButtonHeight;
+                Main.spriteBatch.Draw(nexperience1dot4.HandyTexture.Value, new Rectangle((int)StatusButtonPosition.X - 1, (int)StatusButtonPosition.Y - 1, StatusButtonWidth + 2, StatusButtonHeight), Color.Black * Transparency);
+                Main.spriteBatch.Draw(nexperience1dot4.HandyTexture.Value, new Rectangle((int)StatusButtonPosition.X + 1, (int)StatusButtonPosition.Y + 1, StatusButtonWidth - 2, StatusButtonHeight), bg * Transparency);
+                if(Main.mouseX >= StatusButtonPosition.X && Main.mouseX < StatusButtonPosition.X + StatusButtonWidth && 
+                    Main.mouseY >= StatusButtonPosition.Y && Main.mouseY < StatusButtonPosition.Y + StatusButtonHeight){
+                    Main.LocalPlayer.mouseInterface = true;
+                    MouseOverButton = true;
+                    if(Main.mouseLeft && Main.mouseLeftRelease){
+                        Collapsed = !Collapsed;
+                    }
+                }else{
+                    MouseOverButton = false;
+                }
+                StatusButtonPosition.X += StatusButtonWidth * 0.5f;
+                StatusButtonPosition.Y += StatusButtonHeight * 0.5f;
+                Utils.DrawBorderString(Main.spriteBatch, "Status", StatusButtonPosition, MouseOverButton ? Color.Yellow : Color.White, 1, 0.5f, 0.5f);
+                if(!Collapsed)
+                    return;
+            }
             string Text = "Level [" + data.GetLevel;
             if(data.GetLevel != data.GetEffectiveLevel){
                 Text += " -> " + data.GetEffectiveLevel + "]";

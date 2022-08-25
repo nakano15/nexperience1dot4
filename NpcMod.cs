@@ -14,9 +14,11 @@ namespace nexperience1dot4
         public static NPC GetOriginNpc { get { return OriginNpc; } }
         public static NPCSpawnInfo? GetLastSpawnInfo { get { return LastSpawnInfo; } }
 
-        private static int LastHealthBackup = 0, LastTypeBackup = 0;
+        private int LastHealthBackup = 0, LastTypeBackup = 0, LastLevelBackup = 0;
         private int OriginalHP = 100;
-        private bool FirstUpdate = false;
+        private BitsByte UpdateInfos = new BitsByte();
+        private bool FirstUpdate { get{ return UpdateInfos[0]; } set{ UpdateInfos[0] = value; }}
+        private bool UpdatedStatus { get{ return UpdateInfos[1]; } set{ UpdateInfos[1] = value; }}
 
         public override bool InstancePerEntity => true;
         public override bool IsCloneable => false;
@@ -41,13 +43,26 @@ namespace nexperience1dot4
 
         public override void SetDefaults(NPC npc)
         {
-            OriginalHP = npc.lifeMax;
             if(MobStatus == null) MobStatus = new GameModeData(nexperience1dot4.GetActiveGameModeID);
-            else MobStatus.ChangeGameMode(nexperience1dot4.GetActiveGameModeID);
+            //else MobStatus.ChangeGameMode(nexperience1dot4.GetActiveGameModeID);
             MobStatus.SpawnNpcLevel(npc);
-            //MobStatus.UpdateNPC(npc);
-            npc.life = npc.lifeMax;
+            UpdatedStatus = false;
             FirstUpdate = true;
+        }
+
+        public override void OnSpawn(NPC npc, Terraria.DataStructures.IEntitySource source)
+        {
+            OriginalHP = npc.lifeMax;
+            FirstUpdate = true;
+            UpdatedStatus = false;
+            //LastHealthBackup = npc.life = npc.lifeMax;
+            LastTypeBackup = npc.type;
+        }
+
+        public override void ScaleExpertStats(NPC npc, int numPlayers, float bossLifeScale)
+        {
+            //MobStatus.UpdateNPC(npc);
+            OriginalHP = npc.lifeMax;
         }
 
         public static int GetNpcLevel(NPC npc)
@@ -60,8 +75,16 @@ namespace nexperience1dot4
             return 0;
         }
 
-        public override void AI(NPC npc)
+        public override bool PreAI(NPC npc)
         {
+            if(!UpdatedStatus)
+            {
+                UpdatedStatus = true;
+                float Percentage = npc.life >= npc.lifeMax ? 1f : (float)npc.life / npc.lifeMax;
+                MobStatus.UpdateNpcOriginalHealth(npc);
+                MobStatus.UpdateNPC(npc);
+                npc.life = (int)(npc.lifeMax * Percentage);
+            }
             if(FirstUpdate)
             {
                 FirstUpdate = false;
@@ -70,17 +93,41 @@ namespace nexperience1dot4
             OriginNpc = npc;
             LastTypeBackup = npc.type;
             LastHealthBackup = npc.life;
-            npc.lifeMax = OriginalHP;
-            npc.damage = npc.defDamage;
-            npc.defense = npc.defDefense;
+            LastLevelBackup = MobStatus.GetLevel;
+            return base.PreAI(npc);
         }
+
+        /*public override void AI(NPC npc)
+        {
+            if(!UpdatedStatus)
+            {
+                UpdatedStatus = true;
+                float Percentage = npc.life >= npc.lifeMax ? 1f : (float)npc.life / npc.lifeMax;
+                MobStatus.UpdateNpcOriginalHealth(npc);
+                MobStatus.UpdateNPC(npc);
+                npc.life = (int)(npc.lifeMax * Percentage);
+            }
+            if(FirstUpdate)
+            {
+                FirstUpdate = false;
+                NetplayMod.SendNpcLevel(npc.whoAmI, -1, Main.myPlayer);
+            }
+            OriginNpc = npc;
+            LastTypeBackup = npc.type;
+            LastHealthBackup = npc.life;
+        }*/
 
         public override void PostAI(NPC npc)
         {
             OriginNpc = null;
-            MobStatus.UpdateNPC(npc);
+            //MobStatus.UpdateNPC(npc);
             if(LastTypeBackup > 0 && npc.type != LastTypeBackup){
+                MobStatus.SetLevel(LastLevelBackup);
+                float Percentage = npc.life >= npc.lifeMax ? 1f : (float)npc.life / npc.lifeMax;
+                MobStatus.UpdateNpcOriginalHealth(npc);
+                MobStatus.UpdateNPC(npc);
                 npc.life = LastHealthBackup;
+                UpdatedStatus = true;
             }
             LastTypeBackup = 0;
         }
@@ -90,15 +137,17 @@ namespace nexperience1dot4
             LastSpawnInfo = spawnInfo;
         }
 
-        public override void ScaleExpertStats(NPC npc, int numPlayers, float bossLifeScale)
-        {
-            MobStatus.UpdateNPC(npc);
-        }
-
         public override void OnKill(NPC npc)
         {
+            LastTypeBackup = 0;
             TombstoneGenerator(npc, Main.LocalPlayer.whoAmI);
             DistributeExp(npc);
+        }
+
+        public override bool CheckActive(NPC npc)
+        {
+            LastTypeBackup = 0;
+            return base.CheckActive(npc);
         }
 
         private void DistributeExp(NPC killedNPC)

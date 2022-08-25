@@ -29,12 +29,12 @@ namespace nexperience1dot4
                 MaxLevel = NewHighestLevelEntry;
         }
 
-        public void AddBiome(string Name, int MinLevel, int MaxLevel, BiomeLevelStruct.IsBiomeActiveDel BiomeActiveReq, bool CountsTowardsLevelCap = true)
+        public void AddBiome(string Name, int MinLevel, int MaxLevel, System.Func<Player, bool> BiomeActiveReq, bool CountsTowardsLevelCap = true)
         {
             AddBiome(Name, MinLevel, MaxLevel, -1, -1, BiomeActiveReq, CountsTowardsLevelCap);
         }
 
-        public void AddBiome(string Name, int MinLevel, int MaxLevel, int NightMinLevel, int NightMaxLevel, BiomeLevelStruct.IsBiomeActiveDel BiomeActiveReq, bool CountsTowardsLevelCap = true)
+        public void AddBiome(string Name, int MinLevel, int MaxLevel, int NightMinLevel, int NightMaxLevel, System.Func<Player, bool> BiomeActiveReq, bool CountsTowardsLevelCap = true)
         {
             BiomeLevelStruct biome = new BiomeLevelStruct(Name, MinLevel, MaxLevel, BiomeActiveReq, NightMinLevel, NightMaxLevel);
             int Position = -1;

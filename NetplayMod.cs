@@ -87,10 +87,13 @@ namespace nexperience1dot4
                     {
                         byte NpcPos = reader.ReadByte();
                         int Level = reader.ReadInt32();
+                        int Health = reader.ReadInt32();
                         if(Main.npc[NpcPos].active)
                         {
                             NpcMod npcMod = Main.npc[NpcPos].GetGlobalNPC<NpcMod>();
                             npcMod.GetData.SetLevel(Level);
+                            NpcMod.UpdateNpcStatus(Main.npc[NpcPos]);
+                            Main.npc[NpcPos].life = Health;
                         }
                     }
                     return;
@@ -157,6 +160,7 @@ namespace nexperience1dot4
             if(packet == null) return;
             packet.Write((byte)Npc);
             packet.Write(Main.npc[Npc].GetGlobalNPC<NpcMod>().GetData.GetLevel);
+            packet.Write(Main.npc[Npc].life);
             packet.Send(To, From);
         }
 

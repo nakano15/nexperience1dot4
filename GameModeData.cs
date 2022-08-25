@@ -113,7 +113,6 @@ namespace nexperience1dot4
             MeleeDamagePercentage = RangedDamagePercentage = MagicDamagePercentage = SummonDamagePercentage = GenericDamagePercentage = 
                 MeleeCriticalPercentage = RangedCriticalPercentage = MagicCriticalPercentage = MeleeSpeedPercentage = 1;
             GetBase.UpdatePlayerStatus(player, this);
-
             foreach(StatusTranslator st in nexperience1dot4.GetStatusLists())
             {
                 switch(st.GetClassToCountAs)
@@ -188,6 +187,11 @@ namespace nexperience1dot4
             }
         }
 
+        public void UpdateNpcOriginalHealth(NPC npc){
+            LastMaxLife = npc.lifeMax;
+            npc.life = npc.lifeMax;
+        }
+
         public void UpdateEffectiveStatus()
         {
             int EffectiveLevelStatus = (int)(GetBase.InitialStatusPoints + GetBase.InitialStatusPointsDistribution * MyStatus.Length + GetBase.StatusPointsPerLevel * GetEffectiveLevel),
@@ -233,12 +237,7 @@ namespace nexperience1dot4
             _EffectiveLevel = _Level;
             ProjectileNpcDamagePercentage = 1;
             GetBase.UpdateNpcStatus(npc, this);
-            if(NpcIsFirstFrame)
-            {
-                NpcIsFirstFrame = false;
-                npc.life = npc.lifeMax;
-            }
-            if(npc.lifeMax != LastMaxLife )
+            if(npc.lifeMax != LastMaxLife)
             {
                 HealthPercentageChange = (float)npc.lifeMax / OriginalHP;
                 LastMaxLife = npc.lifeMax;

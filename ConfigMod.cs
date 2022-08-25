@@ -32,12 +32,6 @@ namespace nexperience1dot4
         [Range(0, 1600)]
         public int ExpRate;
 
-        [Label("Status Window Transparency")]
-        [Tooltip("This will change the opacity of the status window.")]
-        [DefaultValue(1)]
-        [Range(0, 1f)]
-        public float StatusWindowOpacity;
-
         [Label("N Terraria Graveyard Biome")]
         [Tooltip("Yes! Yes! Yes!")]
         [DefaultValue(true)]
@@ -63,7 +57,27 @@ namespace nexperience1dot4
             nexperience1dot4.ExpRate = ExpRate * 0.01f;
             nexperience1dot4.NTerrariaGraveyard = NTerrariaGraveyard;
             nexperience1dot4.ZombiesDroppingTombstones = ZombieDroppingTombstone;
+        }
+    }
+    public class ClientConfigMod : ModConfig
+    {
+        [Label("Status Window Transparency")]
+        [Tooltip("This will change the opacity of the status window.")]
+        [DefaultValue(1)]
+        [Range(0, 1f)]
+        public float StatusWindowOpacity;
+        
+        [Label("Display Exp Reward as Percentage")]
+        [Tooltip("Changes the exp reward displayed to be in percentage.")]
+        [DefaultValue(false)]
+        public bool ExpRewardAsPercentage;
+
+        public override ConfigScope Mode => ConfigScope.ClientSide;
+
+        public override void OnChanged()
+        {
             Interfaces.LevelInfos.Transparency = StatusWindowOpacity;
+            nexperience1dot4.DisplayExpRewardAsPercentage = ExpRewardAsPercentage;
         }
     }
 }
