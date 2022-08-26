@@ -15,6 +15,7 @@ namespace nexperience1dot4
         public static NPCSpawnInfo? GetLastSpawnInfo { get { return LastSpawnInfo; } }
 
         private int OriginalHP = 100;
+        public int GetOriginalHP{get{return OriginalHP;}}
         private BitsByte UpdateInfos = new BitsByte();
         private bool FirstUpdate { get{ return UpdateInfos[0]; } set{ UpdateInfos[0] = value; }}
         private bool UpdatedStatus { get{ return UpdateInfos[1]; } set{ UpdateInfos[1] = value; }}
@@ -78,7 +79,6 @@ namespace nexperience1dot4
             {
                 UpdatedStatus = true;
                 float Percentage = npc.life >= npc.lifeMax ? 1f : (float)npc.life / npc.lifeMax;
-                MobStatus.UpdateNpcOriginalHealth(npc);
                 MobStatus.UpdateNPC(npc);
                 npc.life = (int)(npc.lifeMax * Percentage);
             }
@@ -96,6 +96,7 @@ namespace nexperience1dot4
         {
             LastLoggedMonsterLevel = 0;
             OriginNpc = null;
+            MobStatus.UpdateNPC(npc);
         }
 
         public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
@@ -105,7 +106,8 @@ namespace nexperience1dot4
 
         public override void OnKill(NPC npc)
         {
-            TombstoneGenerator(npc, Main.LocalPlayer.whoAmI);
+            if(nexperience1dot4.ZombiesDroppingTombstones)
+                TombstoneGenerator(npc, Main.LocalPlayer.whoAmI);
             DistributeExp(npc);
         }
 

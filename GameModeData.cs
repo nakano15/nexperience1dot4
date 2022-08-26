@@ -22,7 +22,6 @@ namespace nexperience1dot4
         private int _EffectiveLevel = 1;
         private PlayerStatusInfo[] MyStatus = new PlayerStatusInfo[0];
         private int LastMaxLife = 0, LastMaxMana = 0;
-        private int OriginalHP = 0;
         private BiomeLevelStruct LastCheckedBiome = null;
         public BiomeLevelStruct GetMyBiome { get { return LastCheckedBiome; } }
         public float HealthPercentageChange = 1f, ManaPercentageChange = 1f;
@@ -31,6 +30,10 @@ namespace nexperience1dot4
         public float MeleeSpeedPercentage = 1f;
         public float ProjectileNpcDamagePercentage{get{ return GenericDamagePercentage;} set{ GenericDamagePercentage = value; }}
         public bool NpcIsFirstFrame{get{return MeleeDamagePercentage != 0; } set{ MeleeDamagePercentage = value ? 1 : 0; }}
+        public float NpcDamage{ get{ return RangedDamagePercentage; } set{ RangedDamagePercentage = value; }}
+        public float NpcDefense{ get{ return RangedDamagePercentage; } set{ RangedDamagePercentage = value; }}
+        public int LastNpcDamage{ get{ return LastMaxLife; } set{ LastMaxLife = value; }}
+        public int LastNpcDefense{ get{ return LastMaxMana; } set{ LastMaxMana = value; }}
 
         private byte BiomeUpdateDelay = 0;
         private const byte MaxBiomeUpdateDelay = 8;
@@ -168,7 +171,7 @@ namespace nexperience1dot4
                     _EffectiveLevel = LastCheckedBiome.GetMaxLevel;
                 for (int n = 0; n < 200; n++)
                 {
-                    if (!(Main.npc[n].active && Main.npc[n].chaseable))
+                    if (!Main.npc[n].active || !Main.npc[n].chaseable || Main.npc[n].townNPC)
                         continue;
                     {
                         int NpcLevel = NpcMod.GetNpcLevel(Main.npc[n]);
@@ -185,11 +188,6 @@ namespace nexperience1dot4
             {
                 UpdateEffectiveStatus();
             }
-        }
-
-        public void UpdateNpcOriginalHealth(NPC npc){
-            LastMaxLife = 0;
-            //npc.life = npc.lifeMax;
         }
 
         public void UpdateEffectiveStatus()
@@ -235,20 +233,26 @@ namespace nexperience1dot4
         public void UpdateNPC(NPC npc)
         {
             _EffectiveLevel = _Level;
-            ProjectileNpcDamagePercentage = 1;
+            ProjectileNpcDamagePercentage = NpcDamage = NpcDefense = 1;
+            int npcHealthBackup = npc.lifeMax;
+            npc.lifeMax = npc.GetGlobalNPC<NpcMod>().GetOriginalHP;
             GetBase.UpdateNpcStatus(npc, this);
-            if(npc.lifeMax != LastMaxLife)
-            {
-                HealthPercentageChange = (float)npc.life / npc.lifeMax;
-                LastMaxLife = npc.lifeMax;
+            if(npc.damage != LastNpcDamage){
+                npc.damage = (int)(npc.damage * NpcDamage);
+                LastNpcDamage = npc.damage;
+            }
+            if(npc.defense != LastNpcDefense){
+                npc.defense = (int)(npc.defense * NpcDefense);
+                LastNpcDefense = npc.defense;
             }
         }
 
         public void SpawnNpcLevel(NPC npc)
         {
             int NewLevel = GetBase.GetMobLevel(npc);
-            OriginalHP = npc.lifeMax;
             NpcIsFirstFrame = true;
+            LastNpcDamage = 0;
+            LastNpcDefense = 0;
             if (NewLevel == 0)
             {
                 if (npc.realLife > -1)

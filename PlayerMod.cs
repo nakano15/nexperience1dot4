@@ -140,10 +140,10 @@ namespace nexperience1dot4
                 return;
             PlayerMod pm = player.GetModPlayer<PlayerMod>();
             float ExtraPercentage = pm.GetExtraExpPercentage();
-            int BoostedExp = (int)(Math.Max(1, Exp * nexperience1dot4.ExpRate * ExtraPercentage));
+            int BoostedExp = (int)(Math.Max(1, Exp * ExtraPercentage) * nexperience1dot4.ExpRate);
             if (player.whoAmI == Main.myPlayer)
             {
-                SpawnExpText(player, Exp, ExtraPercentage, sourcerect);
+                SpawnExpText(player, (int)(Math.Max(1, Exp * nexperience1dot4.ExpRate)), ExtraPercentage, sourcerect);
             }
             pm.AddExp(BoostedExp);
         }
@@ -177,8 +177,8 @@ namespace nexperience1dot4
             if(ExtraExpPercent != 1)
             {
                 ExtraExpPercent -= 1;
-                int PercentValue = (int)(ExtraExpPercent * 100);
-                ExpText += " (" + PercentValue + "%)";
+                int PercentValue = (int)(MathF.Round(ExtraExpPercent * 100));
+                ExpText += " (" + (PercentValue >= 0 ? "+" : "") + PercentValue + "%)";
             }
             CombatText.NewText(source, color, ExpText, true);
         }

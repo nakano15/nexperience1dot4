@@ -173,7 +173,8 @@ namespace nexperience1dot4.Interfaces
                     }
                 }
             }
-            if(HasPointsSpent && DrawButton(new Vector2(DrawPosition.X, Main.screenHeight - 30), "Spend Points")){
+            if(HasPointsSpent && DrawButton(new Vector2(DrawPosition.X, Main.screenHeight - 30), "Spend Points"))
+            {
                 for(byte s = 0; s < PointsSpent.Length; s++)
                 {
                     data.AddStatusPoint(s, PointsSpent[s]);

@@ -12,8 +12,12 @@ namespace nexperience1dot4
     {
         public override void SetDefaults(Projectile projectile)
         {
+        }
+
+        public override void OnSpawn(Projectile projectile, IEntitySource source)
+        {
             NPC npc = NpcMod.GetOriginNpc;
-            if(npc != null && projectile.npcProj && projectile.damage != npc.damage)
+            if(npc != null && projectile.damage != npc.damage)
             {
                 projectile.damage = (int)(projectile.damage * NpcMod.GetNpcProjectileDamage(npc));
             }

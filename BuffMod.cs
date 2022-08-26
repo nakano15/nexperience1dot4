@@ -21,5 +21,21 @@ namespace nexperience1dot4
                     break;
             }
         }
+
+        public override void ModifyBuffTip(int type, ref string tip, ref int rare)
+        {
+            switch (type)
+            {
+                case BuffID.WellFed:
+                    tip += "\nIncreases exp acquired by 5%.";
+                    break;
+                case BuffID.WellFed2:
+                    tip += "\nIncreases exp acquired by 10%.";
+                    break;
+                case BuffID.WellFed3:
+                    tip += "\nIncreases exp acquired by 20%.";
+                    break;
+            }
+        }
     }
 }

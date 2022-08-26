@@ -121,8 +121,8 @@ namespace nexperience1dot4.Game_Modes
         public override void UpdateNpcStatus(NPC npc, GameModeData data)
         {
             int Level = data.GetEffectiveLevel;
-            npc.damage += (int)(npc.damage * Level * 0.1f);
-            npc.defense += (int)(npc.defense * Level * 0.1f);
+            data.NpcDamage += Level * 0.1f;
+            data.NpcDefense += Level * 0.1f;
             data.ProjectileNpcDamagePercentage += Level * 0.1f;
             if(npc.lifeMax > 5)
             {
