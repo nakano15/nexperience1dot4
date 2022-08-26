@@ -188,8 +188,8 @@ namespace nexperience1dot4
         }
 
         public void UpdateNpcOriginalHealth(NPC npc){
-            LastMaxLife = npc.lifeMax;
-            npc.life = npc.lifeMax;
+            LastMaxLife = 0;
+            //npc.life = npc.lifeMax;
         }
 
         public void UpdateEffectiveStatus()
@@ -239,25 +239,28 @@ namespace nexperience1dot4
             GetBase.UpdateNpcStatus(npc, this);
             if(npc.lifeMax != LastMaxLife)
             {
-                HealthPercentageChange = (float)npc.lifeMax / OriginalHP;
+                HealthPercentageChange = (float)npc.life / npc.lifeMax;
                 LastMaxLife = npc.lifeMax;
             }
         }
 
         public void SpawnNpcLevel(NPC npc)
         {
-            _Level = GetBase.GetMobLevel(npc);
+            int NewLevel = GetBase.GetMobLevel(npc);
             OriginalHP = npc.lifeMax;
             NpcIsFirstFrame = true;
-            if (_Level == 0)
+            if (NewLevel == 0)
             {
                 if (npc.realLife > -1)
                 {
-                    _Level = NpcMod.GetNpcLevel(Main.npc[npc.realLife]);
+                    NewLevel = NpcMod.GetNpcLevel(Main.npc[npc.realLife]);
                 }
                 else if (NpcMod.GetOriginNpc != null)
                 {
-                    _Level = NpcMod.GetNpcLevel(NpcMod.GetOriginNpc);
+                    if(NpcMod.GetOriginNpc == npc)
+                        NewLevel = NpcMod.LastLoggedMonsterLevel;
+                    else
+                        NewLevel = NpcMod.GetNpcLevel(NpcMod.GetOriginNpc);
                 }
                 else
                 {
@@ -265,14 +268,15 @@ namespace nexperience1dot4
                     if (nsi.HasValue)
                     {
                         BiomeLevelStruct bls = PlayerMod.GetPlayerBiomeLevel(nsi.Value.Player);
-                        if (bls != null) _Level = bls.GetRandomLevel;
+                        if (bls != null) NewLevel = bls.GetRandomLevel;
                     }
                     else
                     {
-                        _Level = 1;
+                        NewLevel = 1;
                     }
                 }
             }
+            _Level = NewLevel;
         }
 
         public int GetStatusValue(byte StatusIndex, out int EffectiveStatus){

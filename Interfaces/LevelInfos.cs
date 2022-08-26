@@ -69,9 +69,10 @@ namespace nexperience1dot4.Interfaces
             const int Width = 480, Height = 220;
             Vector2 DrawPosition = new Vector2(Main.screenWidth * 0.5f , Main.screenHeight - Height);
             int DrawX = (int)(DrawPosition.X- Width * 0.5f), DrawY = (int)DrawPosition.Y;
-            if(Main.mouseX >= DrawX && Main.mouseX < DrawX + Width && Main.mouseY >= DrawY && Main.mouseY < DrawY + Height)
-                player.Player.mouseInterface = true;
-            if(Collapsed){
+            if(Collapsed)
+            {
+                if(Main.mouseX >= DrawX && Main.mouseX < DrawX + Width && Main.mouseY >= DrawY && Main.mouseY < DrawY + Height)
+                    player.Player.mouseInterface = true;
                 Main.spriteBatch.Draw(nexperience1dot4.HandyTexture.Value, new Rectangle(DrawX - 1, DrawY - 1, Width + 2, Height + 2), Color.Black * Transparency);
                 Main.spriteBatch.Draw(nexperience1dot4.HandyTexture.Value, new Rectangle(DrawX + 1, DrawY + 1, Width - 2, Height - 2), bg * Transparency);
             }

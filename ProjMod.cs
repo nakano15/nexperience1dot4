@@ -18,5 +18,14 @@ namespace nexperience1dot4
                 projectile.damage = (int)(projectile.damage * NpcMod.GetNpcProjectileDamage(npc));
             }
         }
+
+        public override void ModifyHitPlayer(Projectile projectile, Player target, ref int damage, ref bool crit)
+        {
+            switch(projectile.type){
+                case ProjectileID.TorchGod:
+                    damage = (int)(damage * target.GetModPlayer<PlayerMod>().GetHealthPercentageChange);
+                    break;
+            }
+        }
     }
 }

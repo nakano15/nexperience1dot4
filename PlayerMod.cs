@@ -38,6 +38,8 @@ namespace nexperience1dot4
 
         public override void ResetEffects()
         {
+            if(Player.ZoneGraveyard)
+                Player.townNPCs = -200;
             ExpPercentage = 1;
         }
 

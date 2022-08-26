@@ -14,7 +14,6 @@ namespace nexperience1dot4
         public static NPC GetOriginNpc { get { return OriginNpc; } }
         public static NPCSpawnInfo? GetLastSpawnInfo { get { return LastSpawnInfo; } }
 
-        private int LastHealthBackup = 0, LastTypeBackup = 0, LastLevelBackup = 0;
         private int OriginalHP = 100;
         private BitsByte UpdateInfos = new BitsByte();
         private bool FirstUpdate { get{ return UpdateInfos[0]; } set{ UpdateInfos[0] = value; }}
@@ -26,6 +25,7 @@ namespace nexperience1dot4
         private GameModeData MobStatus;
 
         public GameModeData GetData { get { return MobStatus; } }
+        public static int LastLoggedMonsterLevel = 0;
 
         public static float GetNpcProjectileDamage(NPC npc)
         {
@@ -43,20 +43,17 @@ namespace nexperience1dot4
 
         public override void SetDefaults(NPC npc)
         {
-            if(MobStatus == null) MobStatus = new GameModeData(nexperience1dot4.GetActiveGameModeID);
+            if(MobStatus == null)
+                MobStatus = new GameModeData(nexperience1dot4.GetActiveGameModeID);
             //else MobStatus.ChangeGameMode(nexperience1dot4.GetActiveGameModeID);
             MobStatus.SpawnNpcLevel(npc);
             UpdatedStatus = false;
             FirstUpdate = true;
+            OriginalHP = npc.lifeMax;
         }
 
         public override void OnSpawn(NPC npc, Terraria.DataStructures.IEntitySource source)
         {
-            OriginalHP = npc.lifeMax;
-            FirstUpdate = true;
-            UpdatedStatus = false;
-            //LastHealthBackup = npc.life = npc.lifeMax;
-            LastTypeBackup = npc.type;
         }
 
         public override void ScaleExpertStats(NPC npc, int numPlayers, float bossLifeScale)
@@ -91,45 +88,14 @@ namespace nexperience1dot4
                 NetplayMod.SendNpcLevel(npc.whoAmI, -1, Main.myPlayer);
             }
             OriginNpc = npc;
-            LastTypeBackup = npc.type;
-            LastHealthBackup = npc.life;
-            LastLevelBackup = MobStatus.GetLevel;
+            LastLoggedMonsterLevel = MobStatus.GetLevel;
             return base.PreAI(npc);
         }
 
-        /*public override void AI(NPC npc)
-        {
-            if(!UpdatedStatus)
-            {
-                UpdatedStatus = true;
-                float Percentage = npc.life >= npc.lifeMax ? 1f : (float)npc.life / npc.lifeMax;
-                MobStatus.UpdateNpcOriginalHealth(npc);
-                MobStatus.UpdateNPC(npc);
-                npc.life = (int)(npc.lifeMax * Percentage);
-            }
-            if(FirstUpdate)
-            {
-                FirstUpdate = false;
-                NetplayMod.SendNpcLevel(npc.whoAmI, -1, Main.myPlayer);
-            }
-            OriginNpc = npc;
-            LastTypeBackup = npc.type;
-            LastHealthBackup = npc.life;
-        }*/
-
         public override void PostAI(NPC npc)
         {
+            LastLoggedMonsterLevel = 0;
             OriginNpc = null;
-            //MobStatus.UpdateNPC(npc);
-            if(LastTypeBackup > 0 && npc.type != LastTypeBackup){
-                MobStatus.SetLevel(LastLevelBackup);
-                float Percentage = npc.life >= npc.lifeMax ? 1f : (float)npc.life / npc.lifeMax;
-                MobStatus.UpdateNpcOriginalHealth(npc);
-                MobStatus.UpdateNPC(npc);
-                npc.life = LastHealthBackup;
-                UpdatedStatus = true;
-            }
-            LastTypeBackup = 0;
         }
 
         public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
@@ -139,15 +105,8 @@ namespace nexperience1dot4
 
         public override void OnKill(NPC npc)
         {
-            LastTypeBackup = 0;
             TombstoneGenerator(npc, Main.LocalPlayer.whoAmI);
             DistributeExp(npc);
-        }
-
-        public override bool CheckActive(NPC npc)
-        {
-            LastTypeBackup = 0;
-            return base.CheckActive(npc);
         }
 
         private void DistributeExp(NPC killedNPC)
@@ -245,7 +204,7 @@ namespace nexperience1dot4
                         Main.projectile[num2].miscText = "\"Look,the wall of flesh!!!\" was his last words.";
                         break;
                     case 5:
-                        Main.projectile[num2].miscText = "\"Don't push that thing from the grenade,or we will...\" were said before the boom.";
+                        Main.projectile[num2].miscText = "\"Don't push pin of the grenade, or we will...\" were said before the boom.";
                         break;
                     case 6:
                         Main.projectile[num2].miscText = "She learned that no one can use a slime as a cushion.";
@@ -269,7 +228,7 @@ namespace nexperience1dot4
                         Main.projectile[num2].miscText = "\"I will not listen what a Crazy Old Man have to say\", you should have listened.";
                         break;
                     case 13:
-                        Main.projectile[num2].miscText = "We found " + Main.rand.Next(10) + "/10 pieces of him. If you find the other pieces, please call 555-" + Main.rand.Next(10).ToString() + Main.rand.Next(10).ToString() + Main.rand.Next(10).ToString() + Main.rand.Next(10).ToString() + ".";
+                        Main.projectile[num2].miscText = "We found " + Main.rand.Next(10) + "/10 pieces of "+(Main.rand.Next(2) == 0 ? "him" : "her")+". If you find the other pieces, please call me.";
                         break;
                     case 14:
                         Main.projectile[num2].miscText = "He learned that can't fight against the Wall of Flesh using a Tyrfing.";
@@ -290,10 +249,10 @@ namespace nexperience1dot4
                         Main.projectile[num2].miscText = "He needed a hug, a Zombie provided that.";
                         break;
                     case 20:
-                        Main.projectile[num2].miscText = "That adventurer discovered Face Monster's breath.";
+                        Main.projectile[num2].miscText = "This adventurer discovered Face Monster's breath.";
                         break;
                     case 21:
-                        Main.projectile[num2].miscText = "He asked for brains and got bullets instead.";
+                        Main.projectile[num2].miscText = "He asked for brains, and got bullets instead.";
                         break;
                     case 22:
                         Main.projectile[num2].miscText = "He didn't counted on Brain of Cthulhu's cleverness.";
@@ -308,7 +267,7 @@ namespace nexperience1dot4
                         Main.projectile[num2].miscText = "Do not do the Victory Dance when you beat Eye of Cthulhu's first part.";
                         break;
                     case 26:
-                        Main.projectile[num2].miscText = "This one got stinged by Queen Bee. Wonder where.";
+                        Main.projectile[num2].miscText = "This one got stinged by Queen Bee. Guess where.";
                         break;
                     case 27:
                         Main.projectile[num2].miscText = "Feeling fat? Do like her! Use Golem's stomp as solution to that problem.";
@@ -323,10 +282,10 @@ namespace nexperience1dot4
                         Main.projectile[num2].miscText = "\"I don't need potions!\" he said before fighting Plantera.";
                         break;
                     case 31:
-                        Main.projectile[num2].miscText = "\"Let's move Plantera to the surface, will be easier to kill.\" she said before knowing that things changed.";
+                        Main.projectile[num2].miscText = "\"Let's move Plantera to the surface, It will be easier to kill.\" she said before knowing that things changed.";
                         break;
                     case 32:
-                        Main.projectile[num2].miscText = "\"I have enough time to kill skeletron prime!\" he said before dawn.";
+                        Main.projectile[num2].miscText = "\"I have enough time to kill skeletron prime.\" he said before dawn.";
                         break;
                     case 33:
                         Main.projectile[num2].miscText = "They though he could defeat the Dungeon Guardian with a Copper Shortsword.";
@@ -368,10 +327,10 @@ namespace nexperience1dot4
                         Main.projectile[num2].miscText = "Someone caused this.";
                         break;
                     case 46:
-                        Main.projectile[num2].miscText = "Yeah... He had to say \"Dead Branch is useless, i'll toss this away\" when were near the water.";
+                        Main.projectile[num2].miscText = "Yeah... He had to say \"Dead Branch is useless, i'll toss this away.\" when were near the water.";
                         break;
                     case 47:
-                        Main.projectile[num2].miscText = "A Solar Eclipse made this party interesting.";
+                        Main.projectile[num2].miscText = "A Solar Eclipse made this party more interesting.";
                         break;
                     case 48:
                         Main.projectile[num2].miscText = "Someone once told me to not leave the character afk while equipping a Ocean Shield. I should have heard her.";
@@ -385,7 +344,7 @@ namespace nexperience1dot4
                     case 51:
                         {
                             string s = "there is a Zombie wanting your brain";
-                            switch (Main.rand.Next(10))
+                            switch (Main.rand.Next(11))
                             {
                                 case 0:
                                     s = "there are " + (WorldGen.crimson ? "Crimera" : "Eater of Souls") + " wanting your " + (WorldGen.crimson ? "blood" : "soul");
@@ -403,7 +362,7 @@ namespace nexperience1dot4
                                     s = "someone is falling off a cliff";
                                     break;
                                 case 5:
-                                    s = "a Dungeon Guardian killed a Terrarian";
+                                    s = "a Dungeon Guardian is chasing a Terrarian";
                                     break;
                                 case 6:
                                     s = "the Groom is on a marriage";
@@ -415,7 +374,10 @@ namespace nexperience1dot4
                                     s = "the Goblins are playing poker";
                                     break;
                                 case 9:
-                                    s = "the Developers finished working on Terraria version 1.4";
+                                    s = "the Terraria Developers finished working on Terraria version 1.4, and that's about right";
+                                    break;
+                                case 10:
+                                    s = "Nakano15 is probably working on some cool things";
                                     break;
                             }
                             Main.projectile[num2].miscText = "While you are reading this, " + s + ".";
@@ -428,7 +390,7 @@ namespace nexperience1dot4
                         Main.projectile[num2].miscText = "Keep thinking that landmines does not works.";
                         break;
                     case 54:
-                        Main.projectile[num2].miscText = "And the luck number of this night is.... " + Main.rand.Next(100, 1000) + "!\nGood luck redeeming that.";
+                        Main.projectile[num2].miscText = "And the luck number of this night is.... " + Main.rand.Next(100, 1000) + "!\nGood luck redeeming the prize.";
                         break;
                     case 55:
                         Main.projectile[num2].miscText = "This is what MashiroSora got because her summon upgrade were on the Underworld.";
@@ -441,25 +403,24 @@ namespace nexperience1dot4
                         break;
                     case 58:
                         Main.projectile[num2].miscText = "Here will lie " + Main.player[plr].name + ", ";
-                        if (Main.player[plr].statLife <= Main.player[plr].statLifeMax2 * 0.5)
+                        switch(Main.rand.Next(4))
                         {
-                            Main.projectile[num2].miscText += "if does not watch out for traps.";
-                        }
-                        else if (Main.player[plr].statLife <= Main.player[plr].statLifeMax2 * 0.25)
-                        {
-                            Main.projectile[num2].miscText += "if wont stop being hugged by zombies.";
-                        }
-                        else if (Main.player[plr].statLife <= Main.player[plr].statLifeMax2 * 0.10)
-                        {
-                            Main.projectile[num2].miscText += "if get touched by slimes.";
-                        }
-                        else
-                        {
-                            Main.projectile[num2].miscText += "if afk grind.";
+                            case 0:
+                                Main.projectile[num2].miscText += "if does not watch out for traps.";
+                                break;
+                            case 1:
+                                Main.projectile[num2].miscText += "if wont stop being hugged by zombies.";
+                                break;
+                            case 2:
+                                Main.projectile[num2].miscText += "if get touched by slimes.";
+                                break;
+                            case 3:
+                                Main.projectile[num2].miscText += "if afk grind.";
+                                break;
                         }
                         break;
                     case 59:
-                        Main.projectile[num2].miscText = "This one should not spam potions during boss fights.";
+                        Main.projectile[num2].miscText = "This one should not spam potions during boss fights. This isn't Terraria 1.0 anymore.";
                         break;
                     case 60:
                         Main.projectile[num2].miscText = "I thought it would be funny playing soccer with a rolling cacti.";
@@ -468,7 +429,7 @@ namespace nexperience1dot4
                         Main.projectile[num2].miscText = "It's no good having a Bunny Avenger for Easter.";
                         break;
                     case 62:
-                        Main.projectile[num2].miscText = "Were too close to level up...";
+                        Main.projectile[num2].miscText = "She were too close to level up...";
                         break;
                     case 63:
                         Main.projectile[num2].miscText = "His obsidian generation machine broke.";
@@ -480,7 +441,7 @@ namespace nexperience1dot4
                         Main.projectile[num2].miscText = (Main.rand.Next(2) == 0 ? "He" : "She") + " did not survive N Terraria mod bugs...";
                         break;
                     case 66:
-                        Main.projectile[num2].miscText = "The last thing told to him, was \"Do not recklessly charge on the boss.\".";
+                        Main.projectile[num2].miscText = "The last thing I told to him, was \"Do not recklessly charge on the boss.\".";
                         break;
                     case 67:
                         Main.projectile[num2].miscText = "She were playing with the Dungeon Shackles, but didn't expected it to lock itself.";
@@ -489,16 +450,16 @@ namespace nexperience1dot4
                         Main.projectile[num2].miscText = "His Lavender Tower structure got way too realist.";
                         break;
                     case 69:
-                        Main.projectile[num2].miscText = "Nakano should not have tried to organize the inventory while under water..";
+                        Main.projectile[num2].miscText = "Nakano15 should not have tried to organize the inventory while under water..";
                         break;
                     case 70:
-                        Main.projectile[num2].miscText = "\"We can escape the Wall of Flesh by using the Magic Mirror!\", now you need to find the tombstones of his friends.";
+                        Main.projectile[num2].miscText = "\"We can escape the Wall of Flesh by using the Magic Mirror!\", now you need to find his friends tombstones.";
                         break;
                     case 71:
-                        Main.projectile[num2].miscText = "\"We'll be alright if It doesn't use the laser.\", then the Moon Lord used the laser.";
+                        Main.projectile[num2].miscText = "\"We'll be alright if it doesn't use the laser.\", then the Moon Lord used the laser.";
                         break;
                     case 72:
-                        Main.projectile[num2].miscText = "She said \"I thought it was a stone.\" before being smashed by a boulder.";
+                        Main.projectile[num2].miscText = "She said \"I thought it was just a stone.\" before being smashed by a boulder.";
                         break;
                     case 73:
                         Main.projectile[num2].miscText = "\"I'm using Cloud in a Bottle. I can break my fall before reach the floor.\", but he didn't counted on his bad timing.";
@@ -509,6 +470,5 @@ namespace nexperience1dot4
                 }
             }
         }
-
     }
 }

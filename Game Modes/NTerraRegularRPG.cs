@@ -76,13 +76,7 @@ namespace nexperience1dot4.Game_Modes
                 CHA = data.GetEffectiveStatusValue(6),
                 WIS = data.GetEffectiveStatusValue(7);
             int Level = data.GetEffectiveLevel;
-            const int HealthReductionLevels = 50;
             float HealthChangeValue = 1f, ManaChangeValue = 1f, DefenseChangeValue = 1f;
-            if(Level < HealthReductionLevels)
-            {
-                float Penalty = 1f - (Level * (1f / HealthReductionLevels));
-                HealthChangeValue -= Penalty * 0.5f;
-            }
             float SecondaryBonus = 1.5f, Bonus = 0.5f, TotalBonus = 0.06f;
             HealthChangeValue += (VIT + CHA * SecondaryBonus + Level * Bonus) * TotalBonus;
             ManaChangeValue += (WIS + INT * SecondaryBonus + Level * Bonus) * TotalBonus;
@@ -110,6 +104,13 @@ namespace nexperience1dot4.Game_Modes
                 data.SummonDamagePercentage += Boost;
                 data.GenericDamagePercentage += Boost;
                 DefenseChangeValue += Boost;
+            }
+
+            const int HealthReductionLevels = 50;
+            if(Level < HealthReductionLevels)
+            {
+                float Penalty = 1f - (Level * (1f / HealthReductionLevels));
+                HealthChangeValue *= 1f - Penalty * 0.5f;
             }
 
             player.statLifeMax2 = (int)(player.statLifeMax2 * HealthChangeValue);
