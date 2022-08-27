@@ -15,7 +15,7 @@ namespace nexperience1dot4.Game_Modes
 
         public override string Name => "Regular RPG Mode";
         public override string Description => "The default leveling mode of N Terraria, with ascending progression disponible.";
-        public override float InitialStatusPoints => 1;
+        public override float InitialStatusPoints => 0;
         public override float StatusPointsPerLevel => 1;
         public override float InitialStatusPointsDistribution => 5;
         public override GameModeStatusInfo[] GameModeStatus => new GameModeStatusInfo[]{
@@ -32,7 +32,7 @@ namespace nexperience1dot4.Game_Modes
             new GameModeStatusInfo("Luck",
             "(+) Critical Rate, (+) Luck Strike Chance", "LUK", 0, 150),
             new GameModeStatusInfo("Charisma",
-            "(+) Summon Damage, (+/2) Max Health.", "CHA", 0, 150),
+            "(+) Summon Damage, (+/2) Max Health, (+) Max Summon.", "CHA", 0, 150),
             new GameModeStatusInfo("Wisdom",
             "(-) Mana Cost, (+) Mana Regeneration, \n(+) Critical Damage, (+/2) Magic Damage.", "WIS", 0, 150)
         };

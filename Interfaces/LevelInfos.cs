@@ -57,7 +57,8 @@ namespace nexperience1dot4.Interfaces
 
         private static void InventoryInterface(PlayerMod player, GameModeData data)
         {
-            if(!LastInterfaceOpened){
+            if(!LastInterfaceOpened)
+            {
                 StatusColumns = (byte)(Math.Min(4, MathF.Ceiling((float)data.GetBase.GameModeStatus.Length / 6)));
                 StatusRows = (byte)(MathF.Ceiling((float)data.GetBase.GameModeStatus.Length / StatusColumns));
                 StatusDistance = 1f / (StatusColumns + 1);
@@ -143,7 +144,8 @@ namespace nexperience1dot4.Interfaces
                         }
                     }
                     if(PointsSpent[Index] > 0){
-                        if(!HasPlus)Position.X += AcquiredScale.X * 0.5f + 2f;
+                        if(!HasPlus)
+                            Position.X += AcquiredScale.X * 0.5f + 2f;
                         else Position.X += 12;
                         if(DrawButton(Position, "-", 0, 0, Scale: StatusScale))
                         {
@@ -173,15 +175,27 @@ namespace nexperience1dot4.Interfaces
                     }
                 }
             }
-            if(HasPointsSpent && DrawButton(new Vector2(DrawPosition.X, Main.screenHeight - 30), "Spend Points"))
+            if(HasPointsSpent)
+            {
+                if(DrawButton(new Vector2(DrawPosition.X, Main.screenHeight - 30), "Spend Points"))
+                {
+                    for(byte s = 0; s < PointsSpent.Length; s++)
+                    {
+                        int Point = PointsSpent[s];
+                        data.AddStatusPoint(s, Point);
+                        PointsSpent[s] = 0;
+                    }
+                    data.UpdateEffectiveStatus();
+                    data.UpdateStatusPoints();
+                }
+            }
+            else if(DrawButton(new Vector2(DrawPosition.X, Main.screenHeight - 30), "Respec Points"))
             {
                 for(byte s = 0; s < PointsSpent.Length; s++)
                 {
-                    data.AddStatusPoint(s, PointsSpent[s]);
                     PointsSpent[s] = 0;
                 }
-                data.UpdateEffectiveStatus();
-                data.UpdateStatusPoints();
+                data.ResetStatusPoints();
             }
             if(MouseOverText != ""){
                 Utils.DrawBorderString(Main.spriteBatch, MouseOverText, new Vector2(Main.mouseX + 12, Main.mouseY + 12), Color.White, 0.9f);

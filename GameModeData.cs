@@ -107,6 +107,10 @@ namespace nexperience1dot4
                 MyStatusPoints -= si.StatusValue;
             }
             _StatusPoints = MyStatusPoints;
+            if(_StatusPoints < 0)
+            {
+                ResetStatusPoints();
+            }
         }
 
         public void UpdatePlayer(Player player)
@@ -192,16 +196,18 @@ namespace nexperience1dot4
 
         public void UpdateEffectiveStatus()
         {
-            int EffectiveLevelStatus = (int)(GetBase.InitialStatusPoints + GetBase.InitialStatusPointsDistribution * MyStatus.Length + GetBase.StatusPointsPerLevel * GetEffectiveLevel),
-                LevelStatus = (int)(GetBase.InitialStatusPoints+ GetBase.InitialStatusPointsDistribution * MyStatus.Length + GetBase.StatusPointsPerLevel * GetLevel);
+            //GetBase.InitialStatusPointsDistribution * MyStatus.Length +
+            int EffectiveLevelStatus = (int)(GetBase.InitialStatusPoints + GetBase.StatusPointsPerLevel * GetEffectiveLevel),
+                LevelStatus = (int)(GetBase.InitialStatusPoints + GetBase.StatusPointsPerLevel * GetLevel);
             int TotalStatusCount = 0;
             foreach(PlayerStatusInfo si in MyStatus)
             {
                 TotalStatusCount += si.StatusValue;
                 si.EffectiveStatusValue = si.StatusValue;
             }
-            if(TotalStatusCount == 0 || TotalStatusCount < EffectiveLevelStatus)
+            if(TotalStatusCount == 0 || TotalStatusCount <= EffectiveLevelStatus){
                 return;
+            }
             double Percentage = (double)EffectiveLevelStatus / LevelStatus;
             int ResultingStatusSum = 0;
             PlayerStatusInfo HighestIncreasedStatus = null;
@@ -244,6 +250,11 @@ namespace nexperience1dot4
             if(npc.defense != LastNpcDefense){
                 npc.defense = (int)(npc.defense * NpcDefense);
                 LastNpcDefense = npc.defense;
+            }
+            if(npc.lifeMax != npcHealthBackup)
+            {
+                double Percentage = npc.life >= npcHealthBackup ? 1 : (double)npc.life / npcHealthBackup;
+                npc.life = (int)(npc.lifeMax * Percentage);
             }
         }
 
@@ -298,6 +309,17 @@ namespace nexperience1dot4
         public int GetEffectiveStatusValue(byte StatusIndex){
             if(StatusIndex >= MyStatus.Length) return 0;
             return MyStatus[StatusIndex].EffectiveStatusValue;
+        }
+
+        public void ResetStatusPoints()
+        {
+            for(int s = 0; s < MyStatus.Length; s++)
+            {
+                _StatusPoints += MyStatus[s].StatusValue;
+                MyStatus[s].StatusValue = 0;
+            }   
+            UpdateStatusPoints();
+            UpdateEffectiveStatus();
         }
 
         public void AddStatusPoint(byte StatusIndex, int Count)

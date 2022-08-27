@@ -1,2 +1,14 @@
 This mod offers you leveling systems for you game.
 Those leveling systems can be used just for fun, or to increase the challenge and gameplay time of your game.
+
+Multiplayer isn't functional right now and there's only one game mode active, which is N Terraria's Regular RPG Mode, with a number of tweaks.
+
+If you have issues with the mod, also make a post on the discussions thread, so it's easier to debug, and keep track of the issue.
+
+If mana cap is kicking your behind, use this mod alongside it to remove the cap:
+https://steamcommunity.com/sharedfiles/filedetails/?id=2822733353&searchtext=mana+cap
+
+You can also access the mod discord here:
+https://discord.gg/Bz6vwUa7X3
+
+Enjoy :)

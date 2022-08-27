@@ -146,7 +146,6 @@ namespace nexperience1dot4
                 PlayerMod.AddPlayerExp(p, Exp * ExpDistribution, killedNPC.getRect());
             }
         }
-
         public override void Unload()
         {
             LastSpawnInfo = null;
