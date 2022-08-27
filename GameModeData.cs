@@ -88,7 +88,7 @@ namespace nexperience1dot4
             }
         }
 
-        public int GetDeathExpPenalty(){
+        public int DoDeathExpPenalty(){
             int ExpDeduction = (int)(GetMaxExp * (nexperience1dot4.DeathExpPenalty * 0.01));
             if(ExpDeduction > GetExp)
                 ExpDeduction = GetExp;

@@ -60,7 +60,7 @@ namespace nexperience1dot4
         public override void ScaleExpertStats(NPC npc, int numPlayers, float bossLifeScale)
         {
             //MobStatus.UpdateNPC(npc);
-            OriginalHP = npc.lifeMax;
+            //OriginalHP = npc.lifeMax;
         }
 
         public static int GetNpcLevel(NPC npc)
@@ -77,6 +77,7 @@ namespace nexperience1dot4
         {
             if(!UpdatedStatus)
             {
+                OriginalHP = npc.lifeMax;
                 UpdatedStatus = true;
                 float Percentage = npc.life >= npc.lifeMax ? 1f : (float)npc.life / npc.lifeMax;
                 MobStatus.UpdateNPC(npc);

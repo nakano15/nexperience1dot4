@@ -126,7 +126,7 @@ namespace nexperience1dot4
 
         private void DeathExpPenalty()
         {
-            SpawnExpText(Player, GetCurrentGamemode.GetDeathExpPenalty());
+            SpawnExpText(Player, GetCurrentGamemode.DoDeathExpPenalty());
         }
 
         public static void AddPlayerExp(Player player, float Exp, Rectangle sourcerect = default(Rectangle))
@@ -164,7 +164,7 @@ namespace nexperience1dot4
             else
             {
                 float Percentage = (float)MathF.Round((float)RawExp * 100 / pm.GetCurrentGamemode.GetMaxExp, 2);
-                if(Percentage < 0.01f)
+                if(RawExp >= 0 && Percentage < 0.01f)
                 {
                     ExpText += "< 0.01%";
                 }
