@@ -41,6 +41,21 @@ namespace nexperience1dot4
             delegate(Player player){ return PlayerMod.GetPlayerLevel(player) % 2 == 0; });
             this.Call("AddBiomeLevel", RegularRPGModeID, "The Odd", 30, 50, 
             delegate(Player player){ return PlayerMod.GetPlayerLevel(player) % 2 == 1; });*/
+            if(ModLoader.HasMod("ClickerClass"))
+            {
+                DamageClass FoundClass;
+                if(ModContent.TryFind("ClickerClass", "ClickerDamage", out FoundClass))
+                {
+                    AddDamageClass(FoundClass, StatusTranslator.DC_Melee);
+                }
+            }
+            ModCompatibility.Calamity.Load();
+        }
+
+        public Mod GetMod(string ModName)
+        {
+            if(ModLoader.HasMod(ModName)) return ModLoader.GetMod(ModName);
+            return null;
         }
 
         public override void Load()
@@ -174,6 +189,7 @@ namespace nexperience1dot4
             StatusList.Clear();
             StatusList = null;
             Interfaces.LevelInfos.OnUnload();
+            ModCompatibility.Calamity.Unload();
         }
 
         #region Game Mode Stuff
