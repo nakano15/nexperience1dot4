@@ -38,5 +38,10 @@ namespace nexperience1dot4
             }
             return base.OnPickup(item, player);
         }
+
+        public override void CaughtFishStack(int type, ref int stack)
+        {
+            
+        }
     }
 }

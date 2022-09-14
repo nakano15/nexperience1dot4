@@ -35,6 +35,9 @@ namespace nexperience1dot4
                 case BuffID.WellFed3:
                     tip += "\nIncreases exp acquired by 20%.";
                     break;
+                case BuffID.MonsterBanner:
+                    tip += "\nIncreases exp acquired from monsters in the banner by 10%.";
+                    break;
             }
         }
     }

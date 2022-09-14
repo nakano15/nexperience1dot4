@@ -129,17 +129,17 @@ namespace nexperience1dot4
             SpawnExpText(Player, GetCurrentGamemode.DoDeathExpPenalty());
         }
 
-        public static void AddPlayerExp(Player player, float Exp, Rectangle sourcerect = default(Rectangle))
+        public static void AddPlayerExp(Player player, float Exp, Rectangle sourcerect = default(Rectangle), float ExtraExpIncrease = 0)
         {
-            AddPlayerExp(player, (int)(Exp), sourcerect);
+            AddPlayerExp(player, (int)(Exp), sourcerect, ExtraExpIncrease);
         }
         
-        public static void AddPlayerExp(Player player, int Exp, Rectangle sourcerect = default(Rectangle))
+        public static void AddPlayerExp(Player player, int Exp, Rectangle sourcerect = default(Rectangle), float ExtraExpIncrease = 0)
         {
             if (Exp == 0)
                 return;
             PlayerMod pm = player.GetModPlayer<PlayerMod>();
-            float ExtraPercentage = pm.GetExtraExpPercentage();
+            float ExtraPercentage = pm.GetExtraExpPercentage() + ExtraExpIncrease;
             int BoostedExp = (int)(Math.Max(1, Exp * ExtraPercentage) * nexperience1dot4.ExpRate);
             if (player.whoAmI == Main.myPlayer)
             {
@@ -190,20 +190,39 @@ namespace nexperience1dot4
 
         public void AddExp(int Exp)
         {
-            int LastLevel = GetCurrentGamemode.GetLevel;
-            GetCurrentGamemode.ChangeExp(Exp);
-            if(Player.whoAmI == Main.myPlayer){
-                if(LastLevel > GetCurrentGamemode.GetLevel)
+            bool LeveledUp = GetCurrentGamemode.ChangeExp(Exp);
+            if(Player.whoAmI == Main.myPlayer)
+            {
+                if(LeveledUp)
                 {
-                        Rectangle rect = new Rectangle((int)Player.Center.X, (int)Player.Top.Y - 8, 4,4);
-                        CombatText.NewText(rect, Microsoft.Xna.Framework.Color.Cyan, "Level " + GetCurrentGamemode.GetLevel+ "!", true);
+                    //CombatText.NewText(Player.getRect(), Microsoft.Xna.Framework.Color.Cyan, "Level " + GetCurrentGamemode.GetLevel+ "!", true);
+                    Main.NewText("Achieved level " + GetCurrentGamemode.GetLevel + "!",Microsoft.Xna.Framework.Color.Blue);
                 }
-                //    Main.NewText("Achieved level " + GetLevel + "!",Microsoft.Xna.Framework.Color.Cyan);
             }
             else
             {
                 NetplayMod.SendExpToPlayer(Player.whoAmI, Exp, Main.myPlayer);
             }
+        }
+
+        public static Player[] GetPlayerTeammates(Player player)
+        {
+            List<Player> players = new List<Player>();
+            for(byte p2 = 0; p2 < 255; p2++)
+            {
+                Player otherplayer = Main.player[p2];
+                if(!otherplayer.active || otherplayer.team != player.team || Math.Abs(otherplayer.Center.X - player.Center.X) > 1500 || Math.Abs(otherplayer.Center.Y - player.Center.Y) > 1500) continue;
+                players.Add(otherplayer);
+            }
+            return players.ToArray();
+        }
+
+        public void GetExpReward(float RewardLevel, float Percentage, bool ShowNotification = true)
+        {
+            int ExpReward = GetCurrentGamemode.GetBase.GetExpReward(RewardLevel, Percentage);
+            if(ExpReward < 1)
+                ExpReward = 1;
+            AddPlayerExp(Player, ExpReward);
         }
 
         public override void SaveData(TagCompound tag)

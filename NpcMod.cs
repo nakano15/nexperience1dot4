@@ -2,6 +2,7 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ModLoader;
 using System;
 
@@ -28,6 +29,11 @@ namespace nexperience1dot4
         public GameModeData GetData { get { return MobStatus; } }
         public static int LastLoggedMonsterLevel = 0;
 
+        public override void ModifyGlobalLoot(GlobalLoot globalLoot)
+        {
+            globalLoot.Add(ItemDropRule.Common(ModContent.ItemType<Items.RareCandy>(), 10000));
+        }
+
         public static float GetNpcProjectileDamage(NPC npc)
         {
             return npc.GetGlobalNPC<NpcMod>().MobStatus.ProjectileNpcDamagePercentage;
@@ -52,7 +58,7 @@ namespace nexperience1dot4
             FirstUpdate = true;
             OriginalHP = npc.lifeMax;
         }
-
+        
         public override void OnSpawn(NPC npc, Terraria.DataStructures.IEntitySource source)
         {
         }
@@ -120,18 +126,23 @@ namespace nexperience1dot4
                 if (killedNPC.playerInteraction[p])
                 {
                     Player player = Main.player[p];
-                    if(!Players.Contains(player))
+                    /*if(!Players.Contains(player))
                     {
                         Players.Add(player);
-                    }
+                    }*/
                     if(player.team > 0)
                     {
-                        for(byte p2 = 0; p2 < 255; p2++)
+                        foreach(Player other in PlayerMod.GetPlayerTeammates(player))
+                        {
+                            if(!Players.Contains(other))
+                                Players.Add(other);
+                        }
+                        /*for(byte p2 = 0; p2 < 255; p2++)
                         {
                             Player otherplayer = Main.player[p2];
                             if(p == p2 || Players.Contains(otherplayer) || !otherplayer.active || otherplayer.team != player.team || Math.Abs(otherplayer.Center.X - player.Center.X) > 1500 || Math.Abs(otherplayer.Center.Y - player.Center.Y) > 1500) continue;
                             Players.Add(otherplayer);
-                        }
+                        }*/
                     }
                 }
             }
@@ -144,9 +155,16 @@ namespace nexperience1dot4
             }
             foreach(Player p in Players)
             {
-                PlayerMod.AddPlayerExp(p, Exp * ExpDistribution, killedNPC.getRect());
+                float ThisExpValue = Exp * ExpDistribution;
+                float ExpIncrease = 0;
+                if(p.HasNPCBannerBuff(Item.NPCtoBanner(killedNPC.BannerID())))
+                {
+                    ExpIncrease += 0.1f;
+                }
+                PlayerMod.AddPlayerExp(p, ThisExpValue, killedNPC.getRect(), ExpIncrease);
             }
         }
+
         public override void Unload()
         {
             LastSpawnInfo = null;

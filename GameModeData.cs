@@ -62,7 +62,7 @@ namespace nexperience1dot4
             LastCheckedBiome = GetBase.GetBiomeActiveForPlayer(player);
         }
 
-        public void ChangeExp(int Value)
+        public bool ChangeExp(int Value)
         {
             try
             {
@@ -79,13 +79,16 @@ namespace nexperience1dot4
                     _Exp = int.MaxValue;
             }
             if (_Exp < 0) _Exp = 0;
+            bool LeveledUp = false;
             while (_Exp >= GetMaxExp && (nexperience1dot4.InfiniteLeveling || GetLevel < GetBase.GetMaxLevel))
             {
                 _Exp -= _MaxExp;
                 _Level++;
                 UpdateMaxExp();
                 UpdateStatusPoints();
+                LeveledUp = true;
             }
+            return LeveledUp;
         }
 
         public int DoDeathExpPenalty(){
@@ -239,6 +242,7 @@ namespace nexperience1dot4
         public void UpdateNPC(NPC npc)
         {
             _EffectiveLevel = _Level;
+            TownNpcEffectiveLevelTweak(npc);
             ProjectileNpcDamagePercentage = NpcDamage = NpcDefense = 1;
             int npcHealthBackup = npc.lifeMax;
             npc.lifeMax = npc.GetGlobalNPC<NpcMod>().GetOriginalHP;
@@ -255,6 +259,23 @@ namespace nexperience1dot4
             {
                 double Percentage = npc.life >= npcHealthBackup ? 1 : (double)npc.life / npcHealthBackup;
                 npc.life = (int)(npc.lifeMax * Percentage);
+            }
+        }
+
+        public void TownNpcEffectiveLevelTweak(NPC npc)
+        {
+            if (!npc.townNPC) return;
+            _EffectiveLevel = Main.player[Main.myPlayer].GetModPlayer<PlayerMod>().GetCurrentGamemode.GetMyBiome.GetMaxLevel;
+            for (int n = 0; n < 200; n++)
+            {
+                if (Main.npc[n].active && !Main.npc[n].townNPC && Main.npc[n].CanBeChasedBy(null))
+                {
+                    NpcMod npcmod = Main.npc[n].GetGlobalNPC<NpcMod>();
+                    if(_EffectiveLevel < npcmod.GetData.GetEffectiveLevel)
+                    {
+                        _EffectiveLevel = npcmod.GetData.GetEffectiveLevel;
+                    }
+                }
             }
         }
 

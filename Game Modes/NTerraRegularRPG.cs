@@ -80,10 +80,10 @@ namespace nexperience1dot4.Game_Modes
             float SecondaryBonus = 1.5f, Bonus = 0.5f, TotalBonus = 0.06f;
             HealthChangeValue += (VIT + CHA * SecondaryBonus + Level * Bonus) * TotalBonus;
             ManaChangeValue += (WIS + INT * SecondaryBonus + Level * Bonus) * TotalBonus;
-            data.MeleeDamagePercentage += (STR + DEX * SecondaryBonus + Level * Bonus) * TotalBonus;
-            data.RangedDamagePercentage += (DEX + AGI * SecondaryBonus + Level * Bonus) * TotalBonus;
-            data.MagicDamagePercentage += (INT + WIS * SecondaryBonus + Level * Bonus) * TotalBonus;
-            data.SummonDamagePercentage += (CHA + INT * SecondaryBonus + Level * Bonus) * TotalBonus;
+            data.MeleeDamagePercentage += (STR + DEX * SecondaryBonus) * TotalBonus;
+            data.RangedDamagePercentage += (DEX + AGI * SecondaryBonus) * TotalBonus;
+            data.MagicDamagePercentage += (INT + WIS * SecondaryBonus) * TotalBonus;
+            data.SummonDamagePercentage += (CHA + INT * SecondaryBonus) * TotalBonus;
             data.GenericDamagePercentage += Level * Bonus * TotalBonus;
             DefenseChangeValue += (VIT + STR * SecondaryBonus + Level * Bonus) * TotalBonus;
             data.MeleeSpeedPercentage += (AGI + Level * 0.5f) * 0.0055f;
@@ -423,6 +423,19 @@ namespace nexperience1dot4.Game_Modes
             AddMobLevel(352, 128); //Flocko
             AddMobLevel(343, 136); //Yeti
             AddMobLevel(345, 140); //Ice Queen
+        }
+
+        public override int GetExpReward(float RewardLevel, float Percentage)
+        {
+            float LevelValue = RewardLevel * 0.01f * GetMaxLevel;
+            if(LevelValue == 0) LevelValue = 1;
+            else if (RewardLevel > 10)
+            {
+                LevelValue -= LevelValue / (LevelValue + 10);
+            }
+            if(LevelValue > GetMaxLevel) LevelValue = GetMaxLevel;
+            //if(LevelValue < 0) LevelValue = 0;
+            return (int)(GetLevelExp((int)LevelValue) * Percentage);
         }
     }
 }

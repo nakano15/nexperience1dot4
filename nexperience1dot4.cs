@@ -49,7 +49,7 @@ namespace nexperience1dot4
                     AddDamageClass(FoundClass, StatusTranslator.DC_Melee);
                 }
             }
-            ModCompatibility.Calamity.Load();
+            //ModCompatibility.Calamity.Load();
         }
 
         public Mod GetMod(string ModName)

@@ -20,6 +20,15 @@ namespace nexperience1dot4.ModCompatibility
             if(ModLoader.HasMod("CalamityMod"))
             {
                 CalamityMod = ModLoader.GetMod("CalamityMod");
+                /*DamageClass FoundClass;
+                if(ModContent.TryFind("CalamityMod", "RogueDamage", out FoundClass))
+                {
+                    Main.instance.Window.Title = "Success!";
+                    //AddDamageClass(FoundClass, StatusTranslator.DC_Ranged);
+                }
+                else{
+                    Main.instance.Window.Title = "Failure!";
+                }**/
 
                 BiomesSetup();
                 MobLevelsSetup();

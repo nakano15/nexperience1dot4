@@ -110,8 +110,13 @@ namespace nexperience1dot4
             return 100 * Level * Level;
         }
 
+        public virtual int GetExpReward(float RewardLevel, float Percentage)
+        {
+            return (int)(GetLevelExp((int)(GetMaxLevel * (RewardLevel * 0.01f))) * Percentage);
+        }
+
         protected int CalculateOverflowedExpStack(int Level, int[] ExpTable){
-            int MaxLevel = ExpTable.Length;
+            int MaxLevel = ExpTable.Length - 1;
             int CurLevel = Level;
             int Result = 0;
             while(CurLevel >= MaxLevel)
