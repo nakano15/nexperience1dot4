@@ -83,6 +83,105 @@ namespace nexperience1dot4
             healValue = (int)(healValue * GetManaPercentageChange);
         }
 
+        private int LastLifeRegenCount = 0;
+        private float HealthRegenStack = 0;
+        private byte TicksPassed = 0;
+
+        public override void PostUpdateMiscEffects()
+        {
+        }
+
+        public override void NaturalLifeRegen(ref float regen)
+        {
+            const float HealthChangePerFrame = 0.0138888888889f;
+            bool UpdateHealthRegen = Player.lifeRegenCount != LastLifeRegenCount; //(int)((Player.lifeRegenCount) * DivisionBy60) != (int)((LastLifeRegenCount) * DivisionBy60);
+            bool BadRegen = Player.lifeRegenCount < 0 || LastLifeRegenCount < 0;
+            LastLifeRegenCount = Player.lifeRegenCount;
+            const byte MaxTicksForLifeRegen = 30;
+            if(UpdateHealthRegen)
+            {
+                TicksPassed += (byte)(Math.Abs(Player.lifeRegen));
+                float HealthChangeValue = (GetHealthPercentageChange - 1) * HealthChangePerFrame;
+                if(HealthChangeValue <= 0)
+                {
+                    return;
+                }
+                else
+                {
+                    if(!BadRegen)
+                    {
+                        HealthRegenStack += HealthChangeValue;
+                        if(HealthRegenStack >= 1 && TicksPassed >= MaxTicksForLifeRegen)
+                        {
+                            TicksPassed -= MaxTicksForLifeRegen;
+                            int HealthChange = (int)HealthRegenStack;
+                            HealthRegenStack -= HealthChange;
+                            Player.statLife += HealthChange;
+                            if(Player.statLife > Player.statLifeMax2)
+                                Player.statLife = Player.statLifeMax2;
+                        }
+                    }
+                    else
+                    {
+                        if (Player.starving)
+                        {
+                            TicksPassed -= MaxTicksForLifeRegen;
+                            int StarvationDamage = (int)(Math.Min(2, Player.statLifeMax2 * 0.05f) * 120 * HealthChangeValue * ((Player.ZoneDesert || Player.ZoneSnow) ? 2 : 1));
+                            HealthRegenStack -= StarvationDamage;
+                            if(HealthRegenStack <= -1 && TicksPassed >= MaxTicksForLifeRegen)
+                            {
+                                int HealthChange = (int)HealthRegenStack;
+                                HealthRegenStack += HealthChange;
+                                Player.statLife += HealthChange;
+                                CombatText.NewText(Player.getRect(), CombatText.LifeRegen, -HealthChange, dot: true);
+                                if (Player.statLife <= 0 && Player.whoAmI == Main.myPlayer)
+                                {
+                                    Player.KillMe(PlayerDeathReason.ByOther(18), 10, 0);
+                                }
+                            }
+                            return;
+                        }
+                        HealthRegenStack -= HealthChangeValue;
+                        if(HealthRegenStack <= -1 && TicksPassed >= MaxTicksForLifeRegen)
+                        {
+                            TicksPassed -= MaxTicksForLifeRegen;
+                            int HealthChange = (int)HealthRegenStack;
+                            HealthRegenStack -= HealthChange;
+                            Player.statLife += HealthChange;
+                            CombatText.NewText(Player.getRect(), CombatText.LifeRegen, -HealthChange, dot: true);
+                            if(Player.statLife <= 0 && Player.whoAmI == Main.myPlayer)
+                            {
+                                if (Player.burned || (Player.tongued && Main.expertMode))
+                                {
+                                    Player.KillMe(PlayerDeathReason.ByOther(8), 10, 0);
+                                }
+                                else if(Player.suffocating)
+                                {
+                                    Player.KillMe(PlayerDeathReason.ByOther(8), 10, 0);
+                                }
+                                else if (Player.poisoned || Player.venom)
+                                {
+                                    Player.KillMe(PlayerDeathReason.ByOther(9), 10, 0);
+                                }
+                                else if(Player.electrified)
+                                {
+                                    Player.KillMe(PlayerDeathReason.ByOther(10), 10, 0);
+                                }
+                                else
+                                {
+                                    Player.KillMe(PlayerDeathReason.ByOther(8), 10, 0);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                TicksPassed = 0;
+            }
+        }
+
         public override void Initialize()
         {
             foreach (string gamemode in nexperience1dot4.GetGameModeIDs)

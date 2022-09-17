@@ -50,6 +50,7 @@ namespace nexperience1dot4
                 }
             }
             //ModCompatibility.Calamity.Load();
+            ServerConfigMod.PopulateGameModes();
         }
 
         public Mod GetMod(string ModName)
@@ -190,6 +191,7 @@ namespace nexperience1dot4
             StatusList = null;
             Interfaces.LevelInfos.OnUnload();
             ModCompatibility.Calamity.Unload();
+            ServerConfigMod.EraseGameModesList();
         }
 
         #region Game Mode Stuff

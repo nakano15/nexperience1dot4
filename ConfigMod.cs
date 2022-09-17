@@ -1,12 +1,49 @@
 ﻿using Terraria;
+using System.Collections.Generic;
 using System.ComponentModel;
 using Terraria.ModLoader.Config;
+using Newtonsoft.Json;
 
 namespace nexperience1dot4
 {
     public class ServerConfigMod : ModConfig
     {
         public override ConfigScope Mode => ConfigScope.ServerSide;
+        [JsonIgnore]
+        private static string[] _GameModeInfos = new string[0];
+        private string GameModeID { get { return nexperience1dot4.GetActiveGameModeID; } set { nexperience1dot4.ChangeActiveGameMode(value); }}
+
+        [Header("Game Mode Settings")]
+        [Label("Loaded Game Mode List.")]
+        public string[] GameModeInfos { 
+            get
+            {
+                string[] GameModeIds = nexperience1dot4.GetGameModeIDs;
+                for(int i = 0; i < GameModeIds.Length; i++)
+                {
+                    if(GameModeID == GameModeIds[i])
+                        PickedGameMode = i;
+                    GameModeIds[i] = i + ": " + nexperience1dot4.GetGameMode(GameModeIds[i]).Name;
+                }
+                return GameModeIds;
+            } 
+        }
+        
+        [Label("Insert Game Mode ID")]
+        [DefaultValue(-1)]
+        [Range(0, int.MaxValue)]
+        public int PickedGameMode {get{ return _PickedGameMode; } set{ _PickedGameMode = value; }}
+        [JsonIgnore]
+        private int _PickedGameMode;
+
+        [Label("Active Game Mode")]
+        public string ActiveGameMode { get{ return nexperience1dot4.GetActiveGameMode().Name; }}
+
+        [Label("Game Mode Description")]
+        public string ActiveGameModeDescription { get{ return nexperience1dot4.GetActiveGameMode().Description; }}
+
+        [Label("Game Mode Max Level")]
+        public int ActiveGameModeMaxLevel { get{ return nexperience1dot4.GetActiveGameMode().GetMaxLevel; }}
 
         [Header("Gameplay Settings")]
 
@@ -41,16 +78,33 @@ namespace nexperience1dot4
         [DefaultValue(true)]
         public bool ZombieDroppingTombstone;
 
-        public override void OnLoaded()
+        public static void PopulateGameModes()
         {
-            /*DeathExpPenalty = nexperience1dot4.DeathExpPenalty;
-            EnableBiomeLevelCapper = nexperience1dot4.EnableBiomeLevelCapper;
-            InfiniteLeveling = nexperience1dot4.InfiniteLeveling;
-            ExpRate = (int)(nexperience1dot4.ExpRate * 100);*/
+            List<string> GameModes = new List<string>();
+            int Number = 0;
+            foreach(string s in nexperience1dot4.GetGameModeIDs)
+            {
+                GameModes.Add(Number + ": " + nexperience1dot4.GetGameMode(s).Name);
+                Number++;
+            }
+            _GameModeInfos = GameModes.ToArray();
+            GameModes.Clear();
+        }
+
+        public static void EraseGameModesList()
+        {
+            _GameModeInfos = null;
         }
 
         public override void OnChanged()
         {
+            if(Main.gameMenu)
+            {
+                if(PickedGameMode >= 0 && PickedGameMode < GameModeInfos.Length)
+                {
+                    GameModeID = nexperience1dot4.GetGameModeIDs[PickedGameMode];
+                }
+            }
             nexperience1dot4.DeathExpPenalty = DeathExpPenalty;
             nexperience1dot4.EnableBiomeLevelCapper = EnableBiomeLevelCapper;
             nexperience1dot4.InfiniteLeveling = InfiniteLeveling;

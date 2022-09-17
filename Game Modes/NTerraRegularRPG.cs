@@ -77,7 +77,7 @@ namespace nexperience1dot4.Game_Modes
                 WIS = data.GetEffectiveStatusValue(7);
             int Level = data.GetEffectiveLevel;
             float HealthChangeValue = 1f, ManaChangeValue = 1f, DefenseChangeValue = 1f;
-            float SecondaryBonus = 1.5f, Bonus = 0.5f, TotalBonus = 0.06f;
+            float SecondaryBonus = 0.5f, Bonus = 1f, TotalBonus = 0.06f; //SecondaryBonus = 1.5f, Bonus = 0.5f;
             HealthChangeValue += (VIT + CHA * SecondaryBonus + Level * Bonus) * TotalBonus;
             ManaChangeValue += (WIS + INT * SecondaryBonus + Level * Bonus) * TotalBonus;
             data.MeleeDamagePercentage += (STR + DEX * SecondaryBonus) * TotalBonus;

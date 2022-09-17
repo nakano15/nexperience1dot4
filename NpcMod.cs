@@ -126,23 +126,10 @@ namespace nexperience1dot4
                 if (killedNPC.playerInteraction[p])
                 {
                     Player player = Main.player[p];
-                    /*if(!Players.Contains(player))
+                    foreach(Player other in PlayerMod.GetPlayerTeammates(player))
                     {
-                        Players.Add(player);
-                    }*/
-                    if(player.team > 0)
-                    {
-                        foreach(Player other in PlayerMod.GetPlayerTeammates(player))
-                        {
-                            if(!Players.Contains(other))
-                                Players.Add(other);
-                        }
-                        /*for(byte p2 = 0; p2 < 255; p2++)
-                        {
-                            Player otherplayer = Main.player[p2];
-                            if(p == p2 || Players.Contains(otherplayer) || !otherplayer.active || otherplayer.team != player.team || Math.Abs(otherplayer.Center.X - player.Center.X) > 1500 || Math.Abs(otherplayer.Center.Y - player.Center.Y) > 1500) continue;
-                            Players.Add(otherplayer);
-                        }*/
+                        if(!Players.Contains(other))
+                            Players.Add(other);
                     }
                 }
             }
