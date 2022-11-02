@@ -5,3 +5,6 @@ You can find the mod through the Mod Browser, or the Steam Workshop page:<br>
 https://steamcommunity.com/sharedfiles/filedetails/?id=2854080183
 <br><br>
 The reason why I'm rewriting the mod, is to try easing support to other mods.
+<br><br>
+If you want to add support to this mod, or add content to it, check its wiki here on Github.<br>
+https://github.com/nakano15/nexperience1dot4/wiki
