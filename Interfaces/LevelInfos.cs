@@ -21,7 +21,7 @@ namespace nexperience1dot4.Interfaces
         private static byte StatusRows = 6, StatusColumns = 3, PageCount = 1;
         private static byte CurrentPage = 0;
         private static float StatusDistance = 1;
-        private static List<int> PointsSpent = new List<int>();
+        private static int[] PointsSpent = new int[0];
         private static bool Collapsed = false, MouseOverButton = false;
 
         public static void OnUnload(){
@@ -62,8 +62,7 @@ namespace nexperience1dot4.Interfaces
                 StatusColumns = (byte)(Math.Min(4, MathF.Ceiling((float)data.GetBase.GameModeStatus.Length / 6)));
                 StatusRows = (byte)(MathF.Ceiling((float)data.GetBase.GameModeStatus.Length / StatusColumns));
                 StatusDistance = 1f / (StatusColumns + 1);
-                PointsSpent.Clear();
-                while(PointsSpent.Count < data.GetBase.GameModeStatus.Length) PointsSpent.Add(0);
+                PointsSpent = new int[data.GetBase.GameModeStatus.Length];
                 PageCount = (byte)(MathF.Ceiling((float)data.GetBase.GameModeStatus.Length / (StatusColumns * StatusRows)));
             }
             Color bg = new Color (55, 74, 133);
@@ -101,10 +100,7 @@ namespace nexperience1dot4.Interfaces
                 if(!Collapsed)
                     return;
             }
-            string Text = "Level [" + data.GetLevel;
-            if(data.GetLevel != data.GetEffectiveLevel){
-                Text += " -> " + data.GetEffectiveLevel + "]";
-            }else Text += "]";
+            string Text = data.GetBase.GetLevelInfo(data, true);
             Vector2 AcquiredScale = Utils.DrawBorderString(Main.spriteBatch, Text, DrawPosition + Vector2.UnitY * 4f, Color.White, 0.9f, 0.5f);
             Text = "Exp [" + data.GetExp + "/"  + data.GetMaxExp + "] (" + LastExpPercentage + "%)";
             AcquiredScale = Utils.DrawBorderString(Main.spriteBatch, Text, DrawPosition + Vector2.UnitY * 24f, Color.White, 0.9f, 0.5f);
@@ -113,7 +109,7 @@ namespace nexperience1dot4.Interfaces
             GameModeStatusInfo[] status = data.GetBase.GameModeStatus;
             int StatusPointsLeft = data.GetStatusPoints;
             bool HasPointsSpent = false;
-            for(int i = 0; i < PointsSpent.Count; i++){
+            for(int i = 0; i < PointsSpent.Length; i++){
                 if(PointsSpent[i] > 0)
                     HasPointsSpent = true;
                 StatusPointsLeft -= PointsSpent[i];
@@ -180,7 +176,7 @@ namespace nexperience1dot4.Interfaces
             {
                 if(DrawButton(new Vector2(DrawPosition.X, Main.screenHeight - 30), "Spend Points"))
                 {
-                    for(byte s = 0; s < PointsSpent.Count; s++)
+                    for(byte s = 0; s < PointsSpent.Length; s++)
                     {
                         int Point = PointsSpent[s];
                         data.AddStatusPoint(s, Point);
@@ -192,7 +188,7 @@ namespace nexperience1dot4.Interfaces
             }
             else if(DrawButton(new Vector2(DrawPosition.X, Main.screenHeight - 30), "Respec Points"))
             {
-                for(byte s = 0; s < PointsSpent.Count; s++)
+                for(byte s = 0; s < PointsSpent.Length; s++)
                 {
                     PointsSpent[s] = 0;
                 }
@@ -221,7 +217,7 @@ namespace nexperience1dot4.Interfaces
         private static void GameInterface(PlayerMod player, GameModeData data)
         {
             Vector2 DrawPosition = new Vector2(0, Main.screenHeight);
-            string Text = "Level " + data.GetLevel + (data.GetLevel != data.GetEffectiveLevel ? "->" + data.GetEffectiveLevel : "");
+            string Text = data.GetBase.GetLevelInfo(data, false); //"Level " + data.GetLevel + (data.GetLevel != data.GetEffectiveLevel ? "->" + data.GetEffectiveLevel : "");
             if(Main.mouseX >= DrawPosition.X && Main.mouseX < DrawPosition.X + 150 && 
             Main.mouseY >= DrawPosition.Y -22 && Main.mouseY < DrawPosition.Y - 10)
             {
@@ -236,12 +232,6 @@ namespace nexperience1dot4.Interfaces
             DrawPosition.X += 2;
             DrawPosition.Y += 2;
             Main.spriteBatch.Draw(ExpBar, DrawPosition, new Rectangle(2, 14, (int)(146 * LastExpPercentage * 0.01f), 8), Color.Yellow);
-            return;
-            /*Utils.DrawBorderString(Main.spriteBatch, "Exp [" + LastExp + "/" + LastMaxExp + "] (" + LastExpPercentage + "%)", 
-                DrawPosition, Color.White);
-            DrawPosition.Y -= 30;
-            Utils.DrawBorderString(Main.spriteBatch, "Level [" + data.GetLevel + (data.GetLevel != data.GetEffectiveLevel ? "->" + data.GetEffectiveLevel : "") + "]",
-                DrawPosition, Color.White);*/
         }
     }
 }

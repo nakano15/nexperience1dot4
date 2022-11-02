@@ -11,6 +11,7 @@ namespace nexperience1dot4
         public virtual float StatusPointsPerLevel { get { return 1; } }
         public virtual float InitialStatusPoints { get { return 0; } }
         public virtual float InitialStatusPointsDistribution { get { return 0; } }
+        public virtual bool EnableLevelCapping { get { return true; } }
         private Dictionary<int, MobLevelStruct> GameModeMobLevels = new Dictionary<int, MobLevelStruct>();
         private int MaxLevel = 1;
         private bool MaxLevelForced = false;
@@ -113,6 +114,28 @@ namespace nexperience1dot4
         public virtual int GetExpReward(float RewardLevel, float Percentage)
         {
             return (int)(GetLevelExp((int)(GetMaxLevel * (RewardLevel * 0.01f))) * Percentage);
+        }
+
+        public virtual int GetNpcLevelProcedural(NPC npc)
+        {
+            return 0;
+        }
+
+        public virtual string GetLevelInfo(GameModeData data, bool Inventory)
+        {
+            if(Inventory)
+            {
+                string Text = "Level [" + data.GetLevel;
+                if(data.GetLevel != data.GetEffectiveLevel){
+                    Text += " -> " + data.GetEffectiveLevel + "]";
+                }
+                else Text += "]";
+                return Text;
+            }
+            else
+            {
+                return "Level " + data.GetLevel + (data.GetLevel != data.GetEffectiveLevel ? "->" + data.GetEffectiveLevel : "");;
+            }
         }
 
         protected int CalculateOverflowedExpStack(int Level, int[] ExpTable){

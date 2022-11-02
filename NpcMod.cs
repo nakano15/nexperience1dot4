@@ -51,8 +51,7 @@ namespace nexperience1dot4
         public override void SetDefaults(NPC npc)
         {
             if(MobStatus == null)
-                MobStatus = new GameModeData(nexperience1dot4.GetActiveGameModeID);
-            //else MobStatus.ChangeGameMode(nexperience1dot4.GetActiveGameModeID);
+                MobStatus = new GameModeData(nexperience1dot4.GetActiveGameModeID, false);
             MobStatus.SpawnNpcLevel(npc);
             UpdatedStatus = false;
             FirstUpdate = true;

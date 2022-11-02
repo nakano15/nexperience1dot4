@@ -42,10 +42,18 @@ namespace nexperience1dot4
             GetLevel = NewLevel;
         }
 
-        public GameModeData(string GameModeID)
+        public GameModeData(string GameModeID, bool PlayerStatus)
         {
             this.GameModeID = GameModeID;
-            UpdateMaxExp();
+            if(PlayerStatus)
+            {
+                MyStatus = new PlayerStatusInfo[GetBase.GameModeStatus.Length];
+                for(int i = 0; i < MyStatus.Length; i++)
+                {
+                    MyStatus[i] = new PlayerStatusInfo();
+                }
+                UpdateMaxExp();
+            }
         }
 
         public GameModeData(byte GameModeID, Terraria.ModLoader.IO.TagCompound tag, int ModVersion)
@@ -264,7 +272,7 @@ namespace nexperience1dot4
 
         public void TownNpcEffectiveLevelTweak(NPC npc)
         {
-            if (!npc.townNPC) return;
+            if (Main.gameMenu || !npc.townNPC) return;
             _EffectiveLevel = Main.player[Main.myPlayer].GetModPlayer<PlayerMod>().GetCurrentGamemode.GetMyBiome.GetMaxLevel;
             for (int n = 0; n < 200; n++)
             {
@@ -300,15 +308,19 @@ namespace nexperience1dot4
                 }
                 else
                 {
-                    NPCSpawnInfo? nsi = NpcMod.GetLastSpawnInfo;
-                    if (nsi.HasValue)
+                    if(NewLevel == 0) NewLevel = GetBase.GetNpcLevelProcedural(npc);
+                    if (NewLevel == 0)
                     {
-                        BiomeLevelStruct bls = PlayerMod.GetPlayerBiomeLevel(nsi.Value.Player);
-                        if (bls != null) NewLevel = bls.GetRandomLevel;
-                    }
-                    else
-                    {
-                        NewLevel = 1;
+                        NPCSpawnInfo? nsi = NpcMod.GetLastSpawnInfo;
+                        if (nsi.HasValue)
+                        {
+                            BiomeLevelStruct bls = PlayerMod.GetPlayerBiomeLevel(nsi.Value.Player);
+                            if (bls != null) NewLevel = bls.GetRandomLevel;
+                        }
+                        else
+                        {
+                            NewLevel = 1;
+                        }
                     }
                 }
             }

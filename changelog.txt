@@ -1,4 +1,0 @@
-Added a way of making the health regeneration scale with your character health change.
-    That also affects debuffs.
-There is a way of changing game modes now. But still need other game modes.
-    I'm actually unhappy with the way it's done right now.

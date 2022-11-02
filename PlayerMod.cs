@@ -188,7 +188,7 @@ namespace nexperience1dot4
             {
                 if (gamemode == nexperience1dot4.GetActiveGameModeID)
                     CurrentGameMode = (byte)MyGameModes.Count;
-                MyGameModes.Add(new GameModeData(gamemode));
+                MyGameModes.Add(new GameModeData(gamemode, true));
             }
         }
 

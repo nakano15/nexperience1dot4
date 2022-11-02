@@ -11,7 +11,7 @@ namespace nexperience1dot4
         public override ConfigScope Mode => ConfigScope.ServerSide;
         [JsonIgnore]
         private static string[] _GameModeInfos = new string[0];
-        private string GameModeID { get { return nexperience1dot4.GetActiveGameModeID; } set { nexperience1dot4.ChangeActiveGameMode(value); }}
+        private string GameModeID { get { return nexperience1dot4.GetActiveGameModeID; } set { nexperience1dot4.ChangeActiveGameMode(value); } }
 
         [Header("Game Mode Settings")]
         [Label("Loaded Game Mode List.")]
@@ -94,6 +94,11 @@ namespace nexperience1dot4
         public static void EraseGameModesList()
         {
             _GameModeInfos = null;
+        }
+
+        public override void OnLoaded()
+        {
+
         }
 
         public override void OnChanged()
