@@ -87,7 +87,7 @@ namespace nexperience1dot4
         public override object Call(params object[] args)
         {
             if(args.Length > 0 && args[0] is string)
-            {
+            {   
                 switch((string)args[0])
                 {
                     case "AddDamageClass":
@@ -168,6 +168,7 @@ namespace nexperience1dot4
                                     (args.Length >= 9 && args[8] is bool ? (bool)args[8] : true);
                                 BaseMod.AddBiome(BiomeName, MinLevel, MaxLevel, NightMinLevel, 
                                     NightMaxLevel, BiomeActiveReq, CountsTowardsLevelCap);
+                                return true;
                             }
                         }
                         break;

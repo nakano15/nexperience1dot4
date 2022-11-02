@@ -392,8 +392,8 @@ namespace nexperience1dot4.Game_Modes
                 NPCID.DD2LightningBugT3
             }, 100); //Tier 3
             AddMobLevel(NPCID.DD2EterniaCrystal, 20);
-            AddMobLevel(NPCID.DD2EterniaCrystal, 70, Terraria.GameContent.Events.DD2Event.ReadyForTier2);
-            AddMobLevel(NPCID.DD2EterniaCrystal, 100, Terraria.GameContent.Events.DD2Event.ReadyForTier3);
+            AddMobLevel(NPCID.DD2EterniaCrystal, 70, true, delegate(){ return Terraria.GameContent.Events.DD2Event.ReadyForTier2; });
+            AddMobLevel(NPCID.DD2EterniaCrystal, 100, true, delegate(){ return Terraria.GameContent.Events.DD2Event.ReadyForTier3; });
             
             AddMobLevel(NPCID.DD2Betsy, 100);
 
