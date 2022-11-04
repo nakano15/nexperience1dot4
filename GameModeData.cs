@@ -42,6 +42,11 @@ namespace nexperience1dot4
             GetLevel = NewLevel;
         }
 
+        public void ResetEffectiveLevel()
+        {
+            _EffectiveLevel = 0;
+        }
+
         public GameModeData(string GameModeID, bool PlayerStatus)
         {
             this.GameModeID = GameModeID;
@@ -255,6 +260,8 @@ namespace nexperience1dot4
             int npcHealthBackup = npc.lifeMax;
             npc.lifeMax = npc.GetGlobalNPC<NpcMod>().GetOriginalHP;
             GetBase.UpdateNpcStatus(npc, this);
+            if(npc.type == Terraria.ID.NPCID.Nailhead)
+                ProjectileNpcDamagePercentage = 1;
             if(npc.damage != LastNpcDamage){
                 npc.damage = (int)(npc.damage * NpcDamage);
                 LastNpcDamage = npc.damage;

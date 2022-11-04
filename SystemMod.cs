@@ -12,6 +12,14 @@ namespace nexperience1dot4
 {
     public class SystemMod : ModSystem
     {
-        
+        public override void NetSend(BinaryWriter writer)
+        {
+            
+        }
+
+        public override void NetReceive(BinaryReader reader)
+        {
+            
+        }
     }
 }

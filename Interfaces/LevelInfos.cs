@@ -184,6 +184,10 @@ namespace nexperience1dot4.Interfaces
                     }
                     data.UpdateEffectiveStatus();
                     data.UpdateStatusPoints();
+                    if(Main.netMode == 1)
+                    {
+                        NetplayMod.SendPlayerStatus(Main.myPlayer, -1, Main.myPlayer);
+                    }
                 }
             }
             else if(DrawButton(new Vector2(DrawPosition.X, Main.screenHeight - 30), "Respec Points"))
@@ -193,6 +197,10 @@ namespace nexperience1dot4.Interfaces
                     PointsSpent[s] = 0;
                 }
                 data.ResetStatusPoints();
+                if(Main.netMode == 1)
+                {
+                    NetplayMod.SendPlayerStatus(Main.myPlayer, -1, Main.myPlayer);
+                }
             }
             if(MouseOverText != ""){
                 Utils.DrawBorderString(Main.spriteBatch, MouseOverText, new Vector2(Main.mouseX + 12, Main.mouseY + 12), Color.White, 0.9f);

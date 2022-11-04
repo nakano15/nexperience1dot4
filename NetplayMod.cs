@@ -26,6 +26,7 @@ namespace nexperience1dot4
                         GameModeData gamemode = Main.player[PlayerID].GetModPlayer<PlayerMod>().GetPlayerGamemode(GameModeID);
                         if(gamemode == null) return;
                         gamemode.SetLevel(Level);
+                        gamemode.ResetEffectiveLevel();
                     }
                     return;
                 case MessageType.SendPlayerStatus:
@@ -43,6 +44,7 @@ namespace nexperience1dot4
                         if(GameModeID == null) return;
                         for(byte i = 0; i < StatusLength; i++)
                             gamemode.ChangeStatusValue(i, StatusValues[i]);
+                        gamemode.ResetEffectiveLevel();
                     }
                     return;
                     case MessageType.AskForGameMode:
@@ -92,7 +94,8 @@ namespace nexperience1dot4
                         {
                             NpcMod npcMod = Main.npc[NpcPos].GetGlobalNPC<NpcMod>();
                             npcMod.GetData.SetLevel(Level);
-                            NpcMod.UpdateNpcStatus(Main.npc[NpcPos]);
+                            //npcMod.GetData.UpdateNPC(Main.npc[NpcPos]);
+                            //NpcMod.UpdateNpcStatus(Main.npc[NpcPos]);
                             Main.npc[NpcPos].life = Health;
                         }
                     }
@@ -156,7 +159,7 @@ namespace nexperience1dot4
         public static void SendNpcLevel(int Npc, int To = -1, int From = -1)
         {
             if(Npc < 0 || Npc >= 200) return;
-            ModPacket packet = CreatePacket(MessageType.SendPlayerLevel);
+            ModPacket packet = CreatePacket(MessageType.SendNpcLevel);
             if(packet == null) return;
             packet.Write((byte)Npc);
             packet.Write(Main.npc[Npc].GetGlobalNPC<NpcMod>().GetData.GetLevel);
@@ -166,11 +169,11 @@ namespace nexperience1dot4
 
         private static ModPacket CreatePacket(MessageType message)
         {
-            return null; //Disabled for now.
-            /*if(Main.netMode == 0) return null;
+            //return null; //Disabled for now.
+            if(Main.netMode == 0) return null;
             ModPacket packet = nexperience1dot4.packet;
             packet.Write((byte)message);
-            return packet;*/
+            return packet;
         }
 
         public enum MessageType : byte

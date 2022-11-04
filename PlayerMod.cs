@@ -290,12 +290,16 @@ namespace nexperience1dot4
         public void AddExp(int Exp)
         {
             bool LeveledUp = GetCurrentGamemode.ChangeExp(Exp);
-            if(Player.whoAmI == Main.myPlayer)
+            if(Main.netMode < 2)
             {
-                if(LeveledUp)
+                if(Player.whoAmI == Main.myPlayer && LeveledUp)
                 {
-                    //CombatText.NewText(Player.getRect(), Microsoft.Xna.Framework.Color.Cyan, "Level " + GetCurrentGamemode.GetLevel+ "!", true);
-                    Main.NewText("Achieved level " + GetCurrentGamemode.GetLevel + "!",Microsoft.Xna.Framework.Color.Blue);
+                    CombatText.NewText(Player.getRect(), Microsoft.Xna.Framework.Color.Yellow, "Level Up!", true);
+                    //Main.NewText("Achieved level " + GetCurrentGamemode.GetLevel + "!",Microsoft.Xna.Framework.Color.Blue);
+                    if(Main.netMode == 1)
+                    {
+                        NetplayMod.SendPlayerLevel(Player.whoAmI, -1, Player.whoAmI);
+                    }
                 }
             }
             else
@@ -372,6 +376,12 @@ namespace nexperience1dot4
         {
             lfx = new LevelUpEffect();
             positions.Add(lfx, lfx.GetDefaultPosition());
+        }
+
+        public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
+        {
+            NetplayMod.SendPlayerLevel(Player.whoAmI, -1, fromWho);
+            NetplayMod.SendPlayerStatus(Player.whoAmI, -1, fromWho);
         }
     }
 }

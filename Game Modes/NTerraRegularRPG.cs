@@ -166,11 +166,6 @@ namespace nexperience1dot4.Game_Modes
             //Jungle
             AddBiome("Jungle", 30, 37, delegate (Player p){ return p.ZoneJungle;});
             AddBiome("Underground Jungle", 34, 40, delegate (Player p){ return p.ZoneJungle && (p.ZoneDirtLayerHeight || p.ZoneRockLayerHeight);});
-            //
-            AddBiome("Dungeon", 40, 50, delegate (Player p){ return p.ZoneDungeon;});
-            AddBiome("Desu~", 9999, 9999, delegate (Player p){ return p.ZoneDungeon && !NPC.downedBoss3;}, false);
-            //Underworld
-            AddBiome("Underworld", 50, 60, delegate (Player p){ return p.ZoneUnderworldHeight;});
 
             //HM
             //
@@ -200,10 +195,17 @@ namespace nexperience1dot4.Game_Modes
             AddBiome("Jungle", 80, 87, delegate (Player p){ return Main.hardMode && p.ZoneJungle;});
             AddBiome("Underground Jungle", 88, 100, delegate (Player p){ return Main.hardMode && p.ZoneJungle && p.ZoneRockLayerHeight;});
             AddBiome("Lihzahrd Temple", 100, 110, delegate (Player p){ return Main.hardMode && p.ZoneLihzhardTemple;});
+
+            //Immutable Order
+            AddBiome("Dungeon", 40, 50, delegate (Player p){ return p.ZoneDungeon;});
+            AddBiome("Desu~", 9999, 9999, delegate (Player p){ return p.ZoneDungeon && !NPC.downedBoss3;}, false);
+            //Underworld
+            AddBiome("Underworld", 50, 60, delegate (Player p){ return p.ZoneUnderworldHeight;});
             //
             AddBiome("Dungeon", 110, 120, delegate (Player p){ return Main.hardMode && NPC.downedPlantBoss && p.ZoneDungeon;});
             //Underworld
             AddBiome("Underworld", 80, 90, delegate (Player p){ return Main.hardMode && p.ZoneUnderworldHeight && NPC.downedMechBossAny;});
+            
             //Towers
             AddBiome("Stardust Tower", 140, 150, delegate (Player p){ return p.ZoneTowerStardust;});
             AddBiome("Nebula Tower", 140, 150, delegate (Player p){ return p.ZoneTowerNebula;});
