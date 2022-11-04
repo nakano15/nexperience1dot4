@@ -273,7 +273,14 @@ namespace nexperience1dot4
         public void TownNpcEffectiveLevelTweak(NPC npc)
         {
             if (Main.gameMenu || !npc.townNPC) return;
-            _EffectiveLevel = Main.player[Main.myPlayer].GetModPlayer<PlayerMod>().GetCurrentGamemode.GetMyBiome.GetMaxLevel;
+            _EffectiveLevel = _Level;
+            for (int p = 0; p < 255; p++)
+            {
+                if (!Main.player[p].active) continue;
+                int PlayerLevel = Main.player[p].GetModPlayer<PlayerMod>().GetCurrentGamemode.GetEffectiveLevel;
+                if (PlayerLevel > _EffectiveLevel)
+                    _EffectiveLevel = PlayerLevel;
+            }
             for (int n = 0; n < 200; n++)
             {
                 if (Main.npc[n].active && !Main.npc[n].townNPC && Main.npc[n].CanBeChasedBy(null))
