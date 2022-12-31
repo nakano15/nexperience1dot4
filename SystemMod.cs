@@ -21,5 +21,10 @@ namespace nexperience1dot4
         {
             
         }
+
+        public override void PostUpdateNPCs()
+        {
+            NpcMod.TransformTrap = false;
+        }
     }
 }

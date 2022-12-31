@@ -94,6 +94,7 @@ namespace nexperience1dot4
                         {
                             NpcMod npcMod = Main.npc[NpcPos].GetGlobalNPC<NpcMod>();
                             npcMod.GetData.SetLevel(Level);
+                            npcMod.UpdatedStatus = false;
                             //npcMod.GetData.UpdateNPC(Main.npc[NpcPos]);
                             //NpcMod.UpdateNpcStatus(Main.npc[NpcPos]);
                             Main.npc[NpcPos].life = Health;

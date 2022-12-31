@@ -1,9 +1,7 @@
 This mod offers you leveling systems for you game.
 Those leveling systems can be used just for fun, or to increase the challenge and gameplay time of your game.
 
-Multiplayer isn't functional right now and there's only one game mode active, which is N Terraria's Regular RPG Mode, with a number of tweaks.
-
-If you have issues with the mod, also make a post on the discussions thread, so it's easier to debug, and keep track of the issue.
+Multiplayer is currently in testing right now, and there's only one game mode active, which is N Terraria's Regular RPG Mode, with a number of tweaks.
 
 If mana cap is kicking your behind, use this mod alongside it to remove the cap:
 https://steamcommunity.com/sharedfiles/filedetails/?id=2822733353&searchtext=mana+cap
@@ -20,5 +18,9 @@ https://github.com/nakano15/nexperience1dot4
 If you're interessed in getting 25% off your first month renting a server from BisectHosting,
 use the code nakano15 on the link bellow upon renting a server.
 https://bisecthosting.com/nakano15
+
+If you want to give me your support in another way.
+Either send me your cheers, or use the link bellow.
+https://ko-fi.com/nakano15
 
 Enjoy :)

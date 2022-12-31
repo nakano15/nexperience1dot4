@@ -14,12 +14,14 @@ namespace nexperience1dot4
         private static NPC OriginNpc = null;
         public static NPC GetOriginNpc { get { return OriginNpc; } }
         public static NPCSpawnInfo? GetLastSpawnInfo { get { return LastSpawnInfo; } }
+        private static GameModeData[] SavedMobStatus = new GameModeData[Main.maxNPCs + 1];
+        internal static bool TransformTrap = false;
 
         private int OriginalHP = 100;
-        public int GetOriginalHP{get{return OriginalHP;}}
+        public int GetOriginalHP {get { return OriginalHP; } }
         private BitsByte UpdateInfos = new BitsByte();
-        private bool FirstUpdate { get{ return UpdateInfos[0]; } set{ UpdateInfos[0] = value; }}
-        private bool UpdatedStatus { get{ return UpdateInfos[1]; } set{ UpdateInfos[1] = value; }}
+        internal bool FirstUpdate { get{ return UpdateInfos[0]; } set{ UpdateInfos[0] = value; }}
+        internal bool UpdatedStatus { get{ return UpdateInfos[1]; } set{ UpdateInfos[1] = value; }}
 
         public override bool InstancePerEntity => true;
         public override bool IsCloneable => false;
@@ -50,16 +52,29 @@ namespace nexperience1dot4
 
         public override void SetDefaults(NPC npc)
         {
-            if(MobStatus == null)
+            if(TransformTrap)
+            {
+                MobStatus = SavedMobStatus[npc.whoAmI];
+            }
+            else
+            {
                 MobStatus = new GameModeData(nexperience1dot4.GetActiveGameModeID, false);
-            MobStatus.SpawnNpcLevel(npc);
-            UpdatedStatus = false;
-            FirstUpdate = true;
+            }
+            UpdatedStatus = false; //How to save the monster level?
             OriginalHP = npc.lifeMax;
+            FirstUpdate = true;
+            /*MobStatus.SpawnNpcLevel(npc);
+            UpdatedStatus = false;
+            FirstUpdate = true;*/
+            //OriginalHP = npc.lifeMax;
         }
         
         public override void OnSpawn(NPC npc, Terraria.DataStructures.IEntitySource source)
         {
+            if (MobStatus == null)
+                MobStatus = new GameModeData(nexperience1dot4.GetActiveGameModeID, false); 
+            MobStatus.SpawnNpcLevel(npc);
+            SavedMobStatus[npc.whoAmI] = MobStatus;
         }
 
         public override void ScaleExpertStats(NPC npc, int numPlayers, float bossLifeScale)
@@ -80,9 +95,9 @@ namespace nexperience1dot4
 
         public override bool PreAI(NPC npc)
         {
+            TransformTrap = true;
             if(!UpdatedStatus)
             {
-                OriginalHP = npc.lifeMax;
                 UpdatedStatus = true;
                 float Percentage = npc.life >= npc.lifeMax ? 1f : (float)npc.life / npc.lifeMax;
                 MobStatus.UpdateNPC(npc);
@@ -103,6 +118,7 @@ namespace nexperience1dot4
             LastLoggedMonsterLevel = 0;
             OriginNpc = null;
             MobStatus.UpdateNPC(npc);
+            TransformTrap = false;
         }
 
         public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
@@ -155,6 +171,7 @@ namespace nexperience1dot4
         {
             LastSpawnInfo = null;
             OriginNpc = null;
+            SavedMobStatus = null;
         }
 
         public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)

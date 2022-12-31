@@ -1,0 +1,3 @@
+Fixed an issue with transforming monsters having incorrect health after transforming.
+    The problem was actually more complicated than this, but let's leave it as this.
+    
