@@ -153,6 +153,22 @@ namespace nexperience1dot4.Interfaces
                 }
             }
             Utils.DrawBorderString(Main.spriteBatch, "Status Points: " + StatusPointsLeft, new Vector2(DrawPosition.X - Width * 0.25f, Main.screenHeight - 30), Color.White, 0.9f, 0.5f);
+            {
+                Color color = Color.White;
+                Vector2 ButtonPosition = new Vector2(DrawPosition.X + Width * 0.25f, Main.screenHeight - 30);
+                if (Main.mouseX >= ButtonPosition.X - 60 && Main.mouseX < ButtonPosition.X + 60 && 
+                    Main.mouseY >= ButtonPosition.Y && Main.mouseY < ButtonPosition.Y + 20)
+                {
+                    color = Color.Yellow;
+                    if (Main.mouseLeft && Main.mouseLeftRelease)
+                    {
+                        GameModeChangeInterface.Open();
+                        Main.playerInventory = false;
+                        return;
+                    }
+                }
+                Utils.DrawBorderString(Main.spriteBatch, "Change Game Mode", ButtonPosition, color, 0.9f, 0.5f);
+            }
             if(PageCount > 1)
             {
                 Vector2 PagesPosition = new Vector2(DrawPosition.X + Width * 0.25f, Main.screenHeight - 30);

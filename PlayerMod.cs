@@ -36,6 +36,25 @@ namespace nexperience1dot4
             MyGameModes.Clear();
         }
 
+        internal static void UpdatePlayersGameModes()
+        {
+            for(int i = 0; i < 255; i++)
+            {
+                if (Main.player[i].active)
+                {
+                    PlayerMod pm = Main.player[i].GetModPlayer<PlayerMod>();
+                    for(byte gm = 0; gm < pm.MyGameModes.Count; gm++)
+                    {
+                        if (pm.MyGameModes[gm].GetGameModeID == nexperience1dot4.GetActiveGameModeID)
+                        {
+                            pm.CurrentGameMode = gm;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
         public override void ResetEffects()
         {
             if(Player.ZoneGraveyard)
@@ -314,7 +333,7 @@ namespace nexperience1dot4
             for(byte p2 = 0; p2 < 255; p2++)
             {
                 Player otherplayer = Main.player[p2];
-                if(!otherplayer.active || otherplayer.team != player.team || Math.Abs(otherplayer.Center.X - player.Center.X) > 1500 || Math.Abs(otherplayer.Center.Y - player.Center.Y) > 1500) continue;
+                if(!otherplayer.active || (Main.netMode > 0 && otherplayer.team != player.team) || Math.Abs(otherplayer.Center.X - player.Center.X) > 1500 || Math.Abs(otherplayer.Center.Y - player.Center.Y) > 1500) continue;
                 players.Add(otherplayer);
             }
             return players.ToArray();

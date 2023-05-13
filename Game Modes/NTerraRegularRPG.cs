@@ -10,7 +10,7 @@ namespace nexperience1dot4.Game_Modes
         private static int[] MaxExpTable;
 
         public override string Name => "Regular RPG Mode";
-        public override string Description => "The default leveling mode of N Terraria, with ascending progression disponible.";
+        public override string Description => "The default leveling mode of N Terraria, with ascending progression available.";
         public override float InitialStatusPoints => 0;
         public override float StatusPointsPerLevel => 1;
         public override float InitialStatusPointsDistribution => 5;

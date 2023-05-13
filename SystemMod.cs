@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using System;
 using Terraria.Localization;
 using System.IO;
+using Terraria.UI;
 
 namespace nexperience1dot4
 {
@@ -25,6 +26,11 @@ namespace nexperience1dot4
         public override void PostUpdateNPCs()
         {
             NpcMod.TransformTrap = false;
+        }
+
+        public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
+        {
+            
         }
     }
 }

@@ -17,7 +17,7 @@ namespace nexperience1dot4
         private static List<StatusTranslator> StatusList = new List<StatusTranslator>();
         private static GameModeBase DefaultGameMode = new GameModeBase();
         private static string ActiveGameMode = "";
-        public const int SaveVersion = 0;
+        public const int SaveVersion = 1;
         internal static byte DeathExpPenalty = 5;
         internal static bool EnableBiomeLevelCapper = true, InfiniteLeveling = false, NTerrariaGraveyard = false, ZombiesDroppingTombstones = false;
         public static bool DisplayExpRewardAsPercentage = false;
@@ -30,17 +30,10 @@ namespace nexperience1dot4
             }
         }
         public const string RegularRPGModeID = "nterraregularrpg", FreeModeRPGID = "freemode";
+        private static string GetSaveFileDirectory { get { return Main.SavePath; } }
 
         public override void PostSetupContent()
         {
-            /*this.Call("AddMonsterLevel", RegularRPGModeID, 22, 255, false);
-            this.Call("AddMonsterLevel", RegularRPGModeID, (int)Terraria.ID.NPCID.BestiaryGirl, 32767, false);
-            this.Call("AddBiomeLevel", RegularRPGModeID, "The Fiesta", 1, 2, 3, 4, 
-            delegate(Player player){ return player.townNPCs >= 3; });
-            this.Call("AddBiomeLevel", RegularRPGModeID, "The Even", 20, 40, 
-            delegate(Player player){ return PlayerMod.GetPlayerLevel(player) % 2 == 0; });
-            this.Call("AddBiomeLevel", RegularRPGModeID, "The Odd", 30, 50, 
-            delegate(Player player){ return PlayerMod.GetPlayerLevel(player) % 2 == 1; });*/
             if(ModLoader.HasMod("ClickerClass"))
             {
                 DamageClass FoundClass;
@@ -51,6 +44,7 @@ namespace nexperience1dot4
             }
             //ModCompatibility.Calamity.Load();
             ServerConfigMod.PopulateGameModes();
+            LoadSettings();
         }
 
         public Mod GetMod(string ModName)
@@ -226,12 +220,15 @@ namespace nexperience1dot4
 
         public static bool ChangeActiveGameMode(string ID)
         {
-            if(GameModes.ContainsKey(ID)){
+            if(GameModes.ContainsKey(ID))
+            {
                 ActiveGameMode = ID;
                 for(byte i = 0; i < 200; i++)
                 {
                     NpcMod.UpdateNpcStatus(Main.npc[i]);
                 }
+                PlayerMod.UpdatePlayersGameModes();
+                SaveSettings();
                 return true;
             }
             return false;
@@ -258,6 +255,42 @@ namespace nexperience1dot4
         public override void HandlePacket(BinaryReader reader, int whoAmI)
         {
             NetplayMod.ReceivedMessages(reader, whoAmI);
+        }
+        
+        internal static void SaveSettings()
+        {
+            string FileDirectory = GetSaveFileDirectory + "nexperience.sav";
+            if (File.Exists(FileDirectory)) File.Delete(FileDirectory);
+            using (FileStream stream = new FileStream(FileDirectory, FileMode.CreateNew))
+            {
+                using (BinaryWriter writer = new BinaryWriter(stream))
+                {
+                    writer.Write(SaveVersion);
+                    writer.Write(ActiveGameMode);
+                }
+            }
+        }
+
+        internal static void LoadSettings()
+        {
+            string FileDirectory = GetSaveFileDirectory + "nexperience.sav";
+            if (!File.Exists(FileDirectory))
+            {
+                return;
+            }
+            using (FileStream stream = new FileStream(FileDirectory, FileMode.Open))
+            {
+                using (BinaryReader reader = new BinaryReader(stream))
+                {
+                    int LastVersion = reader.ReadInt32();
+                    ActiveGameMode = reader.ReadString();
+                }
+            }
+            if(!HasGameMode(ActiveGameMode))
+            {
+                ActiveGameMode = GameModes.Keys.First();
+            }
+            ChangeActiveGameMode(ActiveGameMode);
         }
     }
 }
