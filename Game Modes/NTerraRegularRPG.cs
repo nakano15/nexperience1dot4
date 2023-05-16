@@ -88,7 +88,7 @@ namespace nexperience1dot4.Game_Modes
             data.RangedCriticalPercentage += (LUK + DEX * 0.33f) * 0.0133f;
             data.MagicCriticalPercentage += (LUK + INT * 0.33f) * 0.0133f;
             player.manaCost += (INT * 0.5f - WIS * 0.25f) * 0.05f;
-            player.maxMinions += (int)(Math.Min(150, CHA) * 0.005f);
+            player.maxMinions += (int)(Math.Min(150, CHA) * 0.05f);
 
             const int BoostLevelStart = 100;
             if(Level > BoostLevelStart){
