@@ -309,6 +309,7 @@ namespace nexperience1dot4
         public void AddExp(int Exp)
         {
             bool LeveledUp = GetCurrentGamemode.ChangeExp(Exp);
+            Main.NewText(Player.name + " got "+Exp+" exp!  New Exp: " + GetCurrentGamemode.GetExp);
             if(Main.netMode < 2)
             {
                 if(Player.whoAmI == Main.myPlayer && LeveledUp)
