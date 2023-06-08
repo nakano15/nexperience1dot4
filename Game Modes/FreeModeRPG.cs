@@ -66,9 +66,10 @@ namespace nexperience1dot4.Game_Modes
 
         private static int GetLevelBonus(Vector2 Position)
         {
-            Vector2 NewPosition = Position * 0.0625f;
-            int HorizontalLevel = (int)Math.Abs(NewPosition.X - Main.spawnTileX) / 8,
-                VerticalLevel = (int)Math.Abs(NewPosition.Y - Main.spawnTileY) / 8;
+            const float TileDistanceChange = 1f / (8 * 16);
+            //Vector2 NewPosition = Position * 0.0625f;
+            int HorizontalLevel = (int)(Math.Abs(Position.X - Main.spawnTileX * 16) * TileDistanceChange),
+                VerticalLevel = (int)(Math.Abs(Position.Y - Main.spawnTileY * 16) * TileDistanceChange);
             return HorizontalLevel + VerticalLevel + ProgressionIncrement();
         }
 
@@ -133,6 +134,7 @@ namespace nexperience1dot4.Game_Modes
         {
             string Text = "";
             byte MCounter = 0;
+            if (Number == 0) return "O";
             while (Number > 0)
             {
                 if (Number >= 1000)
