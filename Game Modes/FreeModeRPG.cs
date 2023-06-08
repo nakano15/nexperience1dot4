@@ -17,6 +17,8 @@ namespace nexperience1dot4.Game_Modes
         public override float InitialStatusPoints => 0;
         public override float StatusPointsPerLevel => 0.01f;
         public override bool EnableLevelCapping => false;
+        private static int ZoneLevel = -1;
+        private static string ZoneLevelText = null;
 
         public FreeModeRPG()
         {
@@ -29,10 +31,10 @@ namespace nexperience1dot4.Game_Modes
             float StatusBonus = Level * 0.0001f;
             data.HealthPercentageChange += StatusBonus * 100;
             data.ManaPercentageChange += StatusBonus * 100;
-            data.MeleeDamagePercentage += StatusBonus;
-            data.RangedDamagePercentage += StatusBonus;
-            data.MagicDamagePercentage += StatusBonus;
-            data.SummonDamagePercentage += StatusBonus;
+            //data.MeleeDamagePercentage += StatusBonus;
+            //data.RangedDamagePercentage += StatusBonus;
+            //data.MagicDamagePercentage += StatusBonus;
+            //data.SummonDamagePercentage += StatusBonus;
             data.GenericDamagePercentage += StatusBonus;
             player.statDefense += (int)(StatusBonus);
         }
@@ -42,9 +44,10 @@ namespace nexperience1dot4.Game_Modes
             float StatusIncrease = data.GetEffectiveLevel * 0.01f;
             if(npc.lifeMax > 5)
                 npc.lifeMax += (int)(npc.lifeMax * StatusIncrease);
-            npc.damage += (int)(npc.damage * StatusIncrease);
+            data.NpcDamage += StatusIncrease;
+            //npc.damage += (int)(npc.damage * StatusIncrease);
             data.ProjectileNpcDamagePercentage += StatusIncrease;
-            data.SetExpReward(npc.lifeMax * 2 + npc.damage * 4 + npc.defense * 8 + data.GetEffectiveLevel * 16);
+            data.SetExpReward(npc.lifeMax * 2 + npc.damage * 4 * data.NpcDamage + npc.defense * 8 + data.GetEffectiveLevel * 16);
         }
 
         public override int GetNpcLevelProcedural(NPC npc)
@@ -210,6 +213,22 @@ namespace nexperience1dot4.Game_Modes
                 MCounter--;
             }
             return Text;
+        }
+
+        public override string GetZoneInformation(GameModeData data, Player player)
+        {
+            int NewLevel = GetLevelBonus(player.Center);
+            if (NewLevel != ZoneLevel)
+            {
+                ZoneLevel = NewLevel;
+                ZoneLevelText = RomanAlgarismMaker(NewLevel);
+            }
+            return "(Difficulty: Rank "+ZoneLevelText+")";
+        }
+
+        public static void Unload()
+        {
+            ZoneLevelText = null;
         }
     }
 }

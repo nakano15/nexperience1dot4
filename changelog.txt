@@ -1,1 +1,4 @@
 Fixed an issue where max companions count wasn't increasing with Charisma points.
+Added extra mod calls.
+You can now change the game mode on the Status Window.
+Free Mode Rearrives.

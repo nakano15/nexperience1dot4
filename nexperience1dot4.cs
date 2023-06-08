@@ -173,6 +173,34 @@ namespace nexperience1dot4
                         break;
                     case "GetGameModeID":
                         return GetActiveGameModeID;
+                    case "GetPlayerLevelFunc": //Returns a Func<Player, int>, which returns the player level when called.
+                        return delegate(Player player) { return PlayerMod.GetPlayerLevel(player); };
+                    case "SetPlayerLevelFunc": //Returns a Action<Player, int> which allows changing player level at will.
+                        return delegate(Player player, int Level) {
+                            PlayerMod pm = player.GetModPlayer<PlayerMod>();
+                            pm.GetCurrentGamemode.SetLevel(Level);
+                         };
+                    case "GivePlayerExp":
+                        if (args.Length > 2 && args[1] is Player && args[2] is int)
+                        {
+                            (args[1] as Player).GetModPlayer<PlayerMod>().AddExp((int)args[2]);
+                            return true;
+                        }
+                        return false;
+                    case "GivePlayerExpReward":
+                        if (args.Length > 3 && args[1] is Player && args[2] is float && args[3] is float)
+                        {
+                            (args[1] as Player).GetModPlayer<PlayerMod>().GetExpReward((float)args[2], (float)args[3], args.Length == 4 || (bool)args[4]);
+                            return true;
+                        }
+                        return false;
+                    case "NormalizeStatusPointsInvested":
+                        if (args.Length > 1 && args[1] is Player)
+                        {
+                            (args[1] as Player).GetModPlayer<PlayerMod>().GetCurrentGamemode.NormalizePointsInvested();
+                            return true;
+                        }
+                        return false;
                 }
             }
             return false;
@@ -194,6 +222,7 @@ namespace nexperience1dot4
             ModCompatibility.Calamity.Unload();
             ModCompatibility.TerraGuardiansMod.Unload();
             ServerConfigMod.EraseGameModesList();
+            Game_Modes.FreeModeRPG.Unload();
         }
 
         #region Game Mode Stuff

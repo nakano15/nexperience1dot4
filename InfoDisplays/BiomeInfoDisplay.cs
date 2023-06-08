@@ -18,10 +18,8 @@ namespace nexperience1dot4.InfoDisplays
 
         public override string DisplayValue()
         {
-            BiomeLevelStruct biome = Main.LocalPlayer.GetModPlayer<PlayerMod>().GetCurrentGamemode.GetMyBiome;
-            if(biome == null)
-                return "No Information";
-            return biome.GetBiomeName + " Lv[" + biome.GetMinLevel + "~" + biome.GetMaxLevel + "]";
+            GameModeData data = Main.LocalPlayer.GetModPlayer<PlayerMod>().GetCurrentGamemode;
+            return data.GetBase.GetZoneInformation(data, Main.LocalPlayer);
         }
     }
 }

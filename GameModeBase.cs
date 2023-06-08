@@ -166,5 +166,13 @@ namespace nexperience1dot4
             }
             return Result;
         }
+
+        public virtual string GetZoneInformation(GameModeData data, Player player)
+        {
+            BiomeLevelStruct biome = data.GetMyBiome;
+            if(biome == null)
+                return "No Information";
+            return biome.GetBiomeName + " Lv[" + biome.GetMinLevel + "~" + biome.GetMaxLevel + "]";
+        }
     }
 }

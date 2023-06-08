@@ -126,7 +126,7 @@ namespace nexperience1dot4.Game_Modes
             }
             if(npc.lifeMax > 5)
             {
-                float ExpReward = npc.lifeMax + (npc.damage + npc.defense) * 8;
+                float ExpReward = npc.lifeMax + (npc.damage * data.NpcDamage + npc.defense * data.NpcDefense) * 8;
                 const int ExpReductionMaxLevel = 60;
                 const float ExpReductionPercentage = 1f / ExpReductionMaxLevel;
                 if(Level < ExpReductionMaxLevel)

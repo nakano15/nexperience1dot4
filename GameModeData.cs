@@ -181,6 +181,22 @@ namespace nexperience1dot4
             LastMaxMana = player.statManaMax2;
         }
 
+        public void NormalizePointsInvested()
+        {
+            for(int s = 0; s < MyStatus.Length; s++)
+            {
+                _StatusPoints += MyStatus[s].StatusValue;
+                MyStatus[s].StatusValue = 0;
+            }
+            int NormalizedValues = _StatusPoints == 0 || MyStatus.Length == 0 ? 0 : _StatusPoints / MyStatus.Length;
+            for(int s = 0; s < MyStatus.Length; s++)
+            {
+                MyStatus[s].StatusValue = NormalizedValues;
+                _StatusPoints -= NormalizedValues;
+            }
+            UpdateEffectiveStatus();
+        }
+
         private void UpdateEffectiveLevel()
         {
             int LastLevel = _EffectiveLevel;
