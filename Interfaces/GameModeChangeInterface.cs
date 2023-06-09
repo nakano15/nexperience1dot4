@@ -140,7 +140,7 @@ namespace nexperience1dot4.Interfaces
                 DrawPosition.Y += 30;
                 Utils.DrawBorderString(Main.spriteBatch, "Allows Level Capping? " + SelectedGameMode.EnableLevelCapping, DrawPosition, Color.White);
                 DrawPosition.Y += 30;
-                if (Main.GameMode != Selected && Main.netMode == 0)
+                if (nexperience1dot4.GetActiveGameModeID != GameModeIDs[Selected] && Main.netMode == 0)
                 {
                     DrawPosition.X = Position.X + ListWidth + (Dimension.X - ListWidth + 8) * 0.5f;
                     DrawPosition.Y = Position.Y + Dimension.Y - 40;

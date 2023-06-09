@@ -1,6 +1,0 @@
-Fixed an issue where max companions count wasn't increasing with Charisma points.
-Added extra mod calls.
- => If you're interested in modding with this mod, or add mod support to it, better check the mod github.
-You can now change the game mode on the Status Window.
- => Currently, only Regular RPG Mode and Free Mode are available.
-Free Mode Rearrives.
