@@ -151,21 +151,6 @@ namespace nexperience1dot4.Interfaces
                         color = Color.Yellow;
                         if (Main.mouseLeft && Main.mouseLeftRelease)
                         {
-                            bool CanChangeGameMode = true;
-                            for(int i = 0; i < 200; i++)
-                            {
-                                if (Main.npc[i].active && Terraria.ID.NPCID.Sets.ShouldBeCountedAsBoss[i])
-                                {
-                                    CanChangeGameMode = false;
-                                    break;
-                                }
-                            }
-                            if (!CanChangeGameMode)
-                            {
-                                Main.NewText("Finish your fight before changing game mode!");
-                                Close();
-                                return true;
-                            }
                             nexperience1dot4.ChangeActiveGameMode(GameModeIDs[Selected]);
                             Close();
                             return true;
