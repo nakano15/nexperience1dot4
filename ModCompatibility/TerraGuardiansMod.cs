@@ -10,6 +10,8 @@ namespace nexperience1dot4.ModCompatibility
     public class TerraGuardiansMod
     {
         internal static Asset<Texture2D> ExpBarTexture;
+        private static Func<Player, bool> GetIsCompanionCharacter;
+        private static Mod TgMod;
 
         internal static float GroupMemberExpProgressHook(Player player, Vector2 HudPos)
         {
@@ -30,12 +32,25 @@ namespace nexperience1dot4.ModCompatibility
 
         internal static void Load()
         {
-            ExpBarTexture = ModContent.Request<Texture2D>(nexperience1dot4.ContentPath + "Interface/TgXpBar");
+            if (ModLoader.HasMod("terraguardians")) //No need for
+            {
+                TgMod = ModLoader.GetMod("terraguardians");
+                ExpBarTexture = ModContent.Request<Texture2D>(nexperience1dot4.ContentPath + "Interface/TgXpBar");
+                GetIsCompanionCharacter = (Func<Player, bool>)TgMod.Call("IsCompanionDelegate");
+            }
         }
 
         internal static void Unload()
         {
             ExpBarTexture = null;
+            GetIsCompanionCharacter = null;
+        }
+
+        internal static bool IsValidCharacter(Player player)
+        {
+            if (TgMod != null)
+                return !GetIsCompanionCharacter(player);
+            return true;
         }
     }
 }

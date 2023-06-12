@@ -42,11 +42,7 @@ namespace nexperience1dot4
                     AddDamageClass(FoundClass, StatusTranslator.DC_Melee);
                 }
             }
-            /*if (ModLoader.HasMod("terraguardians")) //No need for
-            {
-                ModLoader.GetMod("terraguardians").Call("AddGroupInterfaceHook", ModCompatibility.TerraGuardiansMod.GroupMemberExpProgressHook);
-                ModCompatibility.TerraGuardiansMod.Load();
-            }*/
+            ModCompatibility.TerraGuardiansMod.Load();
             //ModCompatibility.Calamity.Load();
             ServerConfigMod.PopulateGameModes();
             LoadSettings();

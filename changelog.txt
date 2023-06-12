@@ -1,2 +1,0 @@
-The mod will no longer stop you from changing game mode if there's something that counts as a boss in the world.
- => That change has been done, because there's the possibility any mod might spawn a boss within the world, but the player isn't facing it yet.

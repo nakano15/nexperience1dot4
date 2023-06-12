@@ -143,7 +143,7 @@ namespace nexperience1dot4
                     Player player = Main.player[p];
                     foreach(Player other in PlayerMod.GetPlayerTeammates(player))
                     {
-                        if(!Players.Contains(other))
+                        if(ModCompatibility.TerraGuardiansMod.IsValidCharacter(other) && !Players.Contains(other))
                             Players.Add(other);
                     }
                 }
