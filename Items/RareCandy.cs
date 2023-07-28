@@ -9,7 +9,7 @@ namespace nexperience1dot4.Items
     {
         public override void SetStaticDefaults()
         {
-            Tooltip.SetDefault("You probably know what this does.");
+            // Tooltip.SetDefault("You probably know what this does.");
 
             CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 10;
         }

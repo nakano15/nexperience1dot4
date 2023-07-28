@@ -111,7 +111,7 @@ namespace nexperience1dot4.Game_Modes
 
             player.statLifeMax2 = (int)(player.statLifeMax2 * HealthChangeValue);
             player.statManaMax2 = (int)(player.statManaMax2 * ManaChangeValue);
-            player.statDefense = (int)(player.statDefense * DefenseChangeValue);
+            player.statDefense = player.statDefense * DefenseChangeValue;
         }
 
         public override void UpdateNpcStatus(NPC npc, GameModeData data)
@@ -144,10 +144,15 @@ namespace nexperience1dot4.Game_Modes
 
         public void SetupBiomes(){
             //PHM
+            AddBiome("Underworld Island", 1, 7, 7, 14, delegate (Player p){ 
+                if (!Main.remixWorld) return false;
+                float xpos = p.Center.X * (1f / 16);
+                return p.ZoneUnderworldHeight && xpos >= Main.maxTilesX * 0.38f + 50 && xpos <= Main.maxTilesX * 0.62f;
+            });
             AddBiome("Forest", 1, 7, 7, 14, delegate (Player p){ return true;});
             //Caves
             AddBiome("Underground", 9, 15, delegate (Player p){ return p.ZoneDirtLayerHeight;});
-            AddBiome("Cavern", 15, 23, delegate (Player p){ return p.ZoneRockLayerHeight;});
+            AddBiome("Cavern", 15, 23, delegate (Player p){ return !Main.remixWorld && p.ZoneRockLayerHeight;});
             //Snowland
             AddBiome("Tundra", 1, 7, 8, 15, delegate (Player p){ return p.ZoneSnow;});
             AddBiome("Ice Caves", 9, 15, delegate (Player p){ return p.ZoneSnow && p.ZoneDirtLayerHeight && !Main.dayTime;});
@@ -199,12 +204,38 @@ namespace nexperience1dot4.Game_Modes
             //Immutable Order
             AddBiome("Dungeon", 40, 50, delegate (Player p){ return p.ZoneDungeon;});
             AddBiome("Desu~", 9999, 9999, delegate (Player p){ return p.ZoneDungeon && !NPC.downedBoss3;}, false);
+
+            //Remix Diferences
+            AddBiome("Dark World", 40, 50, delegate(Player p)
+            {
+                return Main.remixWorld && p.ZoneOverworldHeight;
+            });
+            AddBiome("Dark World", 90, 100, delegate(Player p)
+            {
+                return Main.remixWorld && p.ZoneOverworldHeight && Main.hardMode;
+            });
+            AddBiome("Dungeon", 50, 60, delegate (Player p){ return Main.remixWorld && p.ZoneDungeon;});
+
             //Underworld
-            AddBiome("Underworld", 50, 60, delegate (Player p){ return p.ZoneUnderworldHeight;});
+            AddBiome("Underworld", 50, 60, delegate (Player p){ 
+                if (Main.remixWorld)
+                {
+                    float xpos = p.Center.X * (1f / 16);
+                    return p.ZoneUnderworldHeight && (xpos < Main.maxTilesX * 0.38f + 50 || xpos > Main.maxTilesX * 0.62f);
+                }
+                return p.ZoneUnderworldHeight;});
             //
             AddBiome("Dungeon", 110, 120, delegate (Player p){ return Main.hardMode && NPC.downedPlantBoss && p.ZoneDungeon;});
             //Underworld
-            AddBiome("Underworld", 80, 90, delegate (Player p){ return Main.hardMode && p.ZoneUnderworldHeight && NPC.downedMechBossAny;});
+            AddBiome("Underworld", 80, 90, delegate (Player p){ 
+                if (!(Main.hardMode && p.ZoneUnderworldHeight && NPC.downedMechBossAny)) return false;
+                if (Main.remixWorld)
+                {
+                    float xpos = p.Center.X * (1f / 16);
+                    return p.ZoneUnderworldHeight && (xpos < Main.maxTilesX * 0.38f + 50 || xpos > Main.maxTilesX * 0.62f);
+                }
+                return true;
+                });
             
             //Towers
             AddBiome("Stardust Tower", 140, 150, delegate (Player p){ return p.ZoneTowerStardust;});

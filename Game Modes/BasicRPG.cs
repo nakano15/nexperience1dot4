@@ -38,6 +38,11 @@ namespace nexperience1dot4.Game_Modes
         public void BiomeLevels()
         {
             //phm
+            AddBiome("Underworld Island", 1, 5, delegate (Player player) { 
+                if (!Main.remixWorld) return false;
+                float xpos = player.Center.X * (1f / 16);
+                return player.ZoneUnderworldHeight && xpos >= Main.maxTilesX * 0.38f + 50 && xpos <= Main.maxTilesX * 0.62f;
+            });
             AddBiome("Forest", 1, 5, delegate (Player player) { return true; });
             AddBiome("Night Forest", 3, 7, delegate (Player player) { return !Main.dayTime; });
             AddBiome("Underground", 3, 7, delegate (Player player) { return player.ZoneNormalUnderground; });
@@ -50,7 +55,14 @@ namespace nexperience1dot4.Game_Modes
             AddBiome("Underground Jungle", 7, 12, delegate (Player player) { return player.ZoneJungle && player.ZoneRockLayerHeight; });
             AddBiome("Beach", 5, 10, delegate (Player player) { return player.ZoneBeach; });
             AddBiome("Dungeon", 15, 20, delegate (Player player) { return player.ZoneDungeon; });
-            AddBiome("Underworld", 15, 20, delegate (Player player) { return player.ZoneUnderworldHeight; });
+            AddBiome("Underworld", 15, 20, delegate (Player player) { 
+                if (Main.remixWorld)
+                {
+                    float xpos = player.Center.X * (1f / 16);
+                    return player.ZoneUnderworldHeight && (xpos < Main.maxTilesX * 0.38f + 50 || xpos > Main.maxTilesX * 0.62f);
+                }
+                return player.ZoneUnderworldHeight;
+            });
             //hm
 
             //desu
@@ -85,7 +97,7 @@ namespace nexperience1dot4.Game_Modes
             data.SummonDamagePercentage *= Increase + MATK * 0.05f;
             data.GenericDamagePercentage *= Increase + (PATK + MATK) * 0.025f;
 
-            player.statDefense = (int)(player.statDefense * Increase);
+            player.statDefense = player.statDefense * Increase;
 
             Increase = 0.5f + (data.GetEffectiveLevel - 1) * 0.035f;
 

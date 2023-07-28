@@ -23,11 +23,11 @@ namespace nexperience1dot4
             }
         }
 
-        public override void ModifyHitPlayer(Projectile projectile, Player target, ref int damage, ref bool crit)
+        public override void ModifyHitPlayer(Projectile projectile, Player target, ref Player.HurtModifiers modifiers)
         {
             switch(projectile.type){
                 case ProjectileID.TorchGod:
-                    damage = (int)(damage * target.GetModPlayer<PlayerMod>().GetHealthPercentageChange);
+                    modifiers.FinalDamage = modifiers.FinalDamage * target.GetModPlayer<PlayerMod>().GetHealthPercentageChange;
                     break;
             }
         }

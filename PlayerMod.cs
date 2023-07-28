@@ -62,9 +62,9 @@ namespace nexperience1dot4
             ExpPercentage = 1;
         }
 
-        public override void OnEnterWorld(Player player)
+        public override void OnEnterWorld()
         {
-            NetplayMod.AskForGameMode(player.whoAmI);
+            NetplayMod.AskForGameMode(Player.whoAmI);
         }
 
         public override void PreUpdate()
@@ -211,15 +211,14 @@ namespace nexperience1dot4
             }
         }
 
-        public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, ref int cooldownCounter)
+        public override void ModifyHurt(ref Player.HurtModifiers modifiers)
         {
-            if((damageSource.SourceOtherIndex > -1 && damageSource.SourceOtherIndex < 254 && damageSource.SourceOtherIndex != 13 && damageSource.SourceOtherIndex != 14 && damageSource.SourceOtherIndex != 15))
+            if((modifiers.DamageSource.SourceOtherIndex > -1 && modifiers.DamageSource.SourceOtherIndex < 254 && modifiers.DamageSource.SourceOtherIndex != 13 && modifiers.DamageSource.SourceOtherIndex != 14 && modifiers.DamageSource.SourceOtherIndex != 15))
             {
-                damage = (int)(damage * GetHealthPercentageChange);
-                if (damage < 1)
-                    damage = 1;
+                modifiers.FinalDamage = modifiers.FinalDamage * GetHealthPercentageChange;
+                //if (damage < 1)
+                //    damage = 1;
             }
-            return base.PreHurt(pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource, ref cooldownCounter);
         }
 
         public override void PostUpdateEquips()

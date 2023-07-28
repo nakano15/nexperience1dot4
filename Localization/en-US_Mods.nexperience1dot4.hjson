@@ -1,0 +1,73 @@
+Items: {
+	RareCandy: {
+		DisplayName: Rare Candy
+		Tooltip: ""
+	}
+}
+
+Configs: {
+	ClientConfigMod: {
+		DisplayName: Client Config Mod
+
+		StatusWindowOpacity: {
+			Label: Status Window Transparency
+			Tooltip: This will change the opacity of the status window.
+		}
+
+		ExpRewardAsPercentage: {
+			Label: Display Exp Reward as Percentage
+			Tooltip: Changes the exp reward displayed to be in percentage.
+		}
+	}
+
+	ServerConfigMod: {
+		DisplayName: Server Config Mod
+		Headers.GameplaySettings: Gameplay Settings Header
+
+		DeathExpPenalty: {
+			Label: Death Exp Penalty Percentage
+			Tooltip: Allows you to change the exp penalty upon death.
+		}
+
+		EnableBiomeLevelCapper: {
+			Label: Enable Biome Level Capper?
+			Tooltip:
+				'''
+				When enabled, your character level will be capped to
+				biome maximum level, if overleveled to it.
+				Having a higher leveled monster around
+				will increase the level capper.
+				You can still gain exp and level
+				up while under effect of the level capper.
+				'''
+		}
+
+		InfiniteLeveling: {
+			Label: Infinite Leveling?
+			Tooltip:
+				'''
+				Enabling this, will make so you can level up past level cap.
+				The mod will try to make up the exp progression past max level.
+				'''
+		}
+
+		ExpRate: {
+			Label: Exp Rate
+			Tooltip:
+				'''
+				Allows you to change the rate at which your character gains exp.
+				Value is in percentage.
+				'''
+		}
+
+		NTerrariaGraveyard: {
+			Label: N Terraria Graveyard Biome
+			Tooltip: Yes! Yes! Yes!
+		}
+
+		ZombieDroppingTombstone: {
+			Label: Zombies Drops Tombstones?
+			Tooltip: ""
+		}
+	}
+}

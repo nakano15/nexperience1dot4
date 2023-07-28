@@ -1,0 +1,16 @@
+
+Mods: {
+	nexperience1dot4: {
+		InfoDisplays: {
+			BiomeInfoDisplay.DisplayName: Area Info
+			LevelInfoDisplay.DisplayName: Level Display
+		}
+
+		Items: {
+			RareCandy: {
+				DisplayName: Rare Candy
+				Tooltip: You probably know what this does.
+			}
+		}
+	}
+}

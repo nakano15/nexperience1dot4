@@ -77,7 +77,7 @@ namespace nexperience1dot4
             SavedMobStatus[npc.whoAmI] = MobStatus;
         }
 
-        public override void ScaleExpertStats(NPC npc, int numPlayers, float bossLifeScale)
+        public override void ApplyDifficultyAndPlayerScaling(NPC npc, int numPlayers, float balance, float bossAdjustment)/* tModPorter Note: bossLifeScale -> balance (bossAdjustment is different, see the docs for details) */
         {
             //MobStatus.UpdateNPC(npc);
             //OriginalHP = npc.lifeMax;

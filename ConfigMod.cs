@@ -13,7 +13,7 @@ namespace nexperience1dot4
         private static string[] _GameModeInfos = new string[0];
         private string GameModeID { get { return nexperience1dot4.GetActiveGameModeID; } set { nexperience1dot4.ChangeActiveGameMode(value); } }
 
-        [Header("Gameplay Settings")]
+        [Header("GameplaySettings")]
 
         [Label("Death Exp Penalty Percentage")]
         [Tooltip("Allows you to change the exp penalty upon death.")]
