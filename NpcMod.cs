@@ -59,10 +59,11 @@ namespace nexperience1dot4
             else
             {
                 MobStatus = new GameModeData(nexperience1dot4.GetActiveGameModeID, false);
+                MobStatus.SpawnNpcLevel(npc);
             }
-            UpdatedStatus = false; //How to save the monster level?
             OriginalHP = npc.lifeMax;
             FirstUpdate = true;
+            UpdatedStatus = false; //How to save the monster level?
             /*MobStatus.SpawnNpcLevel(npc);
             UpdatedStatus = false;
             FirstUpdate = true;*/
@@ -73,14 +74,7 @@ namespace nexperience1dot4
         {
             if (MobStatus == null)
                 MobStatus = new GameModeData(nexperience1dot4.GetActiveGameModeID, false); 
-            MobStatus.SpawnNpcLevel(npc);
             SavedMobStatus[npc.whoAmI] = MobStatus;
-        }
-
-        public override void ApplyDifficultyAndPlayerScaling(NPC npc, int numPlayers, float balance, float bossAdjustment)/* tModPorter Note: bossLifeScale -> balance (bossAdjustment is different, see the docs for details) */
-        {
-            //MobStatus.UpdateNPC(npc);
-            //OriginalHP = npc.lifeMax;
         }
 
         public static int GetNpcLevel(NPC npc)

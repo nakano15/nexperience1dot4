@@ -1,2 +1,1 @@
-Ported to tModLoader 1.4.4.
-Added support to Remix seed on game modes.
+Fixed a issue where size variant npcs weren't having their level correctly set.
