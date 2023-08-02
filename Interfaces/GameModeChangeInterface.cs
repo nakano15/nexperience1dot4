@@ -72,7 +72,8 @@ namespace nexperience1dot4.Interfaces
             DrawPosition.X += 4;
             DrawPosition.Y += 4;
             int MaxItems = (int)((Dimension.Y - 8) / 30);
-            float ListWidth = 258f;
+            float ListWidth = 156f;
+            Main.spriteBatch.Draw(nexperience1dot4.HandyTexture.Value, new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, (int)ListWidth, Dimension.Y - 8), Color.DarkGray);
             for(int i = 0; i < MaxItems; i++)
             {
                 int Index = i + MenuScroll;
@@ -125,7 +126,7 @@ namespace nexperience1dot4.Interfaces
                         }
                     }
                 }
-                Utils.DrawBorderString(Main.spriteBatch, Text, ItemPosition, color);
+                Utils.DrawBorderString(Main.spriteBatch, Text, ItemPosition + Vector2.UnitY * 4, color, 0.9f);
             }
             DrawPosition.X += ListWidth + 4;
             if(Selected > -1)
@@ -142,7 +143,7 @@ namespace nexperience1dot4.Interfaces
                 DrawPosition.Y += 30;
                 if (nexperience1dot4.GetActiveGameModeID != GameModeIDs[Selected] && Main.netMode == 0)
                 {
-                    DrawPosition.X = Position.X + ListWidth + (Dimension.X - ListWidth + 8) * 0.5f;
+                    DrawPosition.X = Position.X + ListWidth + (Dimension.X - ListWidth + 4) * 0.5f;
                     DrawPosition.Y = Position.Y + Dimension.Y - 40;
                     Color color = Color.White;
                     if (Main.mouseX >= DrawPosition.X - 80 && Main.mouseX < DrawPosition.X + 80 && 
@@ -160,10 +161,10 @@ namespace nexperience1dot4.Interfaces
                 }
 
             }
-            DrawPosition.X = Position.X + Dimension.X - 64;
+            DrawPosition.X = Position.X + Dimension.X - 22;
             DrawPosition.Y = Position.Y + 4;
             Color closecolor = Color.Red;
-            if (Main.mouseX >= DrawPosition.X && Main.mouseX < DrawPosition.X + 60 && 
+            if (Main.mouseX >= DrawPosition.X && Main.mouseX < DrawPosition.X + 26 && 
                 Main.mouseY >= DrawPosition.Y && Main.mouseY < DrawPosition.Y + 26f)
             {
                 closecolor = Color.Yellow;
@@ -173,7 +174,7 @@ namespace nexperience1dot4.Interfaces
                     return true;
                 }
             }
-            Utils.DrawBorderString(Main.spriteBatch, "Close", DrawPosition, closecolor, 0.9f);
+            Utils.DrawBorderString(Main.spriteBatch, "X", DrawPosition, closecolor, 0.9f);
             return true;
         }
     }

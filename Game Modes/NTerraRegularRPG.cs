@@ -154,11 +154,11 @@ namespace nexperience1dot4.Game_Modes
             AddBiome("Underground", 9, 15, delegate (Player p){ return p.ZoneDirtLayerHeight;});
             AddBiome("Cavern", 15, 23, delegate (Player p){ return !Main.remixWorld && p.ZoneRockLayerHeight;});
             //Snowland
-            AddBiome("Tundra", 1, 7, 8, 15, delegate (Player p){ return p.ZoneSnow;});
+            AddBiome("Tundra", 1, 7, 8, 15, delegate (Player p){ return !Main.remixWorld && p.ZoneSnow;});
             AddBiome("Ice Caves", 9, 15, delegate (Player p){ return p.ZoneSnow && p.ZoneDirtLayerHeight && !Main.dayTime;});
             AddBiome("Ice Caves", 16, 22, delegate (Player p){ return p.ZoneSnow && p.ZoneRockLayerHeight && !Main.dayTime;});
             //Desert
-            AddBiome("Desert", 1, 7, 8, 15, delegate (Player p){ return p.ZoneDesert;});
+            AddBiome("Desert", 1, 7, 8, 15, delegate (Player p){ return !Main.remixWorld && p.ZoneDesert;});
             AddBiome("Antlion Hive", 18, 24, delegate (Player p){ return p.ZoneUndergroundDesert;});
             AddBiome("Beach", 1, 7, 7, 14, delegate (Player p){ return p.ZoneBeach;});
             //Graveyard
@@ -167,23 +167,23 @@ namespace nexperience1dot4.Game_Modes
             AddBiome("Corruption", 23, 27, delegate (Player p){ return p.ZoneCorrupt;});
             AddBiome("Crimson", 23, 27, delegate (Player p){ return p.ZoneCrimson;});
             //Hallow (Behaves like Forest)
-            AddBiome("Hallow", 1, 7, 7, 14, delegate (Player p){ return p.ZoneHallow;});
+            AddBiome("Hallow", 1, 7, 7, 14, delegate (Player p){ return !Main.remixWorld && p.ZoneHallow;});
             //Jungle
-            AddBiome("Jungle", 30, 37, delegate (Player p){ return p.ZoneJungle;});
+            AddBiome("Jungle", 30, 37, delegate (Player p){ return !Main.remixWorld && p.ZoneJungle;});
             AddBiome("Underground Jungle", 34, 40, delegate (Player p){ return p.ZoneJungle && (p.ZoneDirtLayerHeight || p.ZoneRockLayerHeight);});
 
             //HM
             //
-            AddBiome("Forest", 1, 7, 56, 64, delegate (Player p){ return Main.hardMode;});
+            AddBiome("Forest", 1, 7, 56, 64, delegate (Player p){ return !Main.remixWorld && Main.hardMode;});
             //Caves
             AddBiome("Underground", 60, 68, delegate (Player p){ return Main.hardMode && p.ZoneDirtLayerHeight;});
             AddBiome("Cavern", 64, 72, delegate (Player p){ return Main.hardMode && p.ZoneRockLayerHeight;});
             //Snowland
-            AddBiome("Tundra", 1, 7, 61, 69, delegate (Player p){ return Main.hardMode && p.ZoneSnow;});
+            AddBiome("Tundra", 1, 7, 61, 69, delegate (Player p){ return !Main.remixWorld && Main.hardMode && p.ZoneSnow;});
             AddBiome("Ice Caves", 59, 65, delegate (Player p){ return Main.hardMode && p.ZoneSnow && p.ZoneDirtLayerHeight && !Main.dayTime;});
             AddBiome("Ice Caves", 66, 76, delegate (Player p){ return Main.hardMode && p.ZoneSnow && p.ZoneRockLayerHeight && !Main.dayTime;});
             //Desert
-            AddBiome("Desert", 63, 70, delegate (Player p){ return Main.hardMode && p.ZoneDesert;});
+            AddBiome("Desert", 63, 70, delegate (Player p){ return !Main.remixWorld && Main.hardMode && p.ZoneDesert;});
             AddBiome("Antlion Hive", 72, 80, delegate (Player p){ return Main.hardMode && p.ZoneUndergroundDesert;});
             AddBiome("Beach", 65, 72, delegate (Player p){ return Main.hardMode && p.ZoneBeach;});
             //Graveyard
@@ -194,7 +194,7 @@ namespace nexperience1dot4.Game_Modes
             AddBiome("Crimson", 54, 62, delegate (Player p){ return Main.hardMode && p.ZoneCrimson;});
             AddBiome("Crimson Caves", 63, 75, delegate (Player p){ return Main.hardMode && p.ZoneCrimson && p.ZoneRockLayerHeight;});
             //Hallow (Behaves like Forest)
-            AddBiome("Hallow", 50, 58, 56, 64, delegate (Player p){ return Main.hardMode && p.ZoneHallow;});
+            AddBiome("Hallow", 50, 58, 56, 64, delegate (Player p){ return !Main.remixWorld && Main.hardMode && p.ZoneHallow;});
             AddBiome("Hallowed Caves", 63, 75, delegate (Player p){ return Main.hardMode && p.ZoneHallow && p.ZoneRockLayerHeight;});
             //Jungle
             AddBiome("Jungle", 80, 87, delegate (Player p){ return Main.hardMode && p.ZoneJungle;});
