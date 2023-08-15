@@ -19,10 +19,38 @@ namespace nexperience1dot4.Game_Modes
         public override bool EnableLevelCapping => false;
         private static int ZoneLevel = -1;
         private static string ZoneLevelText = null;
+        public override GameModeStatusInfo[] GameModeStatus => GetStatus();
 
         public FreeModeRPG()
         {
             SetMaxLevel(int.MaxValue);
+        }
+
+        private GameModeStatusInfo[] GetStatus()
+        {
+            GameModeStatusInfo[] s = new GameModeStatusInfo[7];
+            s[0] = new GameModeStatusInfo("Swordsman", 
+                "MHP [++++], Melee-Damage [+++], DEF [++], Ranged-Damage [+]",
+                "SWD");
+            s[1] = new GameModeStatusInfo("Ranger", 
+                "Ranged-Damage [++++], Summon-Damage [+++], Melee-Damage [++], DEF [+]",
+                "RNG");
+            s[2] = new GameModeStatusInfo("Magician", 
+                "Magic-Damage [++++], Minion-Damage [+++], Ranged-Damage [++], Melee-Damage [+]",
+                "MGC");
+            s[3] = new GameModeStatusInfo("Thief", 
+                "Melee-Damage [++++], Ranged-Damage [+++], MHP [++], Defense [+]",
+                "THF");
+            s[4] = new GameModeStatusInfo("Acolyte", 
+                "MHP [++++], Magic-Damage [+++], Melee-Damage [++], Summon-Damage [+]",
+                "ACO");
+            s[5] = new GameModeStatusInfo("Summoner", 
+                "Summon-Damage [++++], Ranged-Damage [+++], Magic-Damage [++], MHP [+]",
+                "SUM");
+            s[6] = new GameModeStatusInfo("Sorcerer", 
+                "Summon-Damage [++++], Magic-Damage [+++], Ranged-Damage [++], MHP [+]",
+                "SUM");
+            return s;
         }
 
         public override void UpdatePlayerStatus(Player player, GameModeData data)
@@ -37,6 +65,49 @@ namespace nexperience1dot4.Game_Modes
             //data.SummonDamagePercentage += StatusBonus;
             data.GenericDamagePercentage += StatusBonus;
             player.statDefense += (int)(StatusBonus);
+
+            int fgt = data.GetStatusValue(0),
+                ran =  data.GetStatusValue(1),
+                mag =  data.GetStatusValue(2),
+                thi =  data.GetStatusValue(3),
+                aco =  data.GetStatusValue(4),
+                sum =  data.GetStatusValue(5),
+                sor =  data.GetStatusValue(6);
+            
+            player.statLifeMax2 += 40 * fgt;
+            data.MeleeDamagePercentage += .3f * fgt;
+            player.statDefense += 2 * fgt;
+            data.RangedDamagePercentage += fgt * .1f;
+
+            data.RangedDamagePercentage += .4f * ran;
+            data.SummonDamagePercentage += .3f * ran;
+            data.MeleeDamagePercentage += .2f * ran;
+            player.statDefense += ran;
+
+            data.MagicDamagePercentage += mag * .4f;
+            data.SummonDamagePercentage += mag * .3f;
+            data.RangedDamagePercentage += mag * .2f;
+            data.MeleeDamagePercentage += mag * .1f;
+
+            data.MeleeDamagePercentage += thi * .4f;
+            data.RangedDamagePercentage += thi * .3f;
+            player.statLifeMax2 += thi * 20;
+            player.statDefense += thi;
+
+            player.statLifeMax2 += aco * 40;
+            data.MagicDamagePercentage += aco * .3f;
+            data.MeleeDamagePercentage += aco * .2f;
+            data.SummonDamagePercentage += aco * .1f;
+
+            data.SummonDamagePercentage += sum * .4f;
+            data.RangedDamagePercentage += sum * .3f;
+            data.MagicDamagePercentage += sum * .2f;
+            player.statLifeMax2 += sum * 10;
+
+            data.SummonDamagePercentage += sor * .4f;
+            data.MagicDamagePercentage += sor * .3f;
+            data.RangedDamagePercentage += sor * .2f;
+            player.statLifeMax2 += sor * 10;
         }
 
         public override void UpdateNpcStatus(NPC npc, GameModeData data)
@@ -44,10 +115,10 @@ namespace nexperience1dot4.Game_Modes
             float StatusIncrease = data.GetEffectiveLevel * 0.01f;
             if(npc.lifeMax > 5)
                 npc.lifeMax += (int)(npc.lifeMax * StatusIncrease);
-            data.NpcDamage += StatusIncrease;
+            data.NpcDamageMult += StatusIncrease;
             //npc.damage += (int)(npc.damage * StatusIncrease);
             data.ProjectileNpcDamagePercentage += StatusIncrease;
-            data.SetExpReward(npc.lifeMax * 2 + npc.damage * 4 * data.NpcDamage + npc.defense * 8 + data.GetEffectiveLevel * 16);
+            data.SetExpReward(npc.lifeMax * 2 + npc.damage * 4 * data.NpcDamageMult + npc.defense * 8 + data.GetEffectiveLevel * 16);
         }
 
         public override int GetNpcLevelProcedural(NPC npc)

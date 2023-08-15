@@ -30,8 +30,9 @@ namespace nexperience1dot4
         public float MeleeSpeedPercentage = 1f;
         public float ProjectileNpcDamagePercentage{get{ return GenericDamagePercentage;} set{ GenericDamagePercentage = value; }}
         public bool NpcIsFirstFrame{get{return MeleeDamagePercentage != 0; } set{ MeleeDamagePercentage = value ? 1 : 0; }}
-        public float NpcDamage{ get{ return RangedDamagePercentage; } set{ RangedDamagePercentage = value; }}
-        public float NpcDefense{ get{ return RangedDamagePercentage; } set{ RangedDamagePercentage = value; }}
+        public float NpcDamageSum{ get{ return SummonDamagePercentage; } set{ SummonDamagePercentage = value; }}
+        public float NpcDamageMult{ get{ return RangedDamagePercentage; } set{ RangedDamagePercentage = value; }}
+        public float NpcDefense{ get{ return MagicDamagePercentage; } set{ MagicDamagePercentage = value; }}
         public int LastNpcDamage{ get{ return LastMaxLife; } set{ LastMaxLife = value; }}
         public int LastNpcDefense{ get{ return LastMaxMana; } set{ LastMaxMana = value; }}
 
@@ -272,14 +273,15 @@ namespace nexperience1dot4
         {
             _EffectiveLevel = _Level;
             TownNpcEffectiveLevelTweak(npc);
-            ProjectileNpcDamagePercentage = NpcDamage = NpcDefense = 1;
+            ProjectileNpcDamagePercentage = NpcDamageMult = NpcDefense = 1;
+            NpcDamageSum = 0;
             int npcHealthBackup = npc.lifeMax;
             npc.lifeMax = npc.GetGlobalNPC<NpcMod>().GetOriginalHP;
             GetBase.UpdateNpcStatus(npc, this);
             if(npc.type == Terraria.ID.NPCID.Nailhead)
                 ProjectileNpcDamagePercentage = 1;
             if(npc.damage != LastNpcDamage){
-                npc.damage = (int)(npc.damage * NpcDamage);
+                npc.damage = (int)((npc.damage + NpcDamageSum) * NpcDamageMult);
                 LastNpcDamage = npc.damage;
             }
             if(npc.defense != LastNpcDefense){

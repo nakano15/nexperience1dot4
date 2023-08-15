@@ -117,7 +117,7 @@ namespace nexperience1dot4.Game_Modes
         public override void UpdateNpcStatus(NPC npc, GameModeData data)
         {
             int Level = data.GetEffectiveLevel;
-            data.NpcDamage += Level * 0.1f;
+            data.NpcDamageMult += Level * 0.1f;
             data.NpcDefense += Level * 0.1f;
             data.ProjectileNpcDamagePercentage += Level * 0.1f;
             if(npc.lifeMax > 5)
@@ -126,7 +126,7 @@ namespace nexperience1dot4.Game_Modes
             }
             if(npc.lifeMax > 5)
             {
-                float ExpReward = npc.lifeMax + (npc.damage * data.NpcDamage + npc.defense * data.NpcDefense) * 8;
+                float ExpReward = npc.lifeMax + (npc.damage * data.NpcDamageMult + npc.defense * data.NpcDefense) * 8;
                 const int ExpReductionMaxLevel = 60;
                 const float ExpReductionPercentage = 1f / ExpReductionMaxLevel;
                 if(Level < ExpReductionMaxLevel)
@@ -199,7 +199,6 @@ namespace nexperience1dot4.Game_Modes
             //Jungle
             AddBiome("Jungle", 80, 87, delegate (Player p){ return Main.hardMode && p.ZoneJungle;});
             AddBiome("Underground Jungle", 88, 100, delegate (Player p){ return Main.hardMode && p.ZoneJungle && p.ZoneRockLayerHeight;});
-            AddBiome("Lihzahrd Temple", 100, 110, delegate (Player p){ return Main.hardMode && p.ZoneLihzhardTemple;});
 
             //Immutable Order
             AddBiome("Dungeon", 40, 50, delegate (Player p){ return p.ZoneDungeon;});
@@ -215,6 +214,9 @@ namespace nexperience1dot4.Game_Modes
                 return Main.remixWorld && p.ZoneOverworldHeight && Main.hardMode;
             });
             AddBiome("Dungeon", 50, 60, delegate (Player p){ return Main.remixWorld && p.ZoneDungeon;});
+            
+            //Immutable Order
+            AddBiome("Lihzahrd Temple", 100, 110, delegate (Player p){ return Main.hardMode && p.ZoneLihzhardTemple;});
 
             //Underworld
             AddBiome("Underworld", 50, 60, delegate (Player p){ 

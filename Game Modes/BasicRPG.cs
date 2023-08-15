@@ -112,7 +112,7 @@ namespace nexperience1dot4.Game_Modes
             if(npc.lifeMax > 5)
                 npc.lifeMax = (int)(npc.lifeMax * (1f + 0.04f * (data.GetEffectiveLevel - 1))) + data.GetEffectiveLevel * 20;//10
             float Increase = 1f + 0.12f * (data.GetEffectiveLevel - 1);
-            data.NpcDamage = Increase;
+            data.NpcDamageMult = Increase;
             data.NpcDefense = Increase;
             //npc.damage = (int)(npc.damage * Increase);
             //npc.defense = (int)(npc.defense * Increase);

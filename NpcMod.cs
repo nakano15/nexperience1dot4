@@ -96,6 +96,7 @@ namespace nexperience1dot4
                 float Percentage = npc.life >= npc.lifeMax ? 1f : (float)npc.life / npc.lifeMax;
                 MobStatus.UpdateNPC(npc);
                 npc.life = (int)(npc.lifeMax * Percentage);
+                //Main.NewText(npc.GivenOrTypeName + " stats - Damage: " + npc.damage + "  Defense: " + npc.defense);
             }
             if(FirstUpdate)
             {
