@@ -1,5 +1,0 @@
-Free Mode:
- => Added status to spend points on.
- => The statuses gained some changes on how their bonus works, compared to 1.3 version of the mod:
- =>  => Damage increasing status, will now increase damage by an additional of 10%, instead of 100%.
- =>  => Health increasing status will now increase health by an additional of 10 per point, instead of 1 per point.

@@ -67,7 +67,52 @@ Configs: {
 
 		ZombieDroppingTombstone: {
 			Label: Zombies Drops Tombstones?
+			Tooltip: There will be a chance where Zombies will drop Tombstones upon death.
+		}
+
+		AddStatusLevelCapper: {
+			Label: Enable Status Capper?
+			Tooltip: Works with the Biome Level Capper. Adds a cap to item damage and defense depending on the level.
+		}
+
+		SetEverythingToMyLevel: {
+			Tooltip: Monsters spawn level will be based on closest player level.
+			Label: Set Everything To My Level?
+		}
+
+		AllowManaBoost: {
+			Label: Allow Mana Boost?
+			Tooltip: Enable this only if you're using a mod that overrides Terraria vanilla mana cap. This option makes the status give bonus to the maximum mana of your character.
+		}
+
+		Playthrough1dot5: {
+			Label: Bring monsters to my level after the end game?
+			Tooltip: Upon enabling this, and after defeating the Moonlord once, all monsters will have their status level scaled to yours, but that wont change their exp given.
+		}
+
+		CapLevelOnInfiniteLeveling: {
+			Label: Cap level to max game mode level when overleveled?
+			Tooltip: Leveling continues on Infinite Leveling, but the player status level will be capped to the game mode max level when overleveled.
+		}
+
+		BuffPreHardmodeEnemiesOnHardmode: {
+			Label: Give status boost to Pre-Hardmode Enemies on Hardmode?
+			Tooltip: Enabling this, will make the game give a status boost to Pre-Hardmode enemies when you are on a Hardmode world. Does not work on Expert worlds.
+		}
+
+		MobDefenseToHealth: {
+			Label: Mob Defense To Health
 			Tooltip: ""
+		}
+
+		PotionsForSale: {
+			Label: Potions For Sale?
+			Tooltip: Makes other healing potions be sold by the merchant.
+		}
+
+		BossesAsToughAsMe: {
+			Label: Bosses Get As Tough As Me After First Defeat?
+			Tooltip: This setting makes bosses spawn with your character level, once you've defeated them once.
 		}
 	}
 }

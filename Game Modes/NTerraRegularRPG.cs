@@ -110,7 +110,7 @@ namespace nexperience1dot4.Game_Modes
             }
 
             player.statLifeMax2 = (int)(player.statLifeMax2 * HealthChangeValue);
-            player.statManaMax2 = (int)(player.statManaMax2 * ManaChangeValue);
+            if (nexperience1dot4.AllowManaBoost) player.statManaMax2 = (int)(player.statManaMax2 * ManaChangeValue);
             player.statDefense = player.statDefense * DefenseChangeValue;
         }
 

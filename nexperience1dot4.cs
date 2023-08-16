@@ -19,7 +19,7 @@ namespace nexperience1dot4
         private static string ActiveGameMode = "";
         public const int SaveVersion = 1;
         internal static byte DeathExpPenalty = 5;
-        internal static bool EnableBiomeLevelCapper = true, InfiniteLeveling = false, NTerrariaGraveyard = false, ZombiesDroppingTombstones = false;
+        internal static bool EnableBiomeLevelCapper = true, SetEverythingToMyLevel = false, AllowManaBoost = false, InfiniteLeveling = false, Playthrough1dot5 = false, CapLevelOnInfiniteLeveling = false, BuffPreHardmodeEnemiesOnHardmode = false, MobDefenseToHealth = false, PotionsForSale = false, BossesAsToughAsMe = false, NTerrariaGraveyard = false, ZombiesDroppingTombstones = false;
         public static bool DisplayExpRewardAsPercentage = false;
         internal static float ExpRate = 1f;
         internal static Asset<Texture2D> HandyTexture, LevelArrowTexture;

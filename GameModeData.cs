@@ -202,7 +202,9 @@ namespace nexperience1dot4
         {
             int LastLevel = _EffectiveLevel;
             _EffectiveLevel = _Level;
-            if (nexperience1dot4.EnableBiomeLevelCapper)
+            if ((!nexperience1dot4.InfiniteLeveling || nexperience1dot4.CapLevelOnInfiniteLeveling) && _EffectiveLevel > GetBase.GetMaxLevel)
+                _EffectiveLevel = GetBase.GetMaxLevel;
+            if (nexperience1dot4.EnableBiomeLevelCapper && GetBase.EnableLevelCapping)
             {
                 if (LastCheckedBiome != null && _EffectiveLevel > LastCheckedBiome.GetMaxLevel)
                     _EffectiveLevel = LastCheckedBiome.GetMaxLevel;
@@ -280,12 +282,20 @@ namespace nexperience1dot4
             GetBase.UpdateNpcStatus(npc, this);
             if(npc.type == Terraria.ID.NPCID.Nailhead)
                 ProjectileNpcDamagePercentage = 1;
-            if(npc.damage != LastNpcDamage){
+            if(npc.damage != LastNpcDamage)
+            {
                 npc.damage = (int)((npc.damage + NpcDamageSum) * NpcDamageMult);
                 LastNpcDamage = npc.damage;
             }
-            if(npc.defense != LastNpcDefense){
+            if(npc.defense != LastNpcDefense)
+            {
                 npc.defense = (int)(npc.defense * NpcDefense);
+                /*if (nexperience1dot4.MobDefenseToHealth && npc.defDefense < 1000)
+                {
+                    int Dif = npc.defense - npc.defDefense;
+                    npc.lifeMax += Dif * GetBase.DefenseToHealthConversionRate;
+                    npc.defense -= Dif;
+                }*/
                 LastNpcDefense = npc.defense;
             }
             if(npc.lifeMax != npcHealthBackup)
@@ -325,6 +335,27 @@ namespace nexperience1dot4
             NpcIsFirstFrame = true;
             LastNpcDamage = 0;
             LastNpcDefense = 0;
+            if (nexperience1dot4.SetEverythingToMyLevel || CanScaleToPlayerLevel(npc))
+            {
+                Player Closest = null;
+                float NearestDistance = float.MaxValue;
+                for(int i = 0; i < 255; i++)
+                {
+                    if (Main.player[i].active)
+                    {
+                        float Distance = (Main.player[i].Center - npc.Center).Length();
+                        if (Distance < NearestDistance)
+                        {
+                            Closest = Main.player[i];
+                            NearestDistance = Distance;
+                        }
+                    }
+                }
+                if (Closest != null)
+                {
+                    NewLevel = PlayerMod.GetPlayerLevel(Closest);
+                }
+            }
             if (NewLevel == 0)
             {
                 if (npc.realLife > -1)
@@ -357,6 +388,119 @@ namespace nexperience1dot4
                 }
             }
             _Level = NewLevel;
+        }
+
+        private bool CanScaleToPlayerLevel(NPC npc)
+        {
+            if (nexperience1dot4.Playthrough1dot5 && NPC.downedMoonlord)
+            {
+                return true;
+            }
+            else
+            {
+                switch (npc.type)
+                {
+                    case Terraria.ID.NPCID.EyeofCthulhu:
+                    case Terraria.ID.NPCID.ServantofCthulhu:
+                        return nexperience1dot4.BossesAsToughAsMe && NPC.downedBoss1;
+                    case Terraria.ID.NPCID.EaterofWorldsBody:
+                    case Terraria.ID.NPCID.EaterofWorldsHead:
+                    case Terraria.ID.NPCID.EaterofWorldsTail:
+                    case Terraria.ID.NPCID.BrainofCthulhu:
+                    case Terraria.ID.NPCID.Creeper:
+                        return nexperience1dot4.BossesAsToughAsMe && NPC.downedBoss2;
+                    case Terraria.ID.NPCID.SkeletronHead:
+                    case Terraria.ID.NPCID.SkeletronHand:
+                        return nexperience1dot4.BossesAsToughAsMe && NPC.downedBoss3;
+                    case Terraria.ID.NPCID.KingSlime:
+                    case Terraria.ID.NPCID.SlimeSpiked:
+                        return nexperience1dot4.BossesAsToughAsMe && NPC.downedSlimeKing;
+                    case Terraria.ID.NPCID.QueenBee:
+                        return nexperience1dot4.BossesAsToughAsMe && NPC.downedQueenBee;
+                    case Terraria.ID.NPCID.WallofFlesh:
+                    case Terraria.ID.NPCID.WallofFleshEye:
+                    case Terraria.ID.NPCID.TheHungry:
+                    case Terraria.ID.NPCID.TheHungryII:
+                    case Terraria.ID.NPCID.LeechBody:
+                    case Terraria.ID.NPCID.LeechHead:
+                    case Terraria.ID.NPCID.LeechTail:
+                        return nexperience1dot4.BossesAsToughAsMe && Main.hardMode;
+                    case Terraria.ID.NPCID.TheDestroyer:
+                    case Terraria.ID.NPCID.TheDestroyerBody:
+                    case Terraria.ID.NPCID.TheDestroyerTail:
+                        return nexperience1dot4.BossesAsToughAsMe && NPC.downedMechBoss1;
+                    case Terraria.ID.NPCID.Spazmatism:
+                    case Terraria.ID.NPCID.Retinazer:
+                        return nexperience1dot4.BossesAsToughAsMe && NPC.downedMechBoss2;
+                    case Terraria.ID.NPCID.SkeletronPrime:
+                    case Terraria.ID.NPCID.PrimeCannon:
+                    case Terraria.ID.NPCID.PrimeLaser:
+                    case Terraria.ID.NPCID.PrimeSaw:
+                    case Terraria.ID.NPCID.PrimeVice:
+                        return nexperience1dot4.BossesAsToughAsMe && NPC.downedMechBoss3;
+                    case Terraria.ID.NPCID.Plantera:
+                    case Terraria.ID.NPCID.PlanterasHook:
+                    case Terraria.ID.NPCID.PlanterasTentacle:
+                        return nexperience1dot4.BossesAsToughAsMe && NPC.downedPlantBoss;
+                    case Terraria.ID.NPCID.Golem:
+                    case Terraria.ID.NPCID.GolemFistLeft:
+                    case Terraria.ID.NPCID.GolemFistRight:
+                    case Terraria.ID.NPCID.GolemHead:
+                    case Terraria.ID.NPCID.GolemHeadFree:
+                        return nexperience1dot4.BossesAsToughAsMe && NPC.downedGolemBoss;
+                    case Terraria.ID.NPCID.DukeFishron:
+                    case Terraria.ID.NPCID.Sharkron:
+                    case Terraria.ID.NPCID.Sharkron2:
+                        return nexperience1dot4.BossesAsToughAsMe && NPC.downedFishron;
+                    case Terraria.ID.NPCID.AncientCultistSquidhead:
+                    case Terraria.ID.NPCID.CultistBoss:
+                    case Terraria.ID.NPCID.CultistBossClone:
+                    case Terraria.ID.NPCID.CultistDragonBody1:
+                    case Terraria.ID.NPCID.CultistDragonBody2:
+                    case Terraria.ID.NPCID.CultistDragonBody3:
+                    case Terraria.ID.NPCID.CultistDragonBody4:
+                    case Terraria.ID.NPCID.CultistDragonHead:
+                    case Terraria.ID.NPCID.CultistDragonTail:
+                        return nexperience1dot4.BossesAsToughAsMe && NPC.downedAncientCultist;
+                    case 379: //Cultist Archer
+                        if (npc.type == 379)
+                        {
+                            if (npc.ai[3] < 0)
+                            {
+                                return true;
+                            }
+                        }
+                        else
+                        {
+                            return true;
+                        }
+                        break;
+                    case 380:
+                    //case 437:
+                    case 438:
+                        {
+                            if (npc.type == 438 || npc.type == 379)
+                            {
+                                if (npc.ai[1] == 1)
+                                {
+                                    return true;
+                                }
+                            }
+                            else
+                            {
+                                return true;
+                            }
+                        }
+                        break;
+                    case Terraria.ID.NPCID.MoonLordCore:
+                    case Terraria.ID.NPCID.MoonLordFreeEye:
+                    case Terraria.ID.NPCID.MoonLordHand:
+                    case Terraria.ID.NPCID.MoonLordHead:
+                    case Terraria.ID.NPCID.MoonLordLeechBlob:
+                    return nexperience1dot4.BossesAsToughAsMe && NPC.downedMoonlord;
+                }
+            }
+            return false;
         }
 
         public int GetStatusValue(byte StatusIndex, out int EffectiveStatus){

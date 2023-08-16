@@ -50,6 +50,31 @@ namespace nexperience1dot4
             npc.MobStatus.UpdateNPC(n);
         }
 
+        private static Condition _potionSaleCondition = new Condition("nexperience1dot4.PotionSaleReq", delegate()
+                {
+                    return nexperience1dot4.PotionsForSale;
+                });
+
+        private Condition GetPotionForSaleCondition
+        {
+            get
+            {
+                return _potionSaleCondition;
+            }
+        }
+
+        public override void ModifyShop(NPCShop shop)
+        {
+            if (nexperience1dot4.PotionsForSale && shop.NpcType == NPCID.Merchant)
+            {
+                shop.Add(new Item(ItemID.HealingPotion), GetPotionForSaleCondition);
+                shop.Add(new Item(ItemID.GreaterHealingPotion), GetPotionForSaleCondition);
+                Item SuperPot = new Item(ItemID.SuperHealingPotion);
+                SuperPot.value *= 10;
+                shop.Add(SuperPot, GetPotionForSaleCondition);
+            }
+        }
+
         public override void SetDefaults(NPC npc)
         {
             if(TransformTrap)
@@ -60,6 +85,19 @@ namespace nexperience1dot4
             {
                 MobStatus = new GameModeData(nexperience1dot4.GetActiveGameModeID, false);
                 MobStatus.SpawnNpcLevel(npc);
+            }
+            if (nexperience1dot4.BuffPreHardmodeEnemiesOnHardmode && IsPreHardmodeMonster(npc))
+            {
+                if (NPCID.Sets.ShouldBeCountedAsBoss[npc.type])
+                {
+                    npc.lifeMax *= 30;
+                }
+                else if (npc.lifeMax > 5)
+                {
+                    npc.lifeMax += 200;
+                }
+                npc.damage += 30;
+                npc.defense += 10;
             }
             OriginalHP = npc.lifeMax;
             FirstUpdate = true;
@@ -167,6 +205,7 @@ namespace nexperience1dot4
             LastSpawnInfo = null;
             OriginNpc = null;
             SavedMobStatus = null;
+            _potionSaleCondition = null;
         }
 
         public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
@@ -487,6 +526,31 @@ namespace nexperience1dot4
                         break;
                 }
             }
+        }
+
+        public static bool IsPreHardmodeMonster(NPC npc)
+        {
+            if (Main.expertMode)
+                return false;
+            int Type = npc.type, NetID = npc.netID;
+            if (Type == 4 || Type == 5 || (Type >= 13 && Type <= 15) || Type == 266 || Type == 267 || Type == 50 || Type == 222 || Type == 35 || Type == 36)
+                return true;
+            if (Type == 26 || Type == 29 || Type == 27 || Type == 28 || Type == 111)
+                return true;
+            if ((Type == 1 && (NetID == 1 || NetID == -3 || NetID == -4 || NetID == -5 || NetID == -6 || NetID == -7 || NetID == -8 || NetID == -9 || NetID == -10 )) || Type == 147 || Type == 537 || Type == 184 ||
+                Type == 204 || Type == 16 || Type == 59 || Type == 71 || Type == 535 || Type == 225 || Type == Terraria.ID.NPCID.SlimeRibbonYellow || Type == Terraria.ID.NPCID.SlimeRibbonWhite || 
+                Type == Terraria.ID.NPCID.SlimeRibbonGreen || Type == Terraria.ID.NPCID.SlimeRibbonRed || Type == Terraria.ID.NPCID.BunnySlimed)
+                return true;
+            return Type == 31 || Type == 257 || Type == 69 || Type == 508 || Type == 509 || Type == 210 || Type == 211 || Type == 72 || Type == 239 || Type == 240 || Type == 63 || Type == 64 ||
+                (Type >= 39 && Type <= 41) || Type == 49 || Type == 217 || Type == 67 || Type == 494 || Type == 495 || Type == 173 || Type == 34 || Type == 218 || Type == 32 ||
+                Type == 62 || Type == 2 || (Type >= 190 && Type <= 194) || Type == 317 || Type == 318 || (Type >= 7 && Type <= 9) || Type == 3 || Type == 430 || Type == 432 || 
+            Type == 433 || Type == 434 || Type == 435 || Type == 436|| Type == 132 || (Type >= 186 && Type <= 189) || Type == 223 || Type == 161 || Type == 254 || Type == 255 || 
+            Type == 431 || Type == 53 || Type == 536 || Type == 489 || (Type >= 319 && Type <= 321) || Type == 331 || Type == 332 || Type == 71 || Type == 6 || Type == 181 || 
+            Type == 24 || Type == 259 || Type == 496 || Type == 497 || (Type >= 10 && Type <= 12) || Type == 73 || Type == 483 || Type == 482 || Type == 48 || Type == 60 || 
+            Type == 481 || Type == 20 || (Type >= 231 && Type <= 235) || Type == 150 || Type == 51 || Type == 219 || Type == 43 || Type == 23 || Type == 258 || Type == 195 || 
+            Type == 196 || Type == 58 || Type == 301 || (Type >= 498 && Type <= 506) || Type == 220 || Type == 65 || Type == 21 || (Type >= 201 && Type <= 203) || (Type >= 449 && Type <= 452) ||
+            (Type >= 322 && Type <= 324) || Type == 56 || Type == 185 || Type == 70 || Type == 221 || Type == 45 || (Type >= 513 && Type <= 515) || Type == 44 || Type == 167 || 
+            Type == 66 || Type == 61 || Type == 164 || Type == 165 || Type == 33 || Type == 25 || Type == 30 || Type == 546;
         }
     }
 }
