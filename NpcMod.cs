@@ -86,7 +86,7 @@ namespace nexperience1dot4
                 MobStatus = new GameModeData(nexperience1dot4.GetActiveGameModeID, false);
                 MobStatus.SpawnNpcLevel(npc);
             }
-            if (nexperience1dot4.BuffPreHardmodeEnemiesOnHardmode && IsPreHardmodeMonster(npc))
+            if (nexperience1dot4.BuffPreHardmodeEnemiesOnHardmode && Main.hardMode && IsPreHardmodeMonster(npc))
             {
                 if (NPCID.Sets.ShouldBeCountedAsBoss[npc.type])
                 {

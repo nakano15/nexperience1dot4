@@ -1,0 +1,1 @@
+Pre hardmode monsters will no longer benefit from hardmode status boosts on pre hardmode.
