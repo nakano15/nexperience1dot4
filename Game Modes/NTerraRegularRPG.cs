@@ -88,7 +88,7 @@ namespace nexperience1dot4.Game_Modes
             data.RangedCriticalPercentage += (LUK + DEX * 0.33f) * 0.0133f;
             data.MagicCriticalPercentage += (LUK + INT * 0.33f) * 0.0133f;
             player.manaCost += (INT * 0.5f - WIS * 0.25f) * 0.05f;
-            player.maxMinions += (int)(Math.Min(150, CHA) * 0.05f);
+            player.maxMinions += (int)(Math.Min(150, data.GetStatusValue(6)) * 0.05f);
 
             const int BoostLevelStart = 100;
             if(Level > BoostLevelStart){
@@ -122,9 +122,10 @@ namespace nexperience1dot4.Game_Modes
             data.ProjectileNpcDamagePercentage += Level * 0.1f;
             if(npc.lifeMax > 5)
             {
-                npc.lifeMax += (int)(npc.lifeMax * Level * 0.1f);
+                data.NpcHealthMult += Level * 0.1f;
+                //npc.lifeMax += (int)(npc.lifeMax * Level * 0.1f);
             }
-            if(npc.lifeMax > 5)
+            /*if(npc.lifeMax > 5)
             {
                 float ExpReward = npc.lifeMax + (npc.damage * data.NpcDamageMult + npc.defense * data.NpcDefense) * 8;
                 const int ExpReductionMaxLevel = 60;
@@ -134,7 +135,20 @@ namespace nexperience1dot4.Game_Modes
                     ExpReward -= ExpReward * ((ExpReductionMaxLevel - Level) * ExpReductionPercentage);
                 }
                 data.SetExpReward(ExpReward);
+            }*/
+        }
+
+        public override int GetExpReward(NPC npc, GameModeData data)
+        {
+            if (npc.lifeMax <= 5) return 0;
+            float ExpReward = npc.lifeMax + (npc.damage * data.NpcDamageMult + npc.defense * data.NpcDefense) * 8;
+            const int ExpReductionMaxLevel = 60;
+            const float ExpReductionPercentage = 1f / ExpReductionMaxLevel;
+            if(data.GetLevel < ExpReductionMaxLevel)
+            {
+                ExpReward -= ExpReward * ((ExpReductionMaxLevel - data.GetLevel) * ExpReductionPercentage);
             }
+            return (int)ExpReward;
         }
 
         public override void OnUnload()

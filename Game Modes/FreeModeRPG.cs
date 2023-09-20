@@ -114,11 +114,19 @@ namespace nexperience1dot4.Game_Modes
         {
             float StatusIncrease = data.GetEffectiveLevel * 0.01f;
             if(npc.lifeMax > 5)
+            {
+                data.NpcHealthMult+= StatusIncrease;
                 npc.lifeMax += (int)(npc.lifeMax * StatusIncrease);
+            }
             data.NpcDamageMult += StatusIncrease;
             //npc.damage += (int)(npc.damage * StatusIncrease);
             data.ProjectileNpcDamagePercentage += StatusIncrease;
-            data.SetExpReward(npc.lifeMax * 2 + npc.damage * 4 * data.NpcDamageMult + npc.defense * 8 + data.GetEffectiveLevel * 16);
+            //data.SetExpReward(npc.lifeMax * 2 + npc.damage * 4 * data.NpcDamageMult + npc.defense * 8 + data.GetEffectiveLevel * 16);
+        }
+
+        public override int GetExpReward(NPC npc, GameModeData data)
+        {
+            return (int)(npc.lifeMax * 2 + npc.damage * 4 * data.NpcDamageMult + npc.defense * 8 + data.GetEffectiveLevel * 16);
         }
 
         public override int GetNpcLevelProcedural(NPC npc)

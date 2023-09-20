@@ -108,19 +108,20 @@ namespace nexperience1dot4.Game_Modes
 
         public override void UpdateNpcStatus(NPC npc, GameModeData data)
         {
-            bool CanGiveExp = npc.lifeMax > 5;
             if(npc.lifeMax > 5)
-                npc.lifeMax = (int)(npc.lifeMax * (1f + 0.04f * (data.GetEffectiveLevel - 1))) + data.GetEffectiveLevel * 20;//10
+            {
+                data.NpcHealthMult += 0.04f * (data.GetEffectiveLevel - 1);
+                data.NpcHealthSum += data.GetEffectiveLevel * 20;
+            }
             float Increase = 1f + 0.12f * (data.GetEffectiveLevel - 1);
             data.NpcDamageMult = Increase;
             data.NpcDefense = Increase;
-            //npc.damage = (int)(npc.damage * Increase);
-            //npc.defense = (int)(npc.defense * Increase);
+        }
 
-            if (CanGiveExp)
-            {
-                data.SetExpReward(npc.lifeMax * 0.5f);
-            }
+        public override int GetExpReward(NPC npc, GameModeData data)
+        {
+            if (npc.lifeMax <= 5) return 0;
+            return (int)(npc.lifeMax * 0.5f);
         }
 
         public override void OnUnload()

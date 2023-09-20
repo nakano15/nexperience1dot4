@@ -30,6 +30,8 @@ namespace nexperience1dot4
         public float MeleeSpeedPercentage = 1f;
         public float ProjectileNpcDamagePercentage{get{ return GenericDamagePercentage;} set{ GenericDamagePercentage = value; }}
         public bool NpcIsFirstFrame{get{return MeleeDamagePercentage != 0; } set{ MeleeDamagePercentage = value ? 1 : 0; }}
+        public float NpcHealthSum{ get{ return MeleeCriticalPercentage; } set{ MeleeCriticalPercentage = value; }}
+        public float NpcHealthMult{ get{ return RangedCriticalPercentage; } set{ RangedCriticalPercentage = value; }}
         public float NpcDamageSum{ get{ return SummonDamagePercentage; } set{ SummonDamagePercentage = value; }}
         public float NpcDamageMult{ get{ return RangedDamagePercentage; } set{ RangedDamagePercentage = value; }}
         public float NpcDefense{ get{ return MagicDamagePercentage; } set{ MagicDamagePercentage = value; }}
@@ -275,13 +277,9 @@ namespace nexperience1dot4
         {
             _EffectiveLevel = _Level;
             TownNpcEffectiveLevelTweak(npc);
-            ProjectileNpcDamagePercentage = NpcDamageMult = NpcDefense = 1;
-            NpcDamageSum = 0;
-            int npcHealthBackup = npc.lifeMax;
-            npc.lifeMax = npc.GetGlobalNPC<NpcMod>().GetOriginalHP;
-            GetBase.UpdateNpcStatus(npc, this);
-            if(npc.type == Terraria.ID.NPCID.Nailhead)
-                ProjectileNpcDamagePercentage = 1;
+            //int npcHealthBackup = npc.lifeMax;
+            //npc.lifeMax = npc.GetGlobalNPC<NpcMod>().GetOriginalHP;
+            //GetBase.UpdateNpcStatus(npc, this);
             if(npc.damage != LastNpcDamage)
             {
                 npc.damage = (int)((npc.damage + NpcDamageSum) * NpcDamageMult);
@@ -298,16 +296,17 @@ namespace nexperience1dot4
                 }*/
                 LastNpcDefense = npc.defense;
             }
-            if(npc.lifeMax != npcHealthBackup)
+            /*if(npc.lifeMax != npcHealthBackup)
             {
                 double Percentage = npc.life >= npcHealthBackup ? 1 : (double)npc.life / npcHealthBackup;
                 npc.life = (int)(npc.lifeMax * Percentage);
-            }
+            }*/
         }
 
-        public void TownNpcEffectiveLevelTweak(NPC npc)
+        public void TownNpcEffectiveLevelTweak(NPC npc, bool TransformIfDifferentLevel = true)
         {
             if (Main.gameMenu || !npc.townNPC) return;
+            int LastLevel = _EffectiveLevel;
             _EffectiveLevel = _Level;
             for (int p = 0; p < 255; p++)
             {
@@ -327,6 +326,10 @@ namespace nexperience1dot4
                     }
                 }
             }
+            /*if (TransformIfDifferentLevel && LastLevel != _EffectiveLevel)
+            {
+                npc.Transform(npc.type);
+            }*/
         }
 
         public void SpawnNpcLevel(NPC npc)
@@ -388,6 +391,13 @@ namespace nexperience1dot4
                 }
             }
             _Level = NewLevel;
+            _EffectiveLevel = NewLevel;
+            TownNpcEffectiveLevelTweak(npc, false);
+            NpcHealthSum = 0;
+            NpcDamageSum = 0;
+            GetBase.UpdateNpcStatus(npc, this);
+            if(npc.type == Terraria.ID.NPCID.Nailhead)
+                ProjectileNpcDamagePercentage = 1;
         }
 
         private bool CanScaleToPlayerLevel(NPC npc)
@@ -544,16 +554,6 @@ namespace nexperience1dot4
         {
             if(StatusIndex >= MyStatus.Length) return;
             MyStatus[StatusIndex].StatusValue = Count;
-        }
-
-        public void SetExpReward(float Value)
-        {
-            _Exp = (int)Value;
-        }
-
-        public void SetExpReward(int Value)
-        {
-            _Exp = Value;
         }
 
         public void SaveGameMode(byte ID, Terraria.ModLoader.IO.TagCompound tag)

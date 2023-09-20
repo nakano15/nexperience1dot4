@@ -70,7 +70,7 @@ namespace nexperience1dot4
                 shop.Add(new Item(ItemID.HealingPotion), GetPotionForSaleCondition);
                 shop.Add(new Item(ItemID.GreaterHealingPotion), GetPotionForSaleCondition);
                 Item SuperPot = new Item(ItemID.SuperHealingPotion);
-                SuperPot.value *= 10;
+                //SuperPot.value *= 10;
                 shop.Add(SuperPot, GetPotionForSaleCondition);
             }
         }
@@ -81,7 +81,7 @@ namespace nexperience1dot4
             {
                 MobStatus = SavedMobStatus[npc.whoAmI];
             }
-            else
+            if (MobStatus == null)
             {
                 MobStatus = new GameModeData(nexperience1dot4.GetActiveGameModeID, false);
                 MobStatus.SpawnNpcLevel(npc);
@@ -99,9 +99,9 @@ namespace nexperience1dot4
                 npc.damage += 30;
                 npc.defense += 10;
             }
+            npc.lifeMax = (int)((npc.lifeMax + MobStatus.NpcHealthSum) * MobStatus.NpcHealthMult);
             OriginalHP = npc.lifeMax;
             FirstUpdate = true;
-            UpdatedStatus = false; //How to save the monster level?
             /*MobStatus.SpawnNpcLevel(npc);
             UpdatedStatus = false;
             FirstUpdate = true;*/
@@ -128,14 +128,14 @@ namespace nexperience1dot4
         public override bool PreAI(NPC npc)
         {
             TransformTrap = true;
-            if(!UpdatedStatus)
+            /*if(!UpdatedStatus)
             {
                 UpdatedStatus = true;
                 float Percentage = npc.life >= npc.lifeMax ? 1f : (float)npc.life / npc.lifeMax;
                 MobStatus.UpdateNPC(npc);
                 npc.life = (int)(npc.lifeMax * Percentage);
                 //Main.NewText(npc.GivenOrTypeName + " stats - Damage: " + npc.damage + "  Defense: " + npc.defense);
-            }
+            }*/
             if(FirstUpdate)
             {
                 FirstUpdate = false;
@@ -183,7 +183,7 @@ namespace nexperience1dot4
             }
             if (Players.Count == 0) return;
             float ExpDistribution = 1f / Players.Count + (Players.Count - 1) * 0.1f;
-            float Exp = MobStatus.GetExp;
+            float Exp = MobStatus.GetBase.GetExpReward(killedNPC, MobStatus);
             if(killedNPC.type >= NPCID.EaterofWorldsHead && killedNPC.type <= NPCID.EaterofWorldsTail)
             {
                 Exp = Microsoft.Xna.Framework.MathHelper.Max(Exp * 0.1f, 1);

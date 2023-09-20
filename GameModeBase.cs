@@ -18,6 +18,10 @@ namespace nexperience1dot4
         private bool MaxLevelForced = false;
         public int GetMaxLevel { get { return MaxLevel; } }
         private List<BiomeLevelStruct> BiomeLevels = new List<BiomeLevelStruct>();
+        public virtual int GetExpReward(NPC npc, GameModeData data)
+        {
+            return 1;
+        }
 
         protected void SetMaxLevel(int Level)
         {
