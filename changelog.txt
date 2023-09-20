@@ -1,8 +1,0 @@
-Pre hardmode monsters will no longer benefit from hardmode status boosts on pre hardmode.
-Nerfed the price of the Super Healing Potion.
-Changed how monsters status multipliers are calculated, to happen at the same time level is checked (monster spawns).
-Monster health is no longer recalculated every frame. It will be calculated when the monster spawns.
- => There are hooks for Npc Health Multiplication and Sum. Use those to change monster health.
-Regular RPG Mode
- => Maximum Summon Count increase is now affected by total Charisma points you've got, instead of effective.
- =>  => That means you'll no longer lose summons if your effective charisma points are reduced.
