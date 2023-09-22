@@ -1,0 +1,3 @@
+Fixed a potential issue where projectiles spawned not via npcs could cause damage when shouldn't.
+Implemented some health regeneration support.
+ => Actually, even debuffs will hurt too.

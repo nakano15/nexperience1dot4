@@ -30,6 +30,7 @@ namespace nexperience1dot4
         public int LevelUpEffectTime = -1;
         public const int MaxEffectTime = 180;
         public bool PlayLevelUpEffect = false;
+        int LastHealthRegenValue = 0;
 
         public override void Unload()
         {
@@ -90,6 +91,25 @@ namespace nexperience1dot4
             {
                 LevelUpEffectTime = -1;
             }
+        }
+
+        public override void UpdateLifeRegen()
+        {
+            if (LastHealthRegenValue > 0 && Player.lifeRegenCount >= 0)
+            {
+                if (LastHealthRegenValue > Player.lifeRegenCount)
+                {
+                    Player.statLife += (int)(GetHealthPercentageChange * (LastHealthRegenValue / 120 + 1));
+                }
+            }
+            else if (LastHealthRegenValue < 0 && Player.lifeRegenCount <= 0)
+            {
+                if (LastHealthRegenValue < Player.lifeRegenCount)
+                {
+                    Player.statLife -= (int)(GetHealthPercentageChange * (LastHealthRegenValue / -120 + 1));
+                }
+            }
+            LastHealthRegenValue = Player.lifeRegenCount;
         }
 
         public override void GetHealLife(Item item, bool quickHeal, ref int healValue)

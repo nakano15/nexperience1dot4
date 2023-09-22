@@ -12,7 +12,7 @@ namespace nexperience1dot4
     {
         private static NPCSpawnInfo? LastSpawnInfo = null;
         private static NPC OriginNpc = null;
-        public static NPC GetOriginNpc { get { return OriginNpc; } }
+        public static NPC GetOriginNpc { get { return OriginNpc; } internal set { OriginNpc = value; } }
         public static NPCSpawnInfo? GetLastSpawnInfo { get { return LastSpawnInfo; } }
         private static GameModeData[] SavedMobStatus = new GameModeData[Main.maxNPCs + 1];
         internal static bool TransformTrap = false;

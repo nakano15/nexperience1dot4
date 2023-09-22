@@ -26,6 +26,7 @@ namespace nexperience1dot4
         public override void PostUpdateNPCs()
         {
             NpcMod.TransformTrap = false;
+            NpcMod.GetOriginNpc = null;
         }
 
         public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
