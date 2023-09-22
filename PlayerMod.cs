@@ -104,7 +104,7 @@ namespace nexperience1dot4
             }
             else if (LastHealthRegenValue < 0 && Player.lifeRegenCount <= 0)
             {
-                if (LastHealthRegenValue < Player.lifeRegenCount)
+                if (LastHealthRegenValue > Player.lifeRegenCount)
                 {
                     Player.statLife -= (int)(GetHealthPercentageChange * (LastHealthRegenValue / -120 + 1));
                 }
