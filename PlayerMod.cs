@@ -104,7 +104,7 @@ namespace nexperience1dot4
             }
             else if (LastHealthRegenValue < 0 && Player.lifeRegenCount <= 0)
             {
-                if (LastHealthRegenValue > Player.lifeRegenCount)
+                if (LastHealthRegenValue < Player.lifeRegenCount)
                 {
                     Player.statLife -= (int)(GetHealthPercentageChange * (LastHealthRegenValue / -120 + 1));
                 }
@@ -132,6 +132,7 @@ namespace nexperience1dot4
 
         public override void NaturalLifeRegen(ref float regen)
         {
+            return;
             const float HealthChangePerFrame = 0.0138888888889f;
             bool UpdateHealthRegen = Player.lifeRegenCount != LastLifeRegenCount; //(int)((Player.lifeRegenCount) * DivisionBy60) != (int)((LastLifeRegenCount) * DivisionBy60);
             bool BadRegen = Player.lifeRegenCount < 0 || LastLifeRegenCount < 0;

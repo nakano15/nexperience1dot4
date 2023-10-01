@@ -395,9 +395,15 @@ namespace nexperience1dot4
             TownNpcEffectiveLevelTweak(npc, false);
             NpcHealthSum = 0;
             NpcDamageSum = 0;
+            int LastMaxHealth = npc.lifeMax;
             GetBase.UpdateNpcStatus(npc, this);
             if(npc.type == Terraria.ID.NPCID.Nailhead)
                 ProjectileNpcDamagePercentage = 1;
+        }
+
+        public void UpdateMobHealthChangePercentage(NPC npc, int LastMaxHealth)
+        {
+            HealthPercentageChange = (float)LastMaxHealth / npc.lifeMax;;
         }
 
         private bool CanScaleToPlayerLevel(NPC npc)

@@ -17,11 +17,10 @@ namespace nexperience1dot4
         private static GameModeData[] SavedMobStatus = new GameModeData[Main.maxNPCs + 1];
         internal static bool TransformTrap = false;
 
-        private int OriginalHP = 100;
-        public int GetOriginalHP {get { return OriginalHP; } }
         private BitsByte UpdateInfos = new BitsByte();
         internal bool FirstUpdate { get{ return UpdateInfos[0]; } set{ UpdateInfos[0] = value; }}
         internal bool UpdatedStatus { get{ return UpdateInfos[1]; } set{ UpdateInfos[1] = value; }}
+        int LastHealthRegen = 0;
 
         public override bool InstancePerEntity => true;
         public override bool IsCloneable => false;
@@ -99,8 +98,9 @@ namespace nexperience1dot4
                 npc.damage += 30;
                 npc.defense += 10;
             }
+            int LastMaxHealth = npc.lifeMax;
             npc.lifeMax = (int)((npc.lifeMax + MobStatus.NpcHealthSum) * MobStatus.NpcHealthMult);
-            OriginalHP = npc.lifeMax;
+            MobStatus.UpdateMobHealthChangePercentage(npc, LastMaxHealth);
             FirstUpdate = true;
             /*MobStatus.SpawnNpcLevel(npc);
             UpdatedStatus = false;
@@ -526,6 +526,25 @@ namespace nexperience1dot4
                         break;
                 }
             }
+        }
+
+        public override void UpdateLifeRegen(NPC npc, ref int damage)
+        {
+            if (LastHealthRegen > 0 && npc.lifeRegenCount >= 0)
+            {
+                if (LastHealthRegen > npc.lifeRegenCount)
+                {
+                    npc.life += (int)(MobStatus.HealthPercentageChange * (LastHealthRegen / 120 + 1));
+                }
+            }
+            if (LastHealthRegen < 0 && npc.lifeRegenCount <= 0)
+            {
+                if (LastHealthRegen < npc.lifeRegenCount)
+                {
+                    npc.life -= (int)(MobStatus.HealthPercentageChange * (LastHealthRegen / -120 + 1));
+                }
+            }
+            LastHealthRegen = npc.lifeRegenCount;
         }
 
         public static bool IsPreHardmodeMonster(NPC npc)
