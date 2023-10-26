@@ -15,7 +15,7 @@ namespace nexperience1dot4
         public static NPC GetOriginNpc { get { return OriginNpc; } internal set { OriginNpc = value; } }
         public static NPCSpawnInfo? GetLastSpawnInfo { get { return LastSpawnInfo; } }
         private static GameModeData[] SavedMobStatus = new GameModeData[Main.maxNPCs + 1];
-        internal static bool TransformTrap = false;
+        internal static byte TransformTrap = 255;
 
         private BitsByte UpdateInfos = new BitsByte();
         internal bool FirstUpdate { get{ return UpdateInfos[0]; } set{ UpdateInfos[0] = value; }}
@@ -76,7 +76,7 @@ namespace nexperience1dot4
 
         public override void SetDefaults(NPC npc)
         {
-            if(TransformTrap)
+            if(TransformTrap == npc.whoAmI) //Check npc ids
             {
                 MobStatus = SavedMobStatus[npc.whoAmI];
             }
@@ -127,7 +127,7 @@ namespace nexperience1dot4
 
         public override bool PreAI(NPC npc)
         {
-            TransformTrap = true;
+            TransformTrap = (byte)npc.whoAmI;
             /*if(!UpdatedStatus)
             {
                 UpdatedStatus = true;
@@ -141,6 +141,8 @@ namespace nexperience1dot4
                 FirstUpdate = false;
                 NetplayMod.SendNpcLevel(npc.whoAmI, -1, Main.myPlayer);
             }
+            npc.damage = npc.defDamage;
+            npc.defense = npc.defDefense;
             OriginNpc = npc;
             LastLoggedMonsterLevel = MobStatus.GetLevel;
             return base.PreAI(npc);
@@ -151,7 +153,7 @@ namespace nexperience1dot4
             LastLoggedMonsterLevel = 0;
             OriginNpc = null;
             MobStatus.UpdateNPC(npc);
-            TransformTrap = false;
+            TransformTrap = 255;
         }
 
         public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)

@@ -95,6 +95,7 @@ namespace nexperience1dot4
 
         public override void UpdateLifeRegen()
         {
+            //if (!ModCompatibility.TerraGuardiansMod.IsValidCharacter(Player)) return;
             if (LastHealthRegenValue > 0 && Player.lifeRegenCount >= 0)
             {
                 if (LastHealthRegenValue > Player.lifeRegenCount)

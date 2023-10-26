@@ -25,7 +25,7 @@ namespace nexperience1dot4
 
         public override void PostUpdateNPCs()
         {
-            NpcMod.TransformTrap = false;
+            NpcMod.TransformTrap = 255;
             NpcMod.GetOriginNpc = null;
         }
 
