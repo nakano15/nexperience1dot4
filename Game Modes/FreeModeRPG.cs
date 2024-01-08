@@ -19,6 +19,7 @@ namespace nexperience1dot4.Game_Modes
         public override bool EnableLevelCapping => false;
         private static int ZoneLevel = -1;
         private static string ZoneLevelText = null;
+        public override float LevelChangeFactor => 0.1f;
         public override GameModeStatusInfo[] GameModeStatus => GetStatus();
 
         public FreeModeRPG()
@@ -57,14 +58,14 @@ namespace nexperience1dot4.Game_Modes
         {
             int Level = data.GetEffectiveLevel;
             float StatusBonus = Level * 0.0001f;
-            data.HealthPercentageChange += StatusBonus * 100;
-            data.ManaPercentageChange += StatusBonus * 100;
+            float HealthChangeValue = StatusBonus * 100;
+            float ManaChangeValue = StatusBonus * 100;
             //data.MeleeDamagePercentage += StatusBonus;
             //data.RangedDamagePercentage += StatusBonus;
             //data.MagicDamagePercentage += StatusBonus;
             //data.SummonDamagePercentage += StatusBonus;
             data.GenericDamagePercentage += StatusBonus;
-            player.statDefense += (int)(StatusBonus);
+            player.statDefense += (int)(StatusBonus * 100);
 
             int fgt = data.GetStatusValue(0),
                 ran =  data.GetStatusValue(1),
@@ -108,6 +109,32 @@ namespace nexperience1dot4.Game_Modes
             data.MagicDamagePercentage += sor * .3f;
             data.RangedDamagePercentage += sor * .2f;
             player.statLifeMax2 += sor * 10;
+
+            try
+            {
+                checked
+                {
+                    player.statLifeMax2 += (int)(HealthChangeValue * player.statLifeMax2);
+                }
+            }
+            catch
+            {
+                player.statLifeMax2 = int.MaxValue;
+            }
+            if (nexperience1dot4.AllowManaBoost)
+            {
+                try
+                {
+                    checked
+                    {
+                        player.statManaMax2 += (int)(player.statManaMax2 * ManaChangeValue);
+                    }
+                }
+                catch
+                {
+                    player.statManaMax2 = int.MaxValue;
+                }
+            }
         }
 
         public override void UpdateNpcStatus(NPC npc, GameModeData data)
@@ -116,7 +143,7 @@ namespace nexperience1dot4.Game_Modes
             if(npc.lifeMax > 5)
             {
                 data.NpcHealthMult+= StatusIncrease;
-                npc.lifeMax += (int)(npc.lifeMax * StatusIncrease);
+                //npc.lifeMax += (int)(npc.lifeMax * StatusIncrease);
             }
             data.NpcDamageMult += StatusIncrease;
             //npc.damage += (int)(npc.damage * StatusIncrease);

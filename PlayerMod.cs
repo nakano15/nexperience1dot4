@@ -302,7 +302,7 @@ namespace nexperience1dot4
                 ExpText += RawExp.ToString();
             else
             {
-                float Percentage = (float)MathF.Round((float)RawExp * 100 / pm.GetCurrentGamemode.GetMaxExp, 2);
+                float Percentage = (float)MathF.Round(((float)RawExp * 100 / pm.GetCurrentGamemode.GetMaxExp) * pm.GetCurrentGamemode.GetBase.LevelChangeFactor, 2);
                 if(RawExp >= 0 && Percentage < 0.01f)
                 {
                     ExpText += "< 0.01%";

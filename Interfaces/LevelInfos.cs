@@ -39,7 +39,7 @@ namespace nexperience1dot4.Interfaces
             GameModeData data = player.GetCurrentGamemode;
             if(data.GetExp != LastExp || data.GetMaxExp != LastMaxExp)
             {
-                LastExpPercentage = (float)Math.Round((float)data.GetExp * 100 / data.GetMaxExp, 2);
+                LastExpPercentage = (float)Math.Round(data.GetLevelExpValue * 100f, 2);
                 LastExp = data.GetExp;
                 LastMaxExp = data.GetMaxExp;
             }

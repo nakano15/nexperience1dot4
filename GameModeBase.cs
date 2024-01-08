@@ -13,6 +13,7 @@ namespace nexperience1dot4
         public virtual float InitialStatusPointsDistribution { get { return 0; } }
         public virtual bool EnableLevelCapping { get { return true; } }
         public virtual int DefenseToHealthConversionRate { get { return 2; }}
+        public virtual float LevelChangeFactor { get { return 1f; } }
         private Dictionary<int, MobLevelStruct> GameModeMobLevels = new Dictionary<int, MobLevelStruct>();
         private int MaxLevel = 1;
         private bool MaxLevelForced = false;

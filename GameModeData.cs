@@ -37,6 +37,8 @@ namespace nexperience1dot4
         public float NpcDefense{ get{ return MagicDamagePercentage; } set{ MagicDamagePercentage = value; }}
         public int LastNpcDamage{ get{ return LastMaxLife; } set{ LastMaxLife = value; }}
         public int LastNpcDefense{ get{ return LastMaxMana; } set{ LastMaxMana = value; }}
+        float _LevelExpValue = 0;
+        public float GetLevelExpValue => _LevelExpValue;
 
         private byte BiomeUpdateDelay = 0;
         private const byte MaxBiomeUpdateDelay = 8;
@@ -90,21 +92,35 @@ namespace nexperience1dot4
             catch
             {
                 if (Value < 0)
-                    _Exp = 0;
+                    return false;
                 if (Value > 0)
                     _Exp = int.MaxValue;
             }
-            if (_Exp < 0) _Exp = 0;
+            if (_Exp < 0) return false;
             bool LeveledUp = false;
+            int LastLevelValue = (int)(_Level * GetBase.LevelChangeFactor);
             while (_Exp >= GetMaxExp && (nexperience1dot4.InfiniteLeveling || GetLevel < GetBase.GetMaxLevel))
             {
                 _Exp -= _MaxExp;
                 _Level++;
                 UpdateMaxExp();
                 UpdateStatusPoints();
-                LeveledUp = true;
+                //LeveledUp = true;
             }
+            LeveledUp = (int)(_Level * GetBase.LevelChangeFactor) != LastLevelValue;
+            RecalcLevelExpValue();
             return LeveledUp;
+        }
+
+        void RecalcLevelExpValue()
+        {
+            float LevelFactor = GetBase.LevelChangeFactor;
+            _LevelExpValue = ((float)_Exp / _MaxExp) * LevelFactor;
+            if (LevelFactor < 1)
+            {
+                int LevelsPerLevel = (int)(1f / LevelFactor);
+                _LevelExpValue += LevelFactor * (_Level % LevelsPerLevel); 
+            }
         }
 
         public int DoDeathExpPenalty(){
@@ -282,12 +298,32 @@ namespace nexperience1dot4
             //GetBase.UpdateNpcStatus(npc, this);
             if(npc.damage != LastNpcDamage)
             {
-                npc.damage = (int)((npc.damage + NpcDamageSum) * NpcDamageMult);
+                try
+                {
+                    checked
+                    {
+                        npc.damage = (int)((npc.damage + NpcDamageSum) * NpcDamageMult);
+                    }
+                }
+                catch
+                {
+                    npc.damage = int.MaxValue;
+                }
                 LastNpcDamage = npc.damage;
             }
             if(npc.defense != LastNpcDefense)
             {
-                npc.defense = (int)(npc.defense * NpcDefense);
+                try
+                {
+                    checked
+                    {
+                        npc.defense = (int)(npc.defense * NpcDefense);
+                    }
+                }
+                catch
+                {
+                    npc.defense = int.MaxValue;
+                }
                 /*if (nexperience1dot4.MobDefenseToHealth && npc.defDefense < 1000)
                 {
                     int Dif = npc.defense - npc.defDefense;
@@ -585,6 +621,7 @@ namespace nexperience1dot4
             _Level = newtag.GetInt("level");
             _Exp = newtag.GetInt("exp");
             UpdateMaxExp();
+            RecalcLevelExpValue();
             _StatusPoints = newtag.GetInt("statuspoints");
             int statuscount = newtag.GetInt("statuscount");
             MyStatus = new PlayerStatusInfo[GetBase.GameModeStatus.Length];

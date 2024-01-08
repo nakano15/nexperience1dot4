@@ -109,8 +109,31 @@ namespace nexperience1dot4.Game_Modes
                 HealthChangeValue *= 1f - Penalty * 0.5f;
             }
 
-            player.statLifeMax2 = (int)(player.statLifeMax2 * HealthChangeValue);
-            if (nexperience1dot4.AllowManaBoost) player.statManaMax2 = (int)(player.statManaMax2 * ManaChangeValue);
+            try
+            {
+                checked
+                {
+                    player.statLifeMax2 = (int)(player.statLifeMax2 * HealthChangeValue);
+                }
+            }
+            catch
+            {
+                player.statLifeMax2 = int.MaxValue;
+            }
+            if (nexperience1dot4.AllowManaBoost)
+            {
+                try
+                {
+                    checked
+                    {
+                        player.statManaMax2 = (int)(player.statManaMax2 * ManaChangeValue);
+                    }
+                }
+                catch
+                {
+                    player.statManaMax2 = int.MaxValue;
+                }
+            }
             player.statDefense = player.statDefense * DefenseChangeValue;
         }
 

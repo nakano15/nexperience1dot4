@@ -99,7 +99,17 @@ namespace nexperience1dot4
                 npc.defense += 10;
             }
             int LastMaxHealth = npc.lifeMax;
-            npc.lifeMax = (int)((npc.lifeMax + MobStatus.NpcHealthSum) * MobStatus.NpcHealthMult);
+            try
+            {
+                checked
+                {
+                    npc.lifeMax = (int)((npc.lifeMax + MobStatus.NpcHealthSum) * MobStatus.NpcHealthMult);
+                }
+            }
+            catch
+            {
+                npc.lifeMax = int.MaxValue;
+            }
             MobStatus.UpdateMobHealthChangePercentage(npc, LastMaxHealth);
             FirstUpdate = true;
             /*MobStatus.SpawnNpcLevel(npc);
