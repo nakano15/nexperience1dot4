@@ -114,7 +114,7 @@ namespace nexperience1dot4
 
         public virtual int GetLevelExp(int Level)
         {
-            return 100 * Level * Level;
+            return 100 * Level;
         }
 
         public virtual int GetExpReward(float RewardLevel, float Percentage)

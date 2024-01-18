@@ -23,6 +23,29 @@ namespace nexperience1dot4
             
         }
 
+        public override void PreUpdateEntities()
+        {
+            UpdateWeekendExpCheck();
+        }
+
+        internal static void UpdateWeekendExpCheck()
+        {
+            DateTime date = DateTime.Now;
+            bool LastActive = nexperience1dot4.WeekendExp;
+            nexperience1dot4.WeekendExp = date.DayOfWeek == DayOfWeek.Friday || date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday;
+            if (LastActive != nexperience1dot4.WeekendExp)
+            {
+                if (nexperience1dot4.WeekendExp)
+                {
+                    Main.NewText("Weekend Experience Boost active! Enjoy your weekend.");
+                }
+                else
+                {
+                    Main.NewText("Weekend Experience Boost disabled. See you next week.");
+                }
+            }
+        }
+
         public override void PostUpdateNPCs()
         {
             NpcMod.TransformTrap = 255;

@@ -108,6 +108,29 @@ namespace nexperience1dot4
                 if (LastHealthRegenValue < Player.lifeRegenCount)
                 {
                     Player.statLife -= (int)(GetHealthPercentageChange * (LastHealthRegenValue / -120 + 1));
+                    if(Player.statLife <= 0 && Player.whoAmI == Main.myPlayer)
+                    {
+                        if (Player.burned || (Player.tongued && Main.expertMode))
+                        {
+                            Player.KillMe(PlayerDeathReason.ByOther(8), 10, 0);
+                        }
+                        else if(Player.suffocating)
+                        {
+                            Player.KillMe(PlayerDeathReason.ByOther(8), 10, 0);
+                        }
+                        else if (Player.poisoned || Player.venom)
+                        {
+                            Player.KillMe(PlayerDeathReason.ByOther(9), 10, 0);
+                        }
+                        else if(Player.electrified)
+                        {
+                            Player.KillMe(PlayerDeathReason.ByOther(10), 10, 0);
+                        }
+                        else
+                        {
+                            Player.KillMe(PlayerDeathReason.ByOther(8), 10, 0);
+                        }
+                    }
                 }
             }
             LastHealthRegenValue = Player.lifeRegenCount;
@@ -278,7 +301,7 @@ namespace nexperience1dot4
             if (Exp == 0)
                 return;
             PlayerMod pm = player.GetModPlayer<PlayerMod>();
-            float ExtraPercentage = pm.GetExtraExpPercentage() + ExtraExpIncrease;
+            float ExtraPercentage = pm.GetExtraExpPercentage() + ExtraExpIncrease + (nexperience1dot4.WeekendExp ? 0.3f : 0);
             int BoostedExp = (int)(Math.Max(1, Exp * ExtraPercentage) * nexperience1dot4.ExpRate);
             if (player.whoAmI == Main.myPlayer)
             {

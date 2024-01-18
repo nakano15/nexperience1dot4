@@ -1,14 +1,5 @@
-Free Mode
-- Fixed issue where monsters health were being multiplied twice.
-- Added some script to avoid monsters stats from overflowing.
-- Player health should now be calculated correctly.
-- Defense gain per level should now matter.
-- Experience percentages and exp gain percentages should now be displayed correctly based on your character rank.
--> Exp value actually will still use the level value, instead of 10 levels value.
-- Level Up! text will now only be shown after you passed 10 levels, instead of 1.
-Regular RPG Mode
-- Tweaked how health and mana increase work for player character. Will also avoid overflow.
-Mod
-- Added "LevelChangeFactor" to game mode settings.
--> Setting it to a value under 1, will let the mod know that a division of levels equals 1 level gain.
--> For example, on Free Mode, that value is set to 0.1, which means each 10 levels gain means you gain 1 level up.
+Your health can no longer go negative when debuffs lower your health faster.
+- Free Mode
+*- Added missing max exp calculation to Free Mode.
+Weekend Exp reimplemented.
+* You'll get 30% more exp during weekends.

@@ -21,6 +21,7 @@ namespace nexperience1dot4
         internal static byte DeathExpPenalty = 5;
         internal static bool EnableBiomeLevelCapper = true, SetEverythingToMyLevel = false, AllowManaBoost = false, InfiniteLeveling = false, Playthrough1dot5 = false, CapLevelOnInfiniteLeveling = false, BuffPreHardmodeEnemiesOnHardmode = false, MobDefenseToHealth = false, PotionsForSale = false, BossesAsToughAsMe = false, NTerrariaGraveyard = false, ZombiesDroppingTombstones = false;
         public static bool DisplayExpRewardAsPercentage = false;
+        public static bool WeekendExp = false;
         internal static float ExpRate = 1f;
         internal static Asset<Texture2D> HandyTexture, LevelArrowTexture;
         public static ModPacket packet{

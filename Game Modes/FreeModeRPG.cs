@@ -153,7 +153,12 @@ namespace nexperience1dot4.Game_Modes
 
         public override int GetExpReward(NPC npc, GameModeData data)
         {
-            return (int)(npc.lifeMax * 2 + npc.damage * 4 * data.NpcDamageMult + npc.defense * 8 + data.GetEffectiveLevel * 16);
+            /*checked
+            {
+                return 100 + data.GetLevel * 40;
+            }
+            return int.MaxValue;*/
+            return (int)(npc.lifeMax * 2 + npc.damage * 4 * data.NpcDamageMult + npc.defense * 8 + data.GetLevel * 16);
         }
 
         public override int GetNpcLevelProcedural(NPC npc)
@@ -332,6 +337,15 @@ namespace nexperience1dot4.Game_Modes
                 ZoneLevelText = RomanAlgarismMaker(NewLevel);
             }
             return "(Difficulty: Rank "+ZoneLevelText+")";
+        }
+
+        public override int GetLevelExp(int Level)
+        {
+            checked
+            {
+                return (int)(250 + 50 * (Level - 1) + (MathF.Pow(Level, 2)));
+            }
+            return int.MaxValue;
         }
 
         public static void Unload()
