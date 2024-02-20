@@ -30,7 +30,8 @@ namespace nexperience1dot4
         public int LevelUpEffectTime = -1;
         public const int MaxEffectTime = 180;
         public bool PlayLevelUpEffect = false;
-        int LastHealthRegenValue = 0;
+        int RegenStack = 0;
+
 
         public override void Unload()
         {
@@ -96,25 +97,23 @@ namespace nexperience1dot4
         public override void UpdateLifeRegen()
         {
             //if (!ModCompatibility.TerraGuardiansMod.IsValidCharacter(Player)) return;
-            if (LastHealthRegenValue > 0 && Player.lifeRegenCount >= 0)
+            if (Player.lifeRegen == 0)
+                RegenStack = 0;
+            else
             {
-                if (LastHealthRegenValue > Player.lifeRegenCount)
+                RegenStack += Player.lifeRegen;
+                if (RegenStack >= 120)
                 {
-                    Player.statLife += (int)(GetHealthPercentageChange * (LastHealthRegenValue / 120 + 1));
+                    Player.statLife += (int)(Math.Max(0, GetHealthPercentageChange - 1));
+                    RegenStack -= 120;
                 }
-            }
-            else if (LastHealthRegenValue < 0 && Player.lifeRegenCount <= 0)
-            {
-                if (LastHealthRegenValue < Player.lifeRegenCount)
+                else if (RegenStack <= -120)
                 {
-                    Player.statLife -= (int)(GetHealthPercentageChange * (LastHealthRegenValue / -120 + 1));
+                    RegenStack += 120;
+                    Player.statLife -= (int)(Math.Max(0, GetHealthPercentageChange - 1));
                     if(Player.statLife <= 0 && Player.whoAmI == Main.myPlayer)
                     {
-                        if (Player.burned || (Player.tongued && Main.expertMode))
-                        {
-                            Player.KillMe(PlayerDeathReason.ByOther(8), 10, 0);
-                        }
-                        else if(Player.suffocating)
+                        if (Player.burned || (Player.tongued && Main.expertMode) || Player.suffocating)
                         {
                             Player.KillMe(PlayerDeathReason.ByOther(8), 10, 0);
                         }
@@ -133,9 +132,8 @@ namespace nexperience1dot4
                     }
                 }
             }
-            LastHealthRegenValue = Player.lifeRegenCount;
         }
-
+        
         public override void GetHealLife(Item item, bool quickHeal, ref int healValue)
         {
             healValue = (int)(healValue * GetHealthPercentageChange);
@@ -152,98 +150,6 @@ namespace nexperience1dot4
 
         public override void PostUpdateMiscEffects()
         {
-        }
-
-        public override void NaturalLifeRegen(ref float regen)
-        {
-            return;
-            const float HealthChangePerFrame = 0.0138888888889f;
-            bool UpdateHealthRegen = Player.lifeRegenCount != LastLifeRegenCount; //(int)((Player.lifeRegenCount) * DivisionBy60) != (int)((LastLifeRegenCount) * DivisionBy60);
-            bool BadRegen = Player.lifeRegenCount < 0 || LastLifeRegenCount < 0;
-            LastLifeRegenCount = Player.lifeRegenCount;
-            const byte MaxTicksForLifeRegen = 30;
-            if(UpdateHealthRegen)
-            {
-                TicksPassed += (byte)(Math.Abs(Player.lifeRegen));
-                float HealthChangeValue = (GetHealthPercentageChange - 1) * HealthChangePerFrame;
-                if(HealthChangeValue <= 0)
-                {
-                    return;
-                }
-                else
-                {
-                    if(!BadRegen)
-                    {
-                        HealthRegenStack += HealthChangeValue;
-                        if(HealthRegenStack >= 1 && TicksPassed >= MaxTicksForLifeRegen)
-                        {
-                            TicksPassed -= MaxTicksForLifeRegen;
-                            int HealthChange = (int)HealthRegenStack;
-                            HealthRegenStack -= HealthChange;
-                            Player.statLife += HealthChange;
-                            if(Player.statLife > Player.statLifeMax2)
-                                Player.statLife = Player.statLifeMax2;
-                        }
-                    }
-                    else
-                    {
-                        if (Player.starving)
-                        {
-                            TicksPassed -= MaxTicksForLifeRegen;
-                            int StarvationDamage = (int)(Math.Min(2, Player.statLifeMax2 * 0.05f) * 120 * HealthChangeValue * ((Player.ZoneDesert || Player.ZoneSnow) ? 2 : 1));
-                            HealthRegenStack -= StarvationDamage;
-                            if(HealthRegenStack <= -1 && TicksPassed >= MaxTicksForLifeRegen)
-                            {
-                                int HealthChange = (int)HealthRegenStack;
-                                HealthRegenStack += HealthChange;
-                                Player.statLife += HealthChange;
-                                CombatText.NewText(Player.getRect(), CombatText.LifeRegen, -HealthChange, dot: true);
-                                if (Player.statLife <= 0 && Player.whoAmI == Main.myPlayer)
-                                {
-                                    Player.KillMe(PlayerDeathReason.ByOther(18), 10, 0);
-                                }
-                            }
-                            return;
-                        }
-                        HealthRegenStack -= HealthChangeValue;
-                        if(HealthRegenStack <= -1 && TicksPassed >= MaxTicksForLifeRegen)
-                        {
-                            TicksPassed -= MaxTicksForLifeRegen;
-                            int HealthChange = (int)HealthRegenStack;
-                            HealthRegenStack -= HealthChange;
-                            Player.statLife += HealthChange;
-                            CombatText.NewText(Player.getRect(), CombatText.LifeRegen, -HealthChange, dot: true);
-                            if(Player.statLife <= 0 && Player.whoAmI == Main.myPlayer)
-                            {
-                                if (Player.burned || (Player.tongued && Main.expertMode))
-                                {
-                                    Player.KillMe(PlayerDeathReason.ByOther(8), 10, 0);
-                                }
-                                else if(Player.suffocating)
-                                {
-                                    Player.KillMe(PlayerDeathReason.ByOther(8), 10, 0);
-                                }
-                                else if (Player.poisoned || Player.venom)
-                                {
-                                    Player.KillMe(PlayerDeathReason.ByOther(9), 10, 0);
-                                }
-                                else if(Player.electrified)
-                                {
-                                    Player.KillMe(PlayerDeathReason.ByOther(10), 10, 0);
-                                }
-                                else
-                                {
-                                    Player.KillMe(PlayerDeathReason.ByOther(8), 10, 0);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            else
-            {
-                TicksPassed = 0;
-            }
         }
 
         public override void Initialize()

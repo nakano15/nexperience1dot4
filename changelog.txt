@@ -1,5 +1,2 @@
-Your health can no longer go negative when debuffs lower your health faster.
-- Free Mode
-*- Added missing max exp calculation to Free Mode.
-Weekend Exp reimplemented.
-* You'll get 30% more exp during weekends.
+Changed how the health regeneration and depletion works.
+ => This time it shouldn't cause the anomaly of the health plummeting.
