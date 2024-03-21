@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,97 +9,52 @@ using Terraria.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using nterrautils;
 
 namespace nexperience1dot4.Interfaces
 {
-    public class LevelInfos : LegacyGameInterfaceLayer
+    public class LevelInfosBottomButton : BottomButton
     {
+        public override string Text => "Stats";
+        public override int InternalWidth => 480;
+        public override int InternalHeight => 220;
+        public override Color TabColor => new Color (55, 74, 133);
+        //Internal Values
         public static float Transparency = 1f;
         private static int LastExp = 0, LastMaxExp = 0;
         private static float LastExpPercentage = 0;
-        private static bool LastInterfaceOpened = false;
-        private static byte StatusRows = 6, StatusColumns = 3, PageCount = 1;
-        private static byte CurrentPage = 0;
-        private static float StatusDistance = 1;
-        private static int[] PointsSpent = new int[0];
-        private static bool Collapsed = false, MouseOverButton = false;
+        private byte StatusRows = 6, StatusColumns = 3, PageCount = 1;
+        private byte CurrentPage = 0;
+        private float StatusDistance = 1;
+        private int[] PointsSpent = new int[0];
+        bool MouseOverButton = false;
 
-        public static void OnUnload(){
-            PointsSpent = null;
+        void GetPlayerGameModeInfos(out PlayerMod pm, out GameModeData data)
+        {
+            pm = Main.LocalPlayer.GetModPlayer<PlayerMod>();
+            data = pm.GetCurrentGamemode;
         }
 
-        public LevelInfos(string name, GameInterfaceDrawMethod drawMethod, InterfaceScaleType scaleType = InterfaceScaleType.UI) : base(name, DrawInterface, scaleType)
+        public override void OnClickAction(bool OpeningTab)
         {
-            name = "NExperience: Level Infos";
-        }
-        
-        public static bool DrawInterface()
-        {
-            PlayerMod player = Main.LocalPlayer.GetModPlayer<PlayerMod>();
-            GameModeData data = player.GetCurrentGamemode;
-            if(data.GetExp != LastExp || data.GetMaxExp != LastMaxExp)
+            if (OpeningTab)
             {
-                LastExpPercentage = (float)Math.Round(data.GetLevelExpValue * 100f, 2);
-                LastExp = data.GetExp;
-                LastMaxExp = data.GetMaxExp;
-            }
-            if(!Main.playerInventory)
-            {
-                GameInterface(player, data);
-            }
-            else
-            {
-                //InventoryInterface(player, data);
-            }
-            LastInterfaceOpened = Main.playerInventory;
-            return true;
-        }
-
-        private static void InventoryInterface(PlayerMod player, GameModeData data)
-        {
-            if(!LastInterfaceOpened)
-            {
+                GetPlayerGameModeInfos(out PlayerMod player, out GameModeData data);
                 StatusColumns = (byte)(Math.Min(4, MathF.Ceiling((float)data.GetBase.GameModeStatus.Length / 6)));
                 StatusRows = (byte)(MathF.Ceiling((float)data.GetBase.GameModeStatus.Length / StatusColumns));
                 StatusDistance = 1f / (StatusColumns + 1);
                 PointsSpent = new int[data.GetBase.GameModeStatus.Length];
                 PageCount = (byte)(MathF.Ceiling((float)data.GetBase.GameModeStatus.Length / (StatusColumns * StatusRows)));
             }
-            Color bg = new Color (55, 74, 133);
+        }
+
+        public override void DrawInternal(Vector2 DrawPosition)
+        {
+            DrawPosition.X += InternalWidth * .5f;
+            int Width = InternalWidth;
+            int Height = InternalHeight;
+            GetPlayerGameModeInfos(out PlayerMod player, out GameModeData data);
             string MouseOverText = "";
-            const int Width = 480, Height = 220;
-            Vector2 DrawPosition = new Vector2(Main.screenWidth * 0.5f , Main.screenHeight - Height);
-            int DrawX = (int)(DrawPosition.X- Width * 0.5f), DrawY = (int)DrawPosition.Y;
-            if(Collapsed)
-            {
-                if(Main.mouseX >= DrawX && Main.mouseX < DrawX + Width && Main.mouseY >= DrawY && Main.mouseY < DrawY + Height)
-                    player.Player.mouseInterface = true;
-                Main.spriteBatch.Draw(nexperience1dot4.HandyTexture.Value, new Rectangle(DrawX - 1, DrawY - 1, Width + 2, Height + 2), Color.Black * Transparency);
-                Main.spriteBatch.Draw(nexperience1dot4.HandyTexture.Value, new Rectangle(DrawX + 1, DrawY + 1, Width - 2, Height - 2), bg * Transparency);
-            }
-            {
-                const int StatusButtonWidth = 90, StatusButtonHeight = 30;
-                Vector2 StatusButtonPosition = new Vector2(DrawPosition.X - Width * 0.5f, DrawPosition.Y - StatusButtonHeight);
-                if(!Collapsed)
-                    StatusButtonPosition.Y = Main.screenHeight - StatusButtonHeight;
-                Main.spriteBatch.Draw(nexperience1dot4.HandyTexture.Value, new Rectangle((int)StatusButtonPosition.X - 1, (int)StatusButtonPosition.Y - 1, StatusButtonWidth + 2, StatusButtonHeight), Color.Black * Transparency);
-                Main.spriteBatch.Draw(nexperience1dot4.HandyTexture.Value, new Rectangle((int)StatusButtonPosition.X + 1, (int)StatusButtonPosition.Y + 1, StatusButtonWidth - 2, StatusButtonHeight), bg * Transparency);
-                if(Main.mouseX >= StatusButtonPosition.X && Main.mouseX < StatusButtonPosition.X + StatusButtonWidth && 
-                    Main.mouseY >= StatusButtonPosition.Y && Main.mouseY < StatusButtonPosition.Y + StatusButtonHeight){
-                    Main.LocalPlayer.mouseInterface = true;
-                    MouseOverButton = true;
-                    if(Main.mouseLeft && Main.mouseLeftRelease){
-                        Collapsed = !Collapsed;
-                    }
-                }else{
-                    MouseOverButton = false;
-                }
-                StatusButtonPosition.X += StatusButtonWidth * 0.5f;
-                StatusButtonPosition.Y += StatusButtonHeight * 0.5f;
-                Utils.DrawBorderString(Main.spriteBatch, "Status", StatusButtonPosition, MouseOverButton ? Color.Yellow : Color.White, 1, 0.5f, 0.5f);
-                if(!Collapsed)
-                    return;
-            }
             string Text = data.GetBase.GetLevelInfo(data, true);
             Vector2 AcquiredScale = Utils.DrawBorderString(Main.spriteBatch, Text, DrawPosition + Vector2.UnitY * 4f, Color.White, 0.9f, 0.5f);
             Text = "Exp [" + data.GetExp + "/"  + data.GetMaxExp + "] (" + LastExpPercentage + "%)";
@@ -236,26 +191,6 @@ namespace nexperience1dot4.Interfaces
                     }
                 }
             return false;
-        }
-
-        private static void GameInterface(PlayerMod player, GameModeData data)
-        {
-            Vector2 DrawPosition = new Vector2(0, Main.screenHeight);
-            string Text = data.GetBase.GetLevelInfo(data, false); //"Level " + data.GetLevel + (data.GetLevel != data.GetEffectiveLevel ? "->" + data.GetEffectiveLevel : "");
-            if(Main.mouseX >= DrawPosition.X && Main.mouseX < DrawPosition.X + 150 && 
-            Main.mouseY >= DrawPosition.Y -22 && Main.mouseY < DrawPosition.Y - 10)
-            {
-                Text = "Exp " + LastExp + "/" + LastMaxExp + " (" + LastExpPercentage + "%)";
-            }
-            DrawPosition.Y -= 40;
-            Utils.DrawBorderString(Main.spriteBatch, Text,
-                DrawPosition + Vector2.UnitX * 4, Color.White);
-            DrawPosition.Y += 18;
-            Texture2D ExpBar = nexperience1dot4.LevelArrowTexture.Value;
-            Main.spriteBatch.Draw(ExpBar, DrawPosition, new Rectangle(0, 0, 150, 12), Color.White);
-            DrawPosition.X += 2;
-            DrawPosition.Y += 2;
-            Main.spriteBatch.Draw(ExpBar, DrawPosition, new Rectangle(2, 14, (int)(146 * LastExpPercentage * 0.01f), 8), Color.Yellow);
         }
     }
 }

@@ -6,3 +6,4 @@ hideResources = true
 includeSource = false
 buildIgnore = *.csproj, *.user, obj\*, bin\*, .vs\*
 includePDB = false
+modReferences = nterrautils

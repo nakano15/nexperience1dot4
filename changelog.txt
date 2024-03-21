@@ -1,2 +1,0 @@
-Changed how the health regeneration and depletion works.
- => This time it shouldn't cause the anomaly of the health plummeting.

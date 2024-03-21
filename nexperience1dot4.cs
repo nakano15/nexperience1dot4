@@ -43,6 +43,7 @@ namespace nexperience1dot4
                     AddDamageClass(FoundClass, StatusTranslator.DC_Melee);
                 }
             }
+            nterrautils.Interfaces.BottomButtonsInterface.AddNewTab(new Interfaces.LevelInfosBottomButton());
             ModCompatibility.TerraGuardiansMod.Load();
             //ModCompatibility.Calamity.Load();
             ServerConfigMod.PopulateGameModes();
