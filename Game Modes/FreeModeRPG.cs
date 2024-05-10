@@ -161,6 +161,11 @@ namespace nexperience1dot4.Game_Modes
             return (int)(npc.lifeMax * 2 + npc.damage * 4 * data.NpcDamageMult + npc.defense * 8 + data.GetLevel * 16);
         }
 
+        public override int GetExpReward(float RewardLevel, float Percentage)
+        {
+            return (int)(100 + RewardLevel * 10 * Percentage);
+        }
+
         public override int GetNpcLevelProcedural(NPC npc)
         {
             int Level = 1;

@@ -20,7 +20,11 @@ namespace nexperience1dot4
         private BitsByte UpdateInfos = new BitsByte();
         internal bool FirstUpdate { get{ return UpdateInfos[0]; } set{ UpdateInfos[0] = value; }}
         internal bool UpdatedStatus { get{ return UpdateInfos[1]; } set{ UpdateInfos[1] = value; }}
-        int LastHealthRegen = 0;
+        int RegenValue = 0;
+
+        int LastMaxHealth = 0;
+        int LastDamage = 0;
+        int LastDefense = 0;
 
         public override bool InstancePerEntity => true;
         public override bool IsCloneable => false;
@@ -47,6 +51,21 @@ namespace nexperience1dot4
             npc.MobStatus.ChangeGameMode(nexperience1dot4.GetActiveGameModeID);
             npc.MobStatus.SpawnNpcLevel(n);
             npc.MobStatus.UpdateNPC(n);
+        }
+
+        internal static void CheckNpcStatsChanged(NPC n, out bool HealthChanged, out bool DamageChanged, out bool DefenseChanged)
+        {
+            if (!n.active)
+            {
+                HealthChanged = false;
+                DamageChanged = false;
+                DefenseChanged = false;
+                return;
+            }
+            NpcMod nmod = n.GetGlobalNPC<NpcMod>();
+            HealthChanged = nmod.LastMaxHealth != n.lifeMax;
+            DamageChanged = nmod.LastDamage != n.damage;
+            DefenseChanged = nmod.LastDefense != n.defense;
         }
 
         private static Condition _potionSaleCondition = new Condition("nexperience1dot4.PotionSaleReq", delegate()
@@ -138,21 +157,11 @@ namespace nexperience1dot4
         public override bool PreAI(NPC npc)
         {
             TransformTrap = (byte)npc.whoAmI;
-            /*if(!UpdatedStatus)
-            {
-                UpdatedStatus = true;
-                float Percentage = npc.life >= npc.lifeMax ? 1f : (float)npc.life / npc.lifeMax;
-                MobStatus.UpdateNPC(npc);
-                npc.life = (int)(npc.lifeMax * Percentage);
-                //Main.NewText(npc.GivenOrTypeName + " stats - Damage: " + npc.damage + "  Defense: " + npc.defense);
-            }*/
             if(FirstUpdate)
             {
                 FirstUpdate = false;
                 NetplayMod.SendNpcLevel(npc.whoAmI, -1, Main.myPlayer);
             }
-            npc.damage = npc.defDamage;
-            npc.defense = npc.defDefense;
             OriginNpc = npc;
             LastLoggedMonsterLevel = MobStatus.GetLevel;
             return base.PreAI(npc);
@@ -164,6 +173,14 @@ namespace nexperience1dot4
             OriginNpc = null;
             MobStatus.UpdateNPC(npc);
             TransformTrap = 255;
+            UpdateNpcsLoggedStats(npc);
+        }
+
+        void UpdateNpcsLoggedStats(NPC npc)
+        {
+            LastMaxHealth = npc.lifeMax;
+            LastDamage = npc.damage;
+            LastDefense = npc.defense;
         }
 
         public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
@@ -542,21 +559,10 @@ namespace nexperience1dot4
 
         public override void UpdateLifeRegen(NPC npc, ref int damage)
         {
-            if (LastHealthRegen > 0 && npc.lifeRegenCount >= 0)
-            {
-                if (LastHealthRegen > npc.lifeRegenCount)
-                {
-                    npc.life += (int)(MobStatus.HealthPercentageChange * (LastHealthRegen / 120 + 1));
-                }
-            }
-            if (LastHealthRegen < 0 && npc.lifeRegenCount <= 0)
-            {
-                if (LastHealthRegen < npc.lifeRegenCount)
-                {
-                    npc.life -= (int)(MobStatus.HealthPercentageChange * (LastHealthRegen / -120 + 1));
-                }
-            }
-            LastHealthRegen = npc.lifeRegenCount;
+            if (damage > 0)
+                damage = (int)MathF.Max(1, damage * MobStatus.HealthPercentageChange);
+            else
+                damage = (int)MathF.Min(-1, damage * MobStatus.HealthPercentageChange);
         }
 
         public static bool IsPreHardmodeMonster(NPC npc)

@@ -228,8 +228,7 @@ namespace nexperience1dot4
                     _EffectiveLevel = LastCheckedBiome.GetMaxLevel;
                 for (int n = 0; n < 200; n++)
                 {
-                    if (!Main.npc[n].active || !Main.npc[n].chaseable || Main.npc[n].townNPC)
-                        continue;
+                    if (Main.npc[n].active && Main.npc[n].chaseable && !Main.npc[n].townNPC)
                     {
                         int NpcLevel = NpcMod.GetNpcLevel(Main.npc[n]);
                         if (NpcLevel > _EffectiveLevel)
@@ -292,11 +291,12 @@ namespace nexperience1dot4
         public void UpdateNPC(NPC npc)
         {
             _EffectiveLevel = _Level;
-            TownNpcEffectiveLevelTweak(npc);
+            bool UpdateStats = TownNpcEffectiveLevelTweak(npc);
             //int npcHealthBackup = npc.lifeMax;
             //npc.lifeMax = npc.GetGlobalNPC<NpcMod>().GetOriginalHP;
             //GetBase.UpdateNpcStatus(npc, this);
-            if(npc.damage != LastNpcDamage)
+            NpcMod.CheckNpcStatsChanged(npc, out bool HealthChanged, out bool DamageChanged, out bool DefenseChanged);
+            if(UpdateStats || DamageChanged)
             {
                 try
                 {
@@ -311,7 +311,7 @@ namespace nexperience1dot4
                 }
                 LastNpcDamage = npc.damage;
             }
-            if(npc.defense != LastNpcDefense)
+            if(UpdateStats || DefenseChanged)
             {
                 try
                 {
@@ -339,9 +339,9 @@ namespace nexperience1dot4
             }*/
         }
 
-        public void TownNpcEffectiveLevelTweak(NPC npc, bool TransformIfDifferentLevel = true)
+        public bool TownNpcEffectiveLevelTweak(NPC npc, bool TransformIfDifferentLevel = true)
         {
-            if (Main.gameMenu || !npc.townNPC) return;
+            if (Main.gameMenu || !npc.townNPC) return false;
             int LastLevel = _EffectiveLevel;
             _EffectiveLevel = _Level;
             for (int p = 0; p < 255; p++)
@@ -362,10 +362,13 @@ namespace nexperience1dot4
                     }
                 }
             }
-            /*if (TransformIfDifferentLevel && LastLevel != _EffectiveLevel)
+            if (LastLevel != _EffectiveLevel)
             {
-                npc.Transform(npc.type);
-            }*/
+                npc.damage = npc.defDamage;
+                npc.defense = npc.defDefense;
+                GetBase.UpdateNpcStatus(npc, this);
+            }
+            return LastLevel != _EffectiveLevel;
         }
 
         public void SpawnNpcLevel(NPC npc)

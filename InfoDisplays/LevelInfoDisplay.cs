@@ -20,7 +20,7 @@ namespace nexperience1dot4.InfoDisplays
             return true;
         }
 
-        public override string DisplayValue(ref Color displayColor)/* tModPorter Suggestion: Set displayColor to InactiveInfoTextColor if your display value is "zero"/shows no valuable information */
+        public override string DisplayValue(ref Color displayColor, ref Color displayShadowColor)/* tModPorter Suggestion: Set displayColor to InactiveInfoTextColor if your display value is "zero"/shows no valuable information */
         {
             GameModeData data = Main.LocalPlayer.GetModPlayer<PlayerMod>().GetCurrentGamemode;
             if(data.GetExp != LastExp || data.GetMaxExp != LastMaxExp)

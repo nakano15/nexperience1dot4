@@ -116,3 +116,8 @@ Configs: {
 		}
 	}
 }
+
+InfoDisplays: {
+	BiomeInfoDisplay.DisplayName: Biome Info Display
+	LevelInfoDisplay.DisplayName: Level Info Display
+}

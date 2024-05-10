@@ -496,7 +496,7 @@ namespace nexperience1dot4.Game_Modes
         public override int GetExpReward(float RewardLevel, float Percentage)
         {
             float LevelValue = RewardLevel * 0.01f * GetMaxLevel;
-            if(LevelValue == 0) LevelValue = 1;
+            if(LevelValue <= 0) LevelValue = 1;
             else if (RewardLevel > 10)
             {
                 LevelValue -= LevelValue / (LevelValue + 10);
