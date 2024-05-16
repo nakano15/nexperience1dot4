@@ -180,5 +180,10 @@ namespace nexperience1dot4
                 return "No Information";
             return biome.GetBiomeName + " Lv[" + biome.GetMinLevel + "~" + biome.GetMaxLevel + "]";
         }
+
+        public virtual int GetTileBreakingExp(int Tile)
+        {
+            return 0;
+        }
     }
 }

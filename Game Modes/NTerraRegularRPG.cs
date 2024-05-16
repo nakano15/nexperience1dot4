@@ -505,5 +505,69 @@ namespace nexperience1dot4.Game_Modes
             //if(LevelValue < 0) LevelValue = 0;
             return (int)(GetLevelExp((int)LevelValue) * Percentage);
         }
+
+        public override int GetTileBreakingExp(int Tile)
+        {
+            switch (Tile) {
+                default:
+                    return 0;
+                case TileID.Copper:
+                case TileID.Tin:
+                    return 30;
+                case TileID.Iron:
+                case TileID.Lead:
+                    return 50;
+                case TileID.Silver:
+                case TileID.Tungsten:
+                    return 80;
+                case TileID.Gold:
+                case TileID.Platinum:
+                    return 100;
+                case TileID.Demonite:
+                case TileID.Crimtane:
+                    return 200;
+                case TileID.DesertFossil:
+                    return 120;
+                case TileID.Meteorite:
+                    return 150;
+                case 12: //Life Crystal
+                    return 3000;
+                case TileID.LifeFruit:
+                    return 6000;
+                case TileID.ShadowOrbs:
+                    return 9000;
+                case TileID.Obsidian:
+                    return 250;
+                case TileID.Hellstone:
+                    return 300;
+                case TileID.Cobalt:
+                case TileID.Palladium:
+                    return 300;
+                case TileID.Mythril:
+                case TileID.Orichalcum:
+                    return 350;
+                case TileID.Adamantite:
+                case TileID.Titanium:
+                    return 400;
+                case TileID.Chlorophyte:
+                    return 500;
+                case TileID.Crystals:
+                    return 600;
+                case TileID.Traps:
+                    return 1000;
+                case TileID.ExposedGems:
+                    return 1200;
+                case TileID.DyePlants:
+                    return 500;
+                case TileID.Larva:
+                    return 10000;
+                case TileID.PlanteraBulb:
+                    return 20000;
+                case TileID.BeeHive:
+                    return 2000;
+                case TileID.Cobweb:
+                    return 55;
+            }
+        }
     }
 }

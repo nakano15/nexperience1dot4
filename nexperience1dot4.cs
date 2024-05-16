@@ -30,7 +30,7 @@ namespace nexperience1dot4
                 return ThisMod.GetPacket();
             }
         }
-        public const string RegularRPGModeID = "nterraregularrpg", FreeModeRPGID = "freemode";
+        public const string RegularRPGModeID = "nterraregularrpg", HardcoreRPGModeID = "nterrariahardcorerpg", FreeModeRPGID = "freemode";
         private static string GetSaveFileDirectory { get { return Main.SavePath; } }
 
         public override void PostSetupContent()
@@ -69,6 +69,7 @@ namespace nexperience1dot4
             AddDamageClass(DamageClass.Summon, StatusTranslator.DC_Summon);
             AddDamageClass(DamageClass.Throwing, StatusTranslator.DC_Ranged);
             AddGameMode(RegularRPGModeID, new Game_Modes.NTerraRegularRPG());
+            AddGameMode(HardcoreRPGModeID, new Game_Modes.NTerraHardcoreRPG());
             AddGameMode(FreeModeRPGID, new Game_Modes.FreeModeRPG());
         }
 

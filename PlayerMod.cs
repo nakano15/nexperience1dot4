@@ -32,7 +32,6 @@ namespace nexperience1dot4
         public bool PlayLevelUpEffect = false;
         int RegenStack = 0;
 
-
         public override void Unload()
         {
             MyGameModes.Clear();

@@ -48,6 +48,8 @@ namespace nexperience1dot4
         {
             if(!n.active) return;
             NpcMod npc = n.GetGlobalNPC<NpcMod>();
+            n.damage = n.defDamage;
+            n.defense = n.defDefense;
             npc.MobStatus.ChangeGameMode(nexperience1dot4.GetActiveGameModeID);
             npc.MobStatus.SpawnNpcLevel(n);
             npc.MobStatus.UpdateNPC(n);

@@ -1,0 +1,4 @@
+Hardcore RPG Mode reimplemented.
+Added tile destruction exp reward to the mod.
+ => Only Regular RPG and Hardcore RPG modes have it.
+Town npc should now be at an acceptable level depending on progress.
