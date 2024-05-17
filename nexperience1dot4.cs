@@ -23,7 +23,7 @@ namespace nexperience1dot4
         public static bool DisplayExpRewardAsPercentage = false;
         public static bool WeekendExp = false;
         internal static float ExpRate = 1f;
-        internal static Asset<Texture2D> HandyTexture, LevelArrowTexture;
+        internal static Asset<Texture2D> HandyTexture, LevelArrowTexture, SpendPointArrowsTexture;
         public static ModPacket packet{
             get
             {
@@ -59,8 +59,12 @@ namespace nexperience1dot4
         public override void Load()
         {
             ThisMod = this;
-            HandyTexture = ModContent.Request<Texture2D>(ContentPath + "Interface/WhiteDot");
-            LevelArrowTexture = ModContent.Request<Texture2D>(ContentPath + "Interface/LevelArrow");
+            if (!Main.dedServ)
+            {
+                HandyTexture = ModContent.Request<Texture2D>(ContentPath + "Interface/WhiteDot");
+                LevelArrowTexture = ModContent.Request<Texture2D>(ContentPath + "Interface/LevelArrow");
+                SpendPointArrowsTexture = ModContent.Request<Texture2D>(ContentPath + "Interface/SpendPointsArrows");
+            }
             AddDamageClass(DamageClass.Generic, StatusTranslator.DC_Generic);
             AddDamageClass(DamageClass.Melee, StatusTranslator.DC_Melee);
             AddDamageClass(DamageClass.Ranged, StatusTranslator.DC_Ranged);

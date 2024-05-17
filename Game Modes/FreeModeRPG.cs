@@ -13,7 +13,7 @@ namespace nexperience1dot4.Game_Modes
     public class FreeModeRPG : GameModeBase
     {
         public override string Name => "Free RPG";
-        public override string Description => "";
+        public override string Description => "A game mode that's made to have a really high level cap, and have the game challenges increase based on how far from spawn point you are, and also progresso n the world.";
         public override float InitialStatusPoints => 0;
         public override float StatusPointsPerLevel => 0.01f;
         public override bool EnableLevelCapping => false;

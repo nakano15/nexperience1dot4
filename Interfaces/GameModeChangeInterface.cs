@@ -9,6 +9,8 @@ using Terraria.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using nterrautils;
+using Terraria.GameContent;
 
 namespace nexperience1dot4.Interfaces
 {
@@ -32,7 +34,7 @@ namespace nexperience1dot4.Interfaces
 
         public static void Open()
         {
-            Dimension = new Point((int)(Main.screenWidth * 0.5f), (int)(Main.screenHeight * 0.5f));
+            Dimension = new Point(720, 400);
             Position.X = Main.screenWidth * 0.5f - Dimension.X * 0.5f;
             Position.Y = Main.screenHeight * 0.5f - Dimension.Y * 0.5f;
             IsActive = true;
@@ -67,13 +69,16 @@ namespace nexperience1dot4.Interfaces
             {
                 Main.LocalPlayer.mouseInterface = true;
             }
-            Main.spriteBatch.Draw(nexperience1dot4.HandyTexture.Value, new Rectangle((int)DrawPosition.X - 2, (int)DrawPosition.Y - 2, Dimension.X + 4, Dimension.Y + 4), Color.White);
-            Main.spriteBatch.Draw(nexperience1dot4.HandyTexture.Value, new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, Dimension.X, Dimension.Y), Color.Gray);
+            InterfaceHelper.DrawBackgroundPanel(DrawPosition, Dimension.X, Dimension.Y, Color.Gray);
+            //Main.spriteBatch.Draw(nexperience1dot4.HandyTexture.Value, new Rectangle((int)DrawPosition.X - 2, (int)DrawPosition.Y - 2, Dimension.X + 4, Dimension.Y + 4), Color.White);
+            //Main.spriteBatch.Draw(nexperience1dot4.HandyTexture.Value, new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, Dimension.X, Dimension.Y), Color.Gray);
             DrawPosition.X += 4;
             DrawPosition.Y += 4;
             int MaxItems = (int)((Dimension.Y - 8) / 30);
-            float ListWidth = 156f;
-            Main.spriteBatch.Draw(nexperience1dot4.HandyTexture.Value, new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, (int)ListWidth, Dimension.Y - 8), Color.DarkGray);
+            float ListWidth = 180f;
+            InterfaceHelper.DrawBackgroundPanel(DrawPosition, (int)ListWidth, Dimension.Y - 8, Color.DarkGray);
+            Vector2 HorizontalTextGap = Vector2.UnitX * 4;
+            //Main.spriteBatch.Draw(nexperience1dot4.HandyTexture.Value, new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, (int)ListWidth, Dimension.Y - 8), Color.DarkGray);
             for(int i = 0; i < MaxItems; i++)
             {
                 int Index = i + MenuScroll;
@@ -101,7 +106,7 @@ namespace nexperience1dot4.Interfaces
                         Text = GameModeNames[Index];
                         break;
                 }
-                Vector2 ItemPosition = DrawPosition;
+                Vector2 ItemPosition = DrawPosition + HorizontalTextGap;
                 ItemPosition.Y += i * 30;
                 Color color = Selected == Index ? Color.Cyan : Color.White;
                 if (Main.mouseX >= ItemPosition.X && Main.mouseX < ItemPosition.X + ListWidth && 
@@ -115,7 +120,7 @@ namespace nexperience1dot4.Interfaces
                             default:
                                 Selected = Index;
                                 SelectedGameMode = nexperience1dot4.GetGameMode(GameModeIDs[Index]);
-                                Description = Utils.WordwrapString(SelectedGameMode.Description, Terraria.GameContent.FontAssets.MouseText.Value, Dimension.X - (int)ListWidth - 8, 10, out MaxLines);
+                                Description = Utils.WordwrapString(SelectedGameMode.Description, Terraria.GameContent.FontAssets.MouseText.Value, Dimension.X - (int)ListWidth - 8 - 8, 10, out MaxLines);
                                 break;
                             case 1:
                                 MenuScroll--;
@@ -131,15 +136,25 @@ namespace nexperience1dot4.Interfaces
             DrawPosition.X += ListWidth + 4;
             if(Selected > -1)
             {
-                DrawPosition.Y += Utils.DrawBorderString(Main.spriteBatch, SelectedGameMode.Name, DrawPosition, Color.White, 1.2f).Y;
+                int BackgroundWidth = Dimension.X - (int)ListWidth - 12;
+                InterfaceHelper.DrawBackgroundPanel(DrawPosition, BackgroundWidth, 40, Color.DarkGray);
+                DrawPosition.Y += 4;
+                Utils.DrawBorderString(Main.spriteBatch, SelectedGameMode.Name, DrawPosition + HorizontalTextGap, Color.White, 1.2f);
+                DrawPosition.Y += 40;
+                InterfaceHelper.DrawBackgroundPanel(DrawPosition, BackgroundWidth, 30 * (MaxLines + 1), Color.DarkGray);
+                DrawPosition.Y += 4;
                 for(int i = 0; i <= MaxLines; i++)
                 {
-                    Utils.DrawBorderString(Main.spriteBatch, Description[i], DrawPosition, Color.White);
+                    Utils.DrawBorderString(Main.spriteBatch, Description[i], DrawPosition + HorizontalTextGap, Color.White);
                     DrawPosition.Y += 30;
                 }
-                Utils.DrawBorderString(Main.spriteBatch, "Max Level: " + SelectedGameMode.GetMaxLevel, DrawPosition, Color.White);
+                InterfaceHelper.DrawBackgroundPanel(DrawPosition, BackgroundWidth, 30, Color.DarkGray);
+                DrawPosition.Y += 4;
+                Utils.DrawBorderString(Main.spriteBatch, "Max Level: " + SelectedGameMode.GetMaxLevel, DrawPosition + HorizontalTextGap, Color.White);
                 DrawPosition.Y += 30;
-                Utils.DrawBorderString(Main.spriteBatch, "Allows Level Capping? " + SelectedGameMode.EnableLevelCapping, DrawPosition, Color.White);
+                InterfaceHelper.DrawBackgroundPanel(DrawPosition, BackgroundWidth, 30, Color.DarkGray);
+                DrawPosition.Y += 4;
+                Utils.DrawBorderString(Main.spriteBatch, "Allows Level Capping? " + SelectedGameMode.EnableLevelCapping, DrawPosition + HorizontalTextGap, Color.White);
                 DrawPosition.Y += 30;
                 if (nexperience1dot4.GetActiveGameModeID != GameModeIDs[Selected] && Main.netMode == 0)
                 {
@@ -157,6 +172,9 @@ namespace nexperience1dot4.Interfaces
                             return true;
                         }
                     }
+                    const string Text = "Change Game Mode";
+                    Vector2 TextDimension = FontAssets.MouseText.Value.MeasureString(Text) + Vector2.One * 8;
+                    InterfaceHelper.DrawBackgroundPanel(DrawPosition - TextDimension * .5f, (int)TextDimension.X, (int)TextDimension.Y, Color.DarkGray);
                     Utils.DrawBorderString(Main.spriteBatch, "Change Game Mode", DrawPosition, color, 1f, 0.5f, 0.5f);
                 }
 
