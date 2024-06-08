@@ -1,0 +1,3 @@
+Fixed a issue where the npcs stats were stacking whenever their stats are updated.
+ => That caused town npcs to be... Extremelly reliable...
+ => Also could cause a issue with some monsters being stroger than should (untested).

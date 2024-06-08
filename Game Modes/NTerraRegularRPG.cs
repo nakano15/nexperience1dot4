@@ -22,7 +22,7 @@ namespace nexperience1dot4.Game_Modes
             new GameModeStatusInfo("Vitality",
             "(+) Defense, (+) Max Health, (+) Health Regeneration.", "VIT", 0, 150),
             new GameModeStatusInfo("Intelligence",
-            "(+) Magic Damage, (+) Mana Cost, \n(+) Critical Damage, (+/2) Summon Damage", "INT", 0, 150),
+            "(+) Magic Damage, (+) Mana Cost, (+/2) Max Mana, \n(+) Critical Damage, (+/2) Summon Damage", "INT", 0, 150),
             new GameModeStatusInfo("Dexterity",
             "(+) Ranged Damage, (+) Critical Damage, \n(+/2) Ranged Critical Chance", "DEX", 0, 150),
             new GameModeStatusInfo("Luck",
@@ -30,7 +30,7 @@ namespace nexperience1dot4.Game_Modes
             new GameModeStatusInfo("Charisma",
             "(+) Summon Damage, (+/2) Max Health, (+) Max Summon.", "CHA", 0, 150),
             new GameModeStatusInfo("Wisdom",
-            "(-) Mana Cost, (+) Mana Regeneration, \n(+) Critical Damage, (+/2) Magic Damage.", "WIS", 0, 150)
+            "(-) Mana Cost, (+) Mana Regeneration, (+) Max Mana \n(+) Critical Damage, (+/2) Magic Damage.", "WIS", 0, 150)
         };
 
         public NTerraRegularRPG(){

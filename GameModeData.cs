@@ -290,8 +290,9 @@ namespace nexperience1dot4
 
         public void UpdateNPC(NPC npc)
         {
-            _EffectiveLevel = _Level;
             bool UpdateStats = TownNpcEffectiveLevelTweak(npc);
+            if (!npc.townNPC)
+                _EffectiveLevel = _Level;
             //int npcHealthBackup = npc.lifeMax;
             //npc.lifeMax = npc.GetGlobalNPC<NpcMod>().GetOriginalHP;
             //GetBase.UpdateNpcStatus(npc, this);
@@ -366,7 +367,7 @@ namespace nexperience1dot4
             {
                 npc.damage = npc.defDamage;
                 npc.defense = npc.defDefense;
-                GetBase.UpdateNpcStatus(npc, this);
+                UpdateNpcStats(npc);
             }
             return LastLevel != _EffectiveLevel;
         }
@@ -435,9 +436,20 @@ namespace nexperience1dot4
             NpcHealthSum = 0;
             NpcDamageSum = 0;
             int LastMaxHealth = npc.lifeMax;
-            GetBase.UpdateNpcStatus(npc, this);
+            UpdateNpcStats(npc);
             if(npc.type == Terraria.ID.NPCID.Nailhead)
                 ProjectileNpcDamagePercentage = 1;
+        }
+
+        void UpdateNpcStats(NPC npc)
+        {
+            NpcHealthMult = 1f;
+            NpcHealthSum = 0;
+            NpcDamageMult = 1f;
+            NpcDamageSum = 0;
+            NpcDefense = 0;
+            ProjectileNpcDamagePercentage = 1f;
+            GetBase.UpdateNpcStatus(npc, this);
         }
 
         public void UpdateMobHealthChangePercentage(NPC npc, int LastMaxHealth)
