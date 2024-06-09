@@ -1,3 +1,3 @@
-Fixed a issue where the npcs stats were stacking whenever their stats are updated.
- => That caused town npcs to be... Extremelly reliable...
- => Also could cause a issue with some monsters being stroger than should (untested).
+You can no longer get exp when dead.
+Hardcore RPG Mode formulas have been changed, to try being more accurate to N Terraria 6+ version of the mod.
+ => Also added back the max health changer too.

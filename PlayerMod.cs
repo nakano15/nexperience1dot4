@@ -290,6 +290,7 @@ namespace nexperience1dot4
 
         public void GetExpReward(float RewardLevel, float Percentage, bool ShowNotification = true)
         {
+            if (Player.dead) return;
             int ExpReward = GetCurrentGamemode.GetBase.GetExpReward(RewardLevel, Percentage);
             if(ExpReward < 1)
                 ExpReward = 1;
