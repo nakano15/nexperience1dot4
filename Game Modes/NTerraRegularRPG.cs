@@ -81,7 +81,7 @@ namespace nexperience1dot4.Game_Modes
             data.MagicDamagePercentage += (INT + WIS * SecondaryBonus) * TotalBonus;
             data.SummonDamagePercentage += (CHA + INT * SecondaryBonus) * TotalBonus;
             data.GenericDamagePercentage += Level * Bonus * TotalBonus;
-            DefenseChangeValue += (VIT + STR * SecondaryBonus + Level * Bonus) * TotalBonus;
+            DefenseChangeValue += (VIT * 2 + STR * 2 * SecondaryBonus + Level * Bonus) * TotalBonus;
             data.MeleeSpeedPercentage += (AGI + Level * 0.5f) * 0.0055f;
             player.moveSpeed += (AGI + Level * 0.5f) * 0.0055f;
             data.MeleeCriticalPercentage += (LUK + STR * 0.33f) * 0.0133f;

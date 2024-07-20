@@ -1,3 +1,3 @@
-You can no longer get exp when dead.
-Hardcore RPG Mode formulas have been changed, to try being more accurate to N Terraria 6+ version of the mod.
- => Also added back the max health changer too.
+Your character now gain twice defense bonuses from stats invested in defense increasing stats on Regular and Hardcore RPG game modes.
+Changed how the damage and defense calculation of monsters work, to happen whenever they attack/are hit instead.
+Removed now useless method from the game codes.

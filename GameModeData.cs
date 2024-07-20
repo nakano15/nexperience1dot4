@@ -296,7 +296,7 @@ namespace nexperience1dot4
             //int npcHealthBackup = npc.lifeMax;
             //npc.lifeMax = npc.GetGlobalNPC<NpcMod>().GetOriginalHP;
             //GetBase.UpdateNpcStatus(npc, this);
-            NpcMod.CheckNpcStatsChanged(npc, out bool HealthChanged, out bool DamageChanged, out bool DefenseChanged);
+            /*NpcMod.CheckNpcStatsChanged(npc, out bool HealthChanged, out bool DamageChanged, out bool DefenseChanged);
             if(UpdateStats || DamageChanged)
             {
                 try
@@ -325,19 +325,30 @@ namespace nexperience1dot4
                 {
                     npc.defense = int.MaxValue;
                 }
-                /*if (nexperience1dot4.MobDefenseToHealth && npc.defDefense < 1000)
-                {
-                    int Dif = npc.defense - npc.defDefense;
-                    npc.lifeMax += Dif * GetBase.DefenseToHealthConversionRate;
-                    npc.defense -= Dif;
-                }*/
                 LastNpcDefense = npc.defense;
-            }
+            }*/
             /*if(npc.lifeMax != npcHealthBackup)
             {
                 double Percentage = npc.life >= npcHealthBackup ? 1 : (double)npc.life / npcHealthBackup;
                 npc.life = (int)(npc.lifeMax * Percentage);
             }*/
+        }
+
+        public void NpcOnHitHandler(NPC npc, ref NPC.HitModifiers modifier)
+        {
+            modifier.Defense *= NpcDefense;
+        }
+
+        public void NpcModifyOnHitPlayer(NPC npc, Player target, ref Player.HurtModifiers modifiers)
+        {
+            modifiers.SourceDamage *= NpcDamageMult;
+            modifiers.SourceDamage += NpcDamageSum;
+        }
+
+        public void NpcModifyOnHitNPC(NPC npc, NPC target, ref NPC.HitModifiers modifiers)
+        {
+            modifiers.SourceDamage *= NpcDamageMult;
+            modifiers.SourceDamage += NpcDamageSum;
         }
 
         public bool TownNpcEffectiveLevelTweak(NPC npc, bool TransformIfDifferentLevel = true)

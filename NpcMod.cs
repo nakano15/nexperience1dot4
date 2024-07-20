@@ -22,10 +22,6 @@ namespace nexperience1dot4
         internal bool UpdatedStatus { get{ return UpdateInfos[1]; } set{ UpdateInfos[1] = value; }}
         int RegenValue = 0;
 
-        int LastMaxHealth = 0;
-        int LastDamage = 0;
-        int LastDefense = 0;
-
         public override bool InstancePerEntity => true;
         public override bool IsCloneable => false;
         //public override bool CloneNewInstances => false;
@@ -55,19 +51,19 @@ namespace nexperience1dot4
             npc.MobStatus.UpdateNPC(n);
         }
 
-        internal static void CheckNpcStatsChanged(NPC n, out bool HealthChanged, out bool DamageChanged, out bool DefenseChanged)
+        public override void ModifyIncomingHit(NPC npc, ref NPC.HitModifiers modifiers)
         {
-            if (!n.active)
-            {
-                HealthChanged = false;
-                DamageChanged = false;
-                DefenseChanged = false;
-                return;
-            }
-            NpcMod nmod = n.GetGlobalNPC<NpcMod>();
-            HealthChanged = nmod.LastMaxHealth != n.lifeMax;
-            DamageChanged = nmod.LastDamage != n.damage;
-            DefenseChanged = nmod.LastDefense != n.defense;
+            MobStatus.NpcOnHitHandler(npc, ref modifiers);
+        }
+
+        public override void ModifyHitPlayer(NPC npc, Player target, ref Player.HurtModifiers modifiers)
+        {
+            MobStatus.NpcModifyOnHitPlayer(npc, target, ref modifiers);
+        }
+
+        public override void ModifyHitNPC(NPC npc, NPC target, ref NPC.HitModifiers modifiers)
+        {
+            MobStatus.NpcModifyOnHitNPC(npc, target, ref modifiers);
         }
 
         private static Condition _potionSaleCondition = new Condition("nexperience1dot4.PotionSaleReq", delegate()
@@ -175,14 +171,6 @@ namespace nexperience1dot4
             OriginNpc = null;
             MobStatus.UpdateNPC(npc);
             TransformTrap = 255;
-            UpdateNpcsLoggedStats(npc);
-        }
-
-        void UpdateNpcsLoggedStats(NPC npc)
-        {
-            LastMaxHealth = npc.lifeMax;
-            LastDamage = npc.damage;
-            LastDefense = npc.defense;
         }
 
         public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
