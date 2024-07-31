@@ -29,6 +29,7 @@ namespace nexperience1dot4.Interfaces
         private int[] PointsSpent = new int[0];
         bool MouseOverButton = false;
         float StatusInfoWidth = 0f;
+        bool RespecInterface = false;
 
         void GetPlayerGameModeInfos(out PlayerMod pm, out GameModeData data)
         {
@@ -47,6 +48,7 @@ namespace nexperience1dot4.Interfaces
                 StatusDistance = 1f / (StatusColumns + 1);
                 PointsSpent = new int[data.GetBase.GameModeStatus.Length];
                 PageCount = (byte)(MathF.Ceiling((float)data.GetBase.GameModeStatus.Length / (StatusColumns * StatusRows)));
+                RespecInterface = false;
             }
         }
 
@@ -71,119 +73,156 @@ namespace nexperience1dot4.Interfaces
                     HasPointsSpent = true;
                 StatusPointsLeft -= PointsSpent[i];
             }
-            Texture2D LevelUparrows = nexperience1dot4.SpendPointArrowsTexture.Value;
-            for(byte x = 0; x < StatusColumns; x++)
+            if (RespecInterface)
             {
-                for(byte y = 0; y < StatusRows; y++)
+                Utils.DrawBorderString(Main.spriteBatch, "You are about to reset all your stats.\nAre you sure that want to do that?", DrawPosition + Vector2.UnitY * 78f, Color.White, 1f, 0.5f, 0.5f);
+                Vector2 ButtonStartPosition = DrawPosition + Vector2.UnitY * 128f;
+                ButtonStartPosition.X -= InternalWidth * .25f;
+                Color ButtonColor = Color.White;
+                float Scale = 1f;
+                if (Main.mouseX >= ButtonStartPosition.X - 30 && Main.mouseX < ButtonStartPosition.X + 30 &&
+                    Main.mouseY >= ButtonStartPosition.Y - 10 && Main.mouseY < ButtonStartPosition.Y + 10)
                 {
-                    byte Index = (byte)(y + x * StatusRows + StatusColumns * StatusRows * CurrentPage);
-                    if(Index >= status.Length)
-                        break;
-                    int EffectiveStatus = 0, StatusValue = data.GetStatusValue(Index, out EffectiveStatus);
-                    Text = status[Index].GetShortName + " [" + StatusValue + "+" + PointsSpent[Index] + (EffectiveStatus != StatusValue ? "->" + EffectiveStatus : "") + "]";
-                    Vector2 CenterPosition = new Vector2(DrawPosition.X + (Width * (-0.5f + StatusDistance * (1 + x))), DrawStartY + 20 * y);
-                    Vector2 TextPosition = CenterPosition - Vector2.UnitX * StatusInfoWidth;
-                    Vector2 UpArrowsPosition = CenterPosition + Vector2.UnitX * (StatusInfoWidth - 34);
-                    UpArrowsPosition.Y += 4;
-                    AcquiredScale = Utils.DrawBorderString(Main.spriteBatch, Text, TextPosition, Color.White, StatusScale);
-                    if (Main.mouseX >= TextPosition.X - AcquiredScale.X * 0.5f && Main.mouseX < TextPosition.X + AcquiredScale.X * 0.5f && 
-                        Main.mouseY >= TextPosition.Y + 4 && Main.mouseY < TextPosition.Y + 24)
-                    {
-                        MouseOverText = status[Index].GetName + "\n\"" +status[Index].GetDescription + '\"';
-                    }
-                    if(StatusPointsLeft > 0){
-                        Main.spriteBatch.Draw(LevelUparrows, UpArrowsPosition, new Rectangle(0, 0, 16, 9), Color.White);
-                        if (Main.mouseX >= UpArrowsPosition.X && Main.mouseX < UpArrowsPosition.X + 16 && 
-                            Main.mouseY >= UpArrowsPosition.Y && Main.mouseY < UpArrowsPosition.Y + 9)
-                        {
-                            MouseOverText = "Spend point on " + status[Index].GetShortName + "?";
-                            if (Main.mouseLeft && Main.mouseLeftRelease)
-                            {
-                                PointsSpent[Index]++;
-                                StatusPointsLeft --;
-                            }
-                        }
-                    }
-                    UpArrowsPosition.X += 18;
-                    if(PointsSpent[Index] > 0){
-                        Main.spriteBatch.Draw(LevelUparrows, UpArrowsPosition, new Rectangle(0, 9, 16, 9), Color.White);
-                        if (Main.mouseX >= UpArrowsPosition.X && Main.mouseX < UpArrowsPosition.X + 16 && 
-                            Main.mouseY >= UpArrowsPosition.Y && Main.mouseY < UpArrowsPosition.Y + 9)
-                        {
-                            MouseOverText = "Refund point from " + status[Index].GetShortName + "?";
-                            if (Main.mouseLeft && Main.mouseLeftRelease)
-                            {
-                                PointsSpent[Index]--;
-                                StatusPointsLeft++;
-                            }
-                        }
-                    }
-                }
-            }
-            Utils.DrawBorderString(Main.spriteBatch, "Status Points: " + StatusPointsLeft, new Vector2(DrawPosition.X - Width * 0.25f, Main.screenHeight - 30), Color.White, 0.9f, 0.5f);
-            {
-                Color color = Color.White;
-                Vector2 ButtonPosition = new Vector2(DrawPosition.X + Width * 0.25f, Main.screenHeight - 30);
-                if (Main.mouseX >= ButtonPosition.X - 60 && Main.mouseX < ButtonPosition.X + 60 && 
-                    Main.mouseY >= ButtonPosition.Y && Main.mouseY < ButtonPosition.Y + 20)
-                {
-                    color = Color.Yellow;
+                    ButtonColor = Color.Yellow;
+                    Scale = 1.2f;
                     if (Main.mouseLeft && Main.mouseLeftRelease)
                     {
-                        GameModeChangeInterface.Open();
-                        Main.playerInventory = false;
-                        return;
+                        RespecInterface = false;
+                        for(byte s = 0; s < PointsSpent.Length; s++)
+                        {
+                            PointsSpent[s] = 0;
+                        }
+                        data.ResetStatusPoints();
+                        if(Main.netMode == 1)
+                        {
+                            NetplayMod.SendPlayerStatus(Main.myPlayer, -1, Main.myPlayer);
+                        }
                     }
                 }
-                Utils.DrawBorderString(Main.spriteBatch, "Change Game Mode", ButtonPosition, color, 0.9f, 0.5f);
+                Utils.DrawBorderString(Main.spriteBatch, "Yes", ButtonStartPosition, ButtonColor, Scale, .5f, .5f);
+                ButtonStartPosition.X += InternalWidth * .5f;
+                ButtonColor = Color.White;
+                Scale = 1f;
+                if (Main.mouseX >= ButtonStartPosition.X - 30 && Main.mouseX < ButtonStartPosition.X + 30 &&
+                    Main.mouseY >= ButtonStartPosition.Y - 10 && Main.mouseY < ButtonStartPosition.Y + 10)
+                {
+                    ButtonColor = Color.Yellow;
+                    Scale = 1.2f;
+                    if (Main.mouseLeft && Main.mouseLeftRelease)
+                    {
+                        RespecInterface = false;
+                    }
+                }
+                Utils.DrawBorderString(Main.spriteBatch, "No", ButtonStartPosition, ButtonColor, Scale, .5f, .5f);
             }
-            if(PageCount > 1)
+            else
             {
-                Vector2 PagesPosition = new Vector2(DrawPosition.X + Width * 0.25f, Main.screenHeight - 30);
-                AcquiredScale = Utils.DrawBorderString(Main.spriteBatch, "Page [" + (CurrentPage + 1) + "/" + (PageCount) + "]", PagesPosition, Color.White, 0.9f, 0.5f);
-                if(CurrentPage > 0)
+                Texture2D LevelUparrows = nexperience1dot4.SpendPointArrowsTexture.Value;
+                for(byte x = 0; x < StatusColumns; x++)
                 {
-                    if(DrawButton(PagesPosition - Vector2.UnitX * AcquiredScale.X * 0.5f, "<", 1, 0, 0.9f))
+                    for(byte y = 0; y < StatusRows; y++)
                     {
-                        CurrentPage --;
+                        byte Index = (byte)(y + x * StatusRows + StatusColumns * StatusRows * CurrentPage);
+                        if(Index >= status.Length)
+                            break;
+                        int EffectiveStatus = 0, StatusValue = data.GetStatusValue(Index, out EffectiveStatus);
+                        Text = status[Index].GetShortName + " [" + StatusValue + "+" + PointsSpent[Index] + (EffectiveStatus != StatusValue ? "->" + EffectiveStatus : "") + "]";
+                        Vector2 CenterPosition = new Vector2(DrawPosition.X + (Width * (-0.5f + StatusDistance * (1 + x))), DrawStartY + 20 * y);
+                        Vector2 TextPosition = CenterPosition - Vector2.UnitX * StatusInfoWidth;
+                        Vector2 UpArrowsPosition = CenterPosition + Vector2.UnitX * (StatusInfoWidth - 34);
+                        UpArrowsPosition.Y += 4;
+                        AcquiredScale = Utils.DrawBorderString(Main.spriteBatch, Text, TextPosition, Color.White, StatusScale);
+                        if (Main.mouseX >= TextPosition.X && Main.mouseX < TextPosition.X + AcquiredScale.X * 0.5f && 
+                            Main.mouseY >= TextPosition.Y + 4 && Main.mouseY < TextPosition.Y + 24)
+                        {
+                            MouseOverText = status[Index].GetName + "\n\"" +status[Index].GetDescription + '\"';
+                        }
+                        if(StatusPointsLeft > 0){
+                            Main.spriteBatch.Draw(LevelUparrows, UpArrowsPosition, new Rectangle(0, 0, 16, 9), Color.White);
+                            if (Main.mouseX >= UpArrowsPosition.X && Main.mouseX < UpArrowsPosition.X + 16 && 
+                                Main.mouseY >= UpArrowsPosition.Y && Main.mouseY < UpArrowsPosition.Y + 9)
+                            {
+                                MouseOverText = "Spend point on " + status[Index].GetShortName + "?";
+                                if (Main.mouseLeft && Main.mouseLeftRelease)
+                                {
+                                    PointsSpent[Index]++;
+                                    StatusPointsLeft --;
+                                }
+                            }
+                        }
+                        UpArrowsPosition.X += 18;
+                        if(PointsSpent[Index] > 0){
+                            Main.spriteBatch.Draw(LevelUparrows, UpArrowsPosition, new Rectangle(0, 9, 16, 9), Color.White);
+                            if (Main.mouseX >= UpArrowsPosition.X && Main.mouseX < UpArrowsPosition.X + 16 && 
+                                Main.mouseY >= UpArrowsPosition.Y && Main.mouseY < UpArrowsPosition.Y + 9)
+                            {
+                                MouseOverText = "Refund point from " + status[Index].GetShortName + "?";
+                                if (Main.mouseLeft && Main.mouseLeftRelease)
+                                {
+                                    PointsSpent[Index]--;
+                                    StatusPointsLeft++;
+                                }
+                            }
+                        }
                     }
                 }
-                if(CurrentPage < PageCount - 1)
+                Utils.DrawBorderString(Main.spriteBatch, "Status Points: " + StatusPointsLeft, new Vector2(DrawPosition.X - Width * 0.25f, Main.screenHeight - 30), Color.White, 0.9f, 0.5f);
                 {
-                    if(DrawButton(PagesPosition + Vector2.UnitX * AcquiredScale.X * 0.5f, ">", 0, 0, 0.9f))
+                    Color color = Color.White;
+                    Vector2 ButtonPosition = new Vector2(DrawPosition.X + Width * 0.25f, Main.screenHeight - 30);
+                    if (Main.mouseX >= ButtonPosition.X - 60 && Main.mouseX < ButtonPosition.X + 60 && 
+                        Main.mouseY >= ButtonPosition.Y && Main.mouseY < ButtonPosition.Y + 20)
                     {
-                        CurrentPage++;
+                        color = Color.Yellow;
+                        if (Main.mouseLeft && Main.mouseLeftRelease)
+                        {
+                            GameModeChangeInterface.Open();
+                            Main.playerInventory = false;
+                            return;
+                        }
+                    }
+                    Utils.DrawBorderString(Main.spriteBatch, "Change Game Mode", ButtonPosition, color, 0.9f, 0.5f);
+                }
+                if(PageCount > 1)
+                {
+                    Vector2 PagesPosition = new Vector2(DrawPosition.X + Width * 0.25f, Main.screenHeight - 30);
+                    AcquiredScale = Utils.DrawBorderString(Main.spriteBatch, "Page [" + (CurrentPage + 1) + "/" + (PageCount) + "]", PagesPosition, Color.White, 0.9f, 0.5f);
+                    if(CurrentPage > 0)
+                    {
+                        if(DrawButton(PagesPosition - Vector2.UnitX * AcquiredScale.X * 0.5f, "<", 1, 0, 0.9f))
+                        {
+                            CurrentPage --;
+                        }
+                    }
+                    if(CurrentPage < PageCount - 1)
+                    {
+                        if(DrawButton(PagesPosition + Vector2.UnitX * AcquiredScale.X * 0.5f, ">", 0, 0, 0.9f))
+                        {
+                            CurrentPage++;
+                        }
                     }
                 }
-            }
-            if(HasPointsSpent)
-            {
-                if(DrawButton(new Vector2(DrawPosition.X, Main.screenHeight - 30), "Spend Points"))
+                if(HasPointsSpent)
                 {
-                    for(byte s = 0; s < PointsSpent.Length; s++)
+                    if(DrawButton(new Vector2(DrawPosition.X, Main.screenHeight - 30), "Spend Points"))
                     {
-                        int Point = PointsSpent[s];
-                        data.AddStatusPoint(s, Point);
-                        PointsSpent[s] = 0;
-                    }
-                    data.UpdateEffectiveStatus();
-                    data.UpdateStatusPoints();
-                    if(Main.netMode == 1)
-                    {
-                        NetplayMod.SendPlayerStatus(Main.myPlayer, -1, Main.myPlayer);
+                        for(byte s = 0; s < PointsSpent.Length; s++)
+                        {
+                            int Point = PointsSpent[s];
+                            data.AddStatusPoint(s, Point);
+                            PointsSpent[s] = 0;
+                        }
+                        data.UpdateEffectiveStatus();
+                        data.UpdateStatusPoints();
+                        if(Main.netMode == 1)
+                        {
+                            NetplayMod.SendPlayerStatus(Main.myPlayer, -1, Main.myPlayer);
+                        }
                     }
                 }
-            }
-            else if(DrawButton(new Vector2(DrawPosition.X, Main.screenHeight - 30), "Respec Points"))
-            {
-                for(byte s = 0; s < PointsSpent.Length; s++)
+                else if(DrawButton(new Vector2(DrawPosition.X, Main.screenHeight - 30), "Respec Points"))
                 {
-                    PointsSpent[s] = 0;
-                }
-                data.ResetStatusPoints();
-                if(Main.netMode == 1)
-                {
-                    NetplayMod.SendPlayerStatus(Main.myPlayer, -1, Main.myPlayer);
+                    RespecInterface = true;
                 }
             }
             if(MouseOverText != ""){

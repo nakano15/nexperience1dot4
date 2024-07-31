@@ -1,3 +1,0 @@
-Your character now gain twice defense bonuses from stats invested in defense increasing stats on Regular and Hardcore RPG game modes.
-Changed how the damage and defense calculation of monsters work, to happen whenever they attack/are hit instead.
-Removed now useless method from the game codes.
