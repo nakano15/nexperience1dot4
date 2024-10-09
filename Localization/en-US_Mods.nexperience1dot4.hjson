@@ -1,7 +1,7 @@
 Items: {
 	RareCandy: {
 		DisplayName: Rare Candy
-		Tooltip: ""
+		Tooltip: You probably know what it does.
 	}
 }
 
@@ -113,6 +113,11 @@ Configs: {
 		BossesAsToughAsMe: {
 			Label: Bosses Get As Tough As Me After First Defeat?
 			Tooltip: This setting makes bosses spawn with your character level, once you've defeated them once.
+		}
+
+		EnableExpGainFromBreakingTiles: {
+			Label: Enable Exp Gain From Breaking Tiles
+			Tooltip: When enabled, breaking tiles will award exp based on the game mode you're playing, and tile type.
 		}
 	}
 }

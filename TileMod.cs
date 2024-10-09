@@ -11,7 +11,7 @@ namespace nexperience1dot4
     {
         public override void KillTile(int i, int j, int type, ref bool fail, ref bool effectOnly, ref bool noItem)
         {
-            if (fail || Main.gameMenu) return;
+            if (fail || Main.gameMenu || !nexperience1dot4.EnableExpGainFromBreakingTiles) return;
             Player Nearest = nterrautils.MainMod.GetPlayerCharacter();
             if (Main.netMode > 0)
             {

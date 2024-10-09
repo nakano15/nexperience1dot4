@@ -28,6 +28,9 @@ namespace nexperience1dot4
 
         public bool AllowManaBoost;
 
+        [DefaultValue(true)]
+        public bool EnableExpGainFromBreakingTiles;
+
         [DefaultValue(false)]
         public bool InfiniteLeveling;
 
@@ -92,6 +95,7 @@ namespace nexperience1dot4
             //nexperience1dot4.MobDefenseToHealth = MobDefenseToHealth; //Add use
             nexperience1dot4.PotionsForSale = PotionsForSale;
             nexperience1dot4.BossesAsToughAsMe = BossesAsToughAsMe;
+            nexperience1dot4.EnableExpGainFromBreakingTiles = EnableExpGainFromBreakingTiles;
         }
     }
     public class ClientConfigMod : ModConfig
