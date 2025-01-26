@@ -1,6 +1,6 @@
 displayName = N Experience
 author = Nakano15
-version = 0.9.1.7
+version = 0.9.1.8
 homepage = https://forums.terraria.org/index.php?threads/1-4-beta-nexperience-mod-leveling-mod-for-terraria.83122/
 hideResources = true
 includeSource = false

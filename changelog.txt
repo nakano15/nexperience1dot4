@@ -1,1 +1,2 @@
-Experience gain from breaking tiles can now be disabled.
+Experience gain from breaking tiles can now be disabled in mod settings.
+Added hook for exp reward to N Terraria Utilities mod, for modular quest rewards.

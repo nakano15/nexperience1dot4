@@ -44,6 +44,8 @@ namespace nexperience1dot4
                 }
             }
             nterrautils.Interfaces.BottomButtonsInterface.AddNewTab(new Interfaces.LevelInfosBottomButton());
+            nterrautils.MainMod.AddQuestRewardHook(DeliverExpRewardToPlayer);
+            //nterrautils
             ModCompatibility.TerraGuardiansMod.Load();
             //ModCompatibility.Calamity.Load();
             ServerConfigMod.PopulateGameModes();
@@ -75,6 +77,11 @@ namespace nexperience1dot4
             AddGameMode(RegularRPGModeID, new Game_Modes.NTerraRegularRPG());
             AddGameMode(HardcoreRPGModeID, new Game_Modes.NTerraHardcoreRPG());
             AddGameMode(FreeModeRPGID, new Game_Modes.FreeModeRPG());
+        }
+
+        static void DeliverExpRewardToPlayer(Player player, int Level, float Percentage)
+        {
+            player.GetModPlayer<PlayerMod>().GetExpReward(Level, Percentage * .01f);
         }
 
         public void AddDamageClass(DamageClass dc, byte CountsAs)
