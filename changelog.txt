@@ -1,2 +1,4 @@
-Experience gain from breaking tiles can now be disabled in mod settings.
 Added hook for exp reward to N Terraria Utilities mod, for modular quest rewards.
+Added localization support to the mod.
+ => Let me know if I missed something.
+You can now hold Shift key when investing stats point to try spending up to 10 stats points.

@@ -12,10 +12,16 @@ namespace nexperience1dot4.Game_Modes
 {
     public class FreeModeRPG : GameModeBase
     {
-        public override string Name => "Free RPG";
-        public override string Description => "A game mode that's made to have a really high level cap, and have the game challenges increase based on how far from spawn point you are, and also progresso n the world.";
+
+        string GetTranslation(string Key)
+        {
+            return Terraria.Localization.Language.GetTextValue("Mods.nexperience1dot4.GameModes.FreeRPG." + Key);
+        }
+
+        public override string Name => GetTranslation("Name");
+        public override string Description => GetTranslation("Description");
         public override float InitialStatusPoints => 0;
-        public override float StatusPointsPerLevel => 0.01f;
+        public override float StatusPointsPerLevel => 0.1f;
         public override bool EnableLevelCapping => false;
         private static int ZoneLevel = -1;
         private static string ZoneLevelText = null;
@@ -30,27 +36,10 @@ namespace nexperience1dot4.Game_Modes
         private GameModeStatusInfo[] GetStatus()
         {
             GameModeStatusInfo[] s = new GameModeStatusInfo[7];
-            s[0] = new GameModeStatusInfo("Swordsman", 
-                "MHP [++++], Melee-Damage [+++], DEF [++], Ranged-Damage [+]",
-                "SWD");
-            s[1] = new GameModeStatusInfo("Ranger", 
-                "Ranged-Damage [++++], Summon-Damage [+++], Melee-Damage [++], DEF [+]",
-                "RNG");
-            s[2] = new GameModeStatusInfo("Magician", 
-                "Magic-Damage [++++], Minion-Damage [+++], Ranged-Damage [++], Melee-Damage [+]",
-                "MGC");
-            s[3] = new GameModeStatusInfo("Thief", 
-                "Melee-Damage [++++], Ranged-Damage [+++], MHP [++], Defense [+]",
-                "THF");
-            s[4] = new GameModeStatusInfo("Acolyte", 
-                "MHP [++++], Magic-Damage [+++], Melee-Damage [++], Summon-Damage [+]",
-                "ACO");
-            s[5] = new GameModeStatusInfo("Summoner", 
-                "Summon-Damage [++++], Ranged-Damage [+++], Magic-Damage [++], MHP [+]",
-                "SUM");
-            s[6] = new GameModeStatusInfo("Sorcerer", 
-                "Summon-Damage [++++], Magic-Damage [+++], Ranged-Damage [++], MHP [+]",
-                "SUM");
+            for (int i = 1; i <= 7; i++)
+            {
+                s[i - 1] = new GameModeStatusInfo(GetTranslation("Stat"+i+"Name"), GetTranslation("Stat"+i+"Desc"), GetTranslation("Stat"+i+"Short"));
+            }
             return s;
         }
 

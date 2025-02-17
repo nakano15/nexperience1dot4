@@ -13,15 +13,20 @@ namespace nexperience1dot4.Game_Modes
     {
         private static int[] MaxExpTable;
 
-        public override string Name => "Basic RPG";
-        public override string Description => "Offers basic leveling system.";
+        string GetTranslation(string Key)
+        {
+            return Terraria.Localization.Language.GetTextValue("Mods.nexperience1dot4.GameModes.BasicRPG." + Key);
+        }
+
+        public override string Name => GetTranslation("Name");
+        public override string Description => GetTranslation("Description");
         public override float InitialStatusPoints => 0;
         public override float StatusPointsPerLevel => 2;
         public override GameModeStatusInfo[] GameModeStatus => new GameModeStatusInfo[]{
-            new GameModeStatusInfo("Physical", "Increases your physical attacks.", "PATK"),
-            new GameModeStatusInfo("Magical", "Increases your magical attacks.", "MATK"),
-            new GameModeStatusInfo("Health", "Increases your health.", "HP"),
-            new GameModeStatusInfo("Mana", "Increases your Mana.", "MP")
+            new GameModeStatusInfo(GetTranslation("PhyStatName"), GetTranslation("PhyStatDesc"), GetTranslation("PhyStatShort")),
+            new GameModeStatusInfo(GetTranslation("MagStatName"), GetTranslation("MagStatDesc"), GetTranslation("MagStatShort")),
+            new GameModeStatusInfo(GetTranslation("HPStatName"), GetTranslation("HPStatDesc"), GetTranslation("HPStatShort")),
+            new GameModeStatusInfo(GetTranslation("MPStatName"), GetTranslation("MPStatDesc"), GetTranslation("MPStatShort"))
         };
 
         public BasicRPG()

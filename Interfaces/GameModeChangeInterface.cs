@@ -97,10 +97,10 @@ namespace nexperience1dot4.Interfaces
                 switch(OptionType)
                 {
                     case 1:
-                        Text = "= Up =";
+                        Text = nexperience1dot4.GetTranslation("UpList");
                         break;
                     case 2:
-                        Text = "= Down =";
+                        Text = nexperience1dot4.GetTranslation("DownList");
                         break;
                     default:
                         Text = GameModeNames[Index];
@@ -150,11 +150,11 @@ namespace nexperience1dot4.Interfaces
                 }
                 InterfaceHelper.DrawBackgroundPanel(DrawPosition, BackgroundWidth, 30, Color.DarkGray);
                 DrawPosition.Y += 4;
-                Utils.DrawBorderString(Main.spriteBatch, "Max Level: " + SelectedGameMode.GetMaxLevel, DrawPosition + HorizontalTextGap, Color.White);
+                Utils.DrawBorderString(Main.spriteBatch, nexperience1dot4.GetTranslation("MaxLevelText").Replace("{max}", SelectedGameMode.GetMaxLevel.ToString()), DrawPosition + HorizontalTextGap, Color.White);
                 DrawPosition.Y += 30;
                 InterfaceHelper.DrawBackgroundPanel(DrawPosition, BackgroundWidth, 30, Color.DarkGray);
                 DrawPosition.Y += 4;
-                Utils.DrawBorderString(Main.spriteBatch, "Allows Level Capping? " + SelectedGameMode.EnableLevelCapping, DrawPosition + HorizontalTextGap, Color.White);
+                Utils.DrawBorderString(Main.spriteBatch, nexperience1dot4.GetTranslation("AllowLevelCappingText").Replace("{value}", SelectedGameMode.EnableLevelCapping ? nexperience1dot4.GetTranslation("Yes") : nexperience1dot4.GetTranslation("No")), DrawPosition + HorizontalTextGap, Color.White);
                 DrawPosition.Y += 30;
                 if (nexperience1dot4.GetActiveGameModeID != GameModeIDs[Selected] && Main.netMode == 0)
                 {
@@ -172,10 +172,10 @@ namespace nexperience1dot4.Interfaces
                             return true;
                         }
                     }
-                    const string Text = "Change Game Mode";
+                    string Text = nexperience1dot4.GetTranslation("ChangeGameModeButton");
                     Vector2 TextDimension = FontAssets.MouseText.Value.MeasureString(Text) + Vector2.One * 8;
                     InterfaceHelper.DrawBackgroundPanel(DrawPosition - TextDimension * .5f, (int)TextDimension.X, (int)TextDimension.Y, Color.DarkGray);
-                    Utils.DrawBorderString(Main.spriteBatch, "Change Game Mode", DrawPosition, color, 1f, 0.5f, 0.5f);
+                    Utils.DrawBorderString(Main.spriteBatch, Text, DrawPosition, color, 1f, 0.5f, 0.5f);
                 }
 
             }

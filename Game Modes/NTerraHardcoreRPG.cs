@@ -7,8 +7,8 @@ namespace nexperience1dot4.Game_Modes
 {
     public class NTerraHardcoreRPG : NTerraRegularRPG
     {
-        public override string Name => "Hardcore RPG Mode";
-        public override string Description => "A game mode based on Regular RPG mode, but with buffed monsters stats.";
+        public override string Name => GetTranslation("HardcoreName");
+        public override string Description => GetTranslation("HardcoreDescription");
 
         public override void UpdateNpcStatus(NPC npc, GameModeData data)
         {

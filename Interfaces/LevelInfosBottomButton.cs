@@ -15,7 +15,7 @@ namespace nexperience1dot4.Interfaces
 {
     public class LevelInfosBottomButton : BottomButton
     {
-        public override string Text => "Stats";
+        public override string Text => nexperience1dot4.GetTranslation("StatsTitle");
         public override int InternalWidth => 580;
         public override int InternalHeight => 220;
         public override Color TabColor => new Color (55, 74, 133);
@@ -75,7 +75,7 @@ namespace nexperience1dot4.Interfaces
             }
             if (RespecInterface)
             {
-                Utils.DrawBorderString(Main.spriteBatch, "You are about to reset all your stats.\nAre you sure that want to do that?", DrawPosition + Vector2.UnitY * 78f, Color.White, 1f, 0.5f, 0.5f);
+                Utils.DrawBorderString(Main.spriteBatch, nexperience1dot4.GetTranslation("ResetStatsNotification"), DrawPosition + Vector2.UnitY * 78f, Color.White, 1f, 0.5f, 0.5f);
                 Vector2 ButtonStartPosition = DrawPosition + Vector2.UnitY * 128f;
                 ButtonStartPosition.X -= InternalWidth * .25f;
                 Color ButtonColor = Color.White;
@@ -99,7 +99,7 @@ namespace nexperience1dot4.Interfaces
                         }
                     }
                 }
-                Utils.DrawBorderString(Main.spriteBatch, "Yes", ButtonStartPosition, ButtonColor, Scale, .5f, .5f);
+                Utils.DrawBorderString(Main.spriteBatch, nexperience1dot4.GetTranslation("Yes"), ButtonStartPosition, ButtonColor, Scale, .5f, .5f);
                 ButtonStartPosition.X += InternalWidth * .5f;
                 ButtonColor = Color.White;
                 Scale = 1f;
@@ -113,11 +113,12 @@ namespace nexperience1dot4.Interfaces
                         RespecInterface = false;
                     }
                 }
-                Utils.DrawBorderString(Main.spriteBatch, "No", ButtonStartPosition, ButtonColor, Scale, .5f, .5f);
+                Utils.DrawBorderString(Main.spriteBatch, nexperience1dot4.GetTranslation("No"), ButtonStartPosition, ButtonColor, Scale, .5f, .5f);
             }
             else
             {
                 Texture2D LevelUparrows = nexperience1dot4.SpendPointArrowsTexture.Value;
+                int SpendTimes = Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift) ? 10 : 1;
                 for(byte x = 0; x < StatusColumns; x++)
                 {
                     for(byte y = 0; y < StatusRows; y++)
@@ -135,18 +136,22 @@ namespace nexperience1dot4.Interfaces
                         if (Main.mouseX >= TextPosition.X && Main.mouseX < TextPosition.X + AcquiredScale.X * 0.5f && 
                             Main.mouseY >= TextPosition.Y + 4 && Main.mouseY < TextPosition.Y + 24)
                         {
-                            MouseOverText = status[Index].GetName + "\n\"" +status[Index].GetDescription + '\"';
+                            MouseOverText = nexperience1dot4.GetTranslation("StatsInfo").Replace("{stat}", status[Index].GetName).Replace("{description}", status[Index].GetDescription);
                         }
                         if(StatusPointsLeft > 0){
                             Main.spriteBatch.Draw(LevelUparrows, UpArrowsPosition, new Rectangle(0, 0, 16, 9), Color.White);
                             if (Main.mouseX >= UpArrowsPosition.X && Main.mouseX < UpArrowsPosition.X + 16 && 
                                 Main.mouseY >= UpArrowsPosition.Y && Main.mouseY < UpArrowsPosition.Y + 9)
                             {
-                                MouseOverText = "Spend point on " + status[Index].GetShortName + "?";
+                                MouseOverText = nexperience1dot4.GetTranslation("SpendPoint").Replace("{stat}", status[Index].GetShortName);
                                 if (Main.mouseLeft && Main.mouseLeftRelease)
                                 {
-                                    PointsSpent[Index]++;
-                                    StatusPointsLeft --;
+                                    while (SpendTimes > 0 && StatusPointsLeft > 0)
+                                    {
+                                        PointsSpent[Index]++;
+                                        StatusPointsLeft --;
+                                        SpendTimes--;
+                                    }
                                 }
                             }
                         }
@@ -156,17 +161,20 @@ namespace nexperience1dot4.Interfaces
                             if (Main.mouseX >= UpArrowsPosition.X && Main.mouseX < UpArrowsPosition.X + 16 && 
                                 Main.mouseY >= UpArrowsPosition.Y && Main.mouseY < UpArrowsPosition.Y + 9)
                             {
-                                MouseOverText = "Refund point from " + status[Index].GetShortName + "?";
+                                MouseOverText = nexperience1dot4.GetTranslation("Refund").Replace("{stat}", status[Index].GetShortName);
                                 if (Main.mouseLeft && Main.mouseLeftRelease)
                                 {
-                                    PointsSpent[Index]--;
-                                    StatusPointsLeft++;
+                                    while (SpendTimes > 0 && PointsSpent[Index] > 0)
+                                    {
+                                        PointsSpent[Index]--;
+                                        StatusPointsLeft++;
+                                    }
                                 }
                             }
                         }
                     }
                 }
-                Utils.DrawBorderString(Main.spriteBatch, "Status Points: " + StatusPointsLeft, new Vector2(DrawPosition.X - Width * 0.25f, Main.screenHeight - 30), Color.White, 0.9f, 0.5f);
+                Utils.DrawBorderString(Main.spriteBatch, nexperience1dot4.GetTranslation("StatusPoints").Replace("{points}", StatusPointsLeft.ToString()), new Vector2(DrawPosition.X - Width * 0.25f, Main.screenHeight - 30), Color.White, 0.9f, 0.5f);
                 {
                     Color color = Color.White;
                     Vector2 ButtonPosition = new Vector2(DrawPosition.X + Width * 0.25f, Main.screenHeight - 30);
@@ -181,12 +189,12 @@ namespace nexperience1dot4.Interfaces
                             return;
                         }
                     }
-                    Utils.DrawBorderString(Main.spriteBatch, "Change Game Mode", ButtonPosition, color, 0.9f, 0.5f);
+                    Utils.DrawBorderString(Main.spriteBatch, nexperience1dot4.GetTranslation("ChangeGameModeButton"), ButtonPosition, color, 0.9f, 0.5f);
                 }
                 if(PageCount > 1)
                 {
                     Vector2 PagesPosition = new Vector2(DrawPosition.X + Width * 0.25f, Main.screenHeight - 30);
-                    AcquiredScale = Utils.DrawBorderString(Main.spriteBatch, "Page [" + (CurrentPage + 1) + "/" + (PageCount) + "]", PagesPosition, Color.White, 0.9f, 0.5f);
+                    AcquiredScale = Utils.DrawBorderString(Main.spriteBatch, nexperience1dot4.GetTranslation("Page").Replace("{current}", (CurrentPage + 1).ToString()).Replace("{total}", PageCount.ToString()), PagesPosition, Color.White, 0.9f, 0.5f);
                     if(CurrentPage > 0)
                     {
                         if(DrawButton(PagesPosition - Vector2.UnitX * AcquiredScale.X * 0.5f, "<", 1, 0, 0.9f))
@@ -226,7 +234,7 @@ namespace nexperience1dot4.Interfaces
                 }
             }
             if(MouseOverText != ""){
-                nterrautils.MouseOverInterface.ChangeMouseText(MouseOverText);
+                MouseOverInterface.ChangeMouseText(MouseOverText);
             }
         }
 

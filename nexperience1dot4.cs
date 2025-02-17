@@ -337,5 +337,10 @@ namespace nexperience1dot4
             }
             ChangeActiveGameMode(ActiveGameMode);
         }
+
+        internal static string GetTranslation(string Key)
+        {
+            return Terraria.Localization.Language.GetTextValue("Mods.nexperience1dot4.Interface." + Key);
+        }
     }
 }

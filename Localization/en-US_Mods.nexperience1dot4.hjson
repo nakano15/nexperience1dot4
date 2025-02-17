@@ -126,3 +126,112 @@ InfoDisplays: {
 	BiomeInfoDisplay.DisplayName: Biome Info Display
 	LevelInfoDisplay.DisplayName: Level Info Display
 }
+
+Interface: {
+	StatsTitle: Stats
+	ResetStatsNotification:
+		'''
+		You are about to reset all your stats.
+		Are you sure that want to do that?
+		'''
+	Yes: Yes
+	No: No
+	StatsInfo:
+		'''
+		{stat}
+		"{description}"
+		'''
+	SpendPoint:
+		'''
+		Spend point on {stat}?
+		Hold Shift to spend 10 points instead.
+		'''
+	Refund: Refund points invested on {stat}?
+	StatusPoints: Status Points: {points}
+	ChangeGameModeButton: Change Game Mode
+	Page: Page [{current}/{total}]
+	UpList: = Up =
+	DownList: = Down =
+	MaxLevelText: Max Level: {max}
+	AllowLevelCappingText: Allow Level Capping? {value}
+}
+
+GameModes: {
+	BasicRPG: {
+		Name: Basic RPG
+		Description: Offers basic leveling system.
+		PhyStatName: Physical
+		PhyStatDesc: Increase your physical attacks.
+		PhyStatShort: PATK
+		MagStatName: Magical
+		MagStatDesc: Increase your magical attacks.
+		MagStatShort: MATK
+		HPStatName: Health
+		HPStatDesc: Increase your health.
+		HPStatShort: HP
+		MPStatName: Mana
+		MPStatDesc: Increase your mana.
+		MPStatShort: MP
+	}
+
+	FreeRPG: {
+		Name: Free RPG
+		Description: A game mode that's made to have a really high level cap, and have the game challenges increase based on how far from spawn point you are, and also progresso n the world.
+		Stat1Name: Swordsman
+		Stat1Desc: MHP [++++], Melee-Damage [+++], DEF [++], Ranged-Damage [+]
+		Stat1Short: SWD
+		Stat2Name: Ranger
+		Stat2Desc: Ranged-Damage [++++], Summon-Damage [+++], Melee-Damage [++], DEF [+]
+		Stat2Short: RNG
+		Stat3Name: Magician
+		Stat3Desc: Magic-Damage [++++], Minion-Damage [+++], Ranged-Damage [++], Melee-Damage [+]
+		Stat3Short: MGC
+		Stat4Name: Thief
+		Stat4Desc: Melee-Damage [++++], Ranged-Damage [+++], MHP [++], Defense [+]
+		Stat4Short: THF
+		Stat5Name: Acolyte
+		Stat5Desc: MHP [++++], Magic-Damage [+++], Melee-Damage [++], Summon-Damage [+]
+		Stat5Short: ACO
+		Stat6Name: Summoner
+		Stat6Desc: Summon-Damage [++++], Ranged-Damage [+++], Magic-Damage [++], MHP [+]
+		Stat6Short: SUM
+		Stat7Name: Sorcerer
+		Stat7Desc: Summon-Damage [++++], Magic-Damage [+++], Ranged-Damage [++], MHP [+]
+		Stat7Short: SUM
+	}
+
+	RegularAndHardcoreRPG: {
+		Name: Regular RPG Mode
+		Description: The default leveling mode of N Terraria, with ascending progression available.
+		HardcoreName: Hardcore RPG Mode
+		HardcoreDescription: A game mode based on Regular RPG mode, but with buffed monsters stats.
+		StatName0: Strength
+		StatDesc0: (+) Melee Damage, (+/2) Melee Critical Rate, \n(+/2) Critical Damage, (+/2) Defense
+		StatShort0: STR
+		StatName1: Agility
+		StatDesc1: (+) Melee Speed, (+) Movement Speed, (+/2) Ranged Damage.
+		StatShort1: AGI
+		StatName2: Vitality
+		StatDesc2: (+) Defense, (+) Max Health, (+) Health Regeneration.
+		StatShort2: VIT
+		StatName3: Intelligence
+		StatDesc3: (+) Magic Damage, (+) Mana Cost, (+/2) Max Mana, \n(+) Critical Damage, (+/2) Summon Damage
+		StatShort3: INT
+		StatName4: Dexterity
+		StatDesc4: (+) Ranged Damage, (+) Critical Damage, \n(+/2) Ranged Critical Chance
+		StatShort4: DEX
+		StatName5: Luck
+		StatDesc5: (+) Critical Rate, (+) Luck Strike Chance
+		StatShort5: LUK
+		StatName6: Charisma
+		StatDesc6: (+) Summon Damage, (+/2) Max Health, (+) Max Summon.
+		StatShort6: CHA
+		StatName7: Wisdom
+		StatDesc7:
+			'''
+			(-) Mana Cost, (+) Mana Regeneration, (+) Max Mana
+			(+) Critical Damage (+/2) Magic Damage.
+			'''
+		StatShort7: WIS
+	}
+}

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.Win32.SafeHandles;
 using Terraria;
 using Terraria.ID;
 
@@ -7,14 +8,30 @@ namespace nexperience1dot4.Game_Modes
 {
     public class NTerraRegularRPG : GameModeBase
     {
+
+        protected string GetTranslation(string Key)
+        {
+            return Terraria.Localization.Language.GetTextValue("Mods.nexperience1dot4.GameModes.RegularAndHardcoreRPG." + Key);
+        }
         private static int[] MaxExpTable;
 
-        public override string Name => "Regular RPG Mode";
-        public override string Description => "The default leveling mode of N Terraria, with ascending progression available.";
+        public override string Name => GetTranslation("Name");
+        public override string Description => GetTranslation("Description");
         public override float InitialStatusPoints => 0;
         public override float StatusPointsPerLevel => 1;
         public override float InitialStatusPointsDistribution => 5;
-        public override GameModeStatusInfo[] GameModeStatus => new GameModeStatusInfo[]{
+        public override GameModeStatusInfo[] GameModeStatus
+        {
+            get
+            {
+                GameModeStatusInfo[] stats = new GameModeStatusInfo[8];
+                for (int i = 0; i < stats.Length; i++)
+                {
+                    stats[i] = new GameModeStatusInfo(GetTranslation("StatName" + i), GetTranslation("StatDesc" + i), GetTranslation("StatShort" + i), 0, 150);
+                }
+                return stats;
+            }
+        }/* => new GameModeStatusInfo[]{
             new GameModeStatusInfo("Strength",
             "(+) Melee Damage, (+/2) Melee Critical Rate, \n(+/2) Critical Damage, (+/2) Defense", "STR", 0, 150),
             new GameModeStatusInfo("Agility",
@@ -31,7 +48,7 @@ namespace nexperience1dot4.Game_Modes
             "(+) Summon Damage, (+/2) Max Health, (+) Max Summon.", "CHA", 0, 150),
             new GameModeStatusInfo("Wisdom",
             "(-) Mana Cost, (+) Mana Regeneration, (+) Max Mana \n(+) Critical Damage, (+/2) Magic Damage.", "WIS", 0, 150)
-        };
+        };*/
 
         public NTerraRegularRPG(){
             CreateExpTable();
