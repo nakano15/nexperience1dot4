@@ -176,7 +176,7 @@ GameModes: {
 
 	FreeRPG: {
 		Name: Free RPG
-		Description: A game mode that's made to have a really high level cap, and have the game challenges increase based on how far from spawn point you are, and also progresso n the world.
+		Description: A game mode that's made to have a really high level cap, and have the game challenges increase based on how far from spawn point you are, and also progress on the world.
 		Stat1Name: Swordsman
 		Stat1Desc: MHP [++++], Melee-Damage [+++], DEF [++], Ranged-Damage [+]
 		Stat1Short: SWD
@@ -206,7 +206,11 @@ GameModes: {
 		HardcoreName: Hardcore RPG Mode
 		HardcoreDescription: A game mode based on Regular RPG mode, but with buffed monsters stats.
 		StatName0: Strength
-		StatDesc0: (+) Melee Damage, (+/2) Melee Critical Rate, \n(+/2) Critical Damage, (+/2) Defense
+		StatDesc0:
+			'''
+			(+) Melee Damage, (+/2) Melee Critical Rate, 
+			(+/2) Critical Damage, (+/2) Defense
+			'''
 		StatShort0: STR
 		StatName1: Agility
 		StatDesc1: (+) Melee Speed, (+) Movement Speed, (+/2) Ranged Damage.
@@ -215,10 +219,18 @@ GameModes: {
 		StatDesc2: (+) Defense, (+) Max Health, (+) Health Regeneration.
 		StatShort2: VIT
 		StatName3: Intelligence
-		StatDesc3: (+) Magic Damage, (+) Mana Cost, (+/2) Max Mana, \n(+) Critical Damage, (+/2) Summon Damage
+		StatDesc3:
+			'''
+			(+) Magic Damage, (+) Mana Cost, (+/2) Max Mana, 
+			(+) Critical Damage, (+/2) Summon Damage
+			'''
 		StatShort3: INT
 		StatName4: Dexterity
-		StatDesc4: (+) Ranged Damage, (+) Critical Damage, \n(+/2) Ranged Critical Chance
+		StatDesc4:
+			'''
+			(+) Ranged Damage, (+) Critical Damage, 
+			(+/2) Ranged Critical Chance
+			'''
 		StatShort4: DEX
 		StatName5: Luck
 		StatDesc5: (+) Critical Rate, (+) Luck Strike Chance

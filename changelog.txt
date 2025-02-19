@@ -1,4 +1,4 @@
-Added hook for exp reward to N Terraria Utilities mod, for modular quest rewards.
-Added localization support to the mod.
- => Let me know if I missed something.
-You can now hold Shift key when investing stats point to try spending up to 10 stats points.
+[h2]Version 0.9.2.1[/h2]
+[quote]
+Fixed broken line break on some stats on Regular and Hardcore RPG Mode.
+[/quote]
