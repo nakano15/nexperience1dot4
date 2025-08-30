@@ -301,10 +301,13 @@ namespace nexperience1dot4
         {
             NetplayMod.ReceivedMessages(reader, whoAmI);
         }
+
+        internal static string GetBrokenSaveFilePath => GetSaveFileDirectory + "nexperience.sav";
+        internal static string GetActualSaveFilePath => GetSaveFileDirectory + "\\nexperience.sav";
         
         internal static void SaveSettings()
         {
-            string FileDirectory = GetSaveFileDirectory + "nexperience.sav";
+            string FileDirectory = GetActualSaveFilePath;
             if (File.Exists(FileDirectory)) File.Delete(FileDirectory);
             using (FileStream stream = new FileStream(FileDirectory, FileMode.CreateNew))
             {
@@ -318,7 +321,15 @@ namespace nexperience1dot4
 
         internal static void LoadSettings()
         {
-            string FileDirectory = GetSaveFileDirectory + "nexperience.sav";
+            if (File.Exists(GetBrokenSaveFilePath))
+            {
+                if (!File.Exists(GetActualSaveFilePath))
+                {
+                    File.Copy(GetBrokenSaveFilePath, GetActualSaveFilePath);
+                }
+                File.Delete(GetBrokenSaveFilePath);
+            }
+            string FileDirectory = GetActualSaveFilePath;
             if (!File.Exists(FileDirectory))
             {
                 return;

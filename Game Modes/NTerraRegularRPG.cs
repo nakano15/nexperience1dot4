@@ -256,7 +256,13 @@ namespace nexperience1dot4.Game_Modes
 
             //Immutable Order
             AddBiome("Dungeon", 40, 50, delegate (Player p){ return p.ZoneDungeon;});
-            AddBiome("Desu~", 9999, 9999, delegate (Player p){ return p.ZoneDungeon && !NPC.downedBoss3;}, false);
+            AddBiome("Desu~", 9999, 9999, delegate (Player p){
+                if (Main.drunkWorld)
+                {
+                    return p.position.Y * (1f / 16) >= (float)(Main.dungeonY + 40);
+                }
+                return p.ZoneDungeon && !NPC.downedBoss3;
+            }, false);
 
             //Remix Diferences
             AddBiome("Dark World", 40, 50, delegate(Player p)
