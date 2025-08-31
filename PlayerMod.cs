@@ -208,7 +208,7 @@ namespace nexperience1dot4
             PlayerMod pm = player.GetModPlayer<PlayerMod>();
             float ExtraPercentage = pm.GetExtraExpPercentage() + ExtraExpIncrease + (nexperience1dot4.WeekendExp ? 0.3f : 0);
             int BoostedExp = (int)(Math.Max(1, Exp * ExtraPercentage) * nexperience1dot4.ExpRate);
-            if (player.whoAmI == Main.myPlayer)
+            if (player.whoAmI == Main.myPlayer && nexperience1dot4.ShowExpGain)
             {
                 SpawnExpText(player, (int)(Math.Max(1, Exp * nexperience1dot4.ExpRate)), ExtraPercentage, sourcerect);
             }

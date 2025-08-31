@@ -18,6 +18,11 @@ Configs: {
 			Label: Display Exp Reward as Percentage
 			Tooltip: Changes the exp reward displayed to be in percentage.
 		}
+
+		ShowExpGain: {
+			Label: Show Exp Gain
+			Tooltip: Allows showing exp gain text when you gain experience from slaying npcs, or other means.
+		}
 	}
 
 	ServerConfigMod: {

@@ -107,12 +107,16 @@ namespace nexperience1dot4
         [DefaultValue(false)]
         public bool ExpRewardAsPercentage;
 
+        [DefaultValue(true)]
+        public bool ShowExpGain;
+
         public override ConfigScope Mode => ConfigScope.ClientSide;
 
         public override void OnChanged()
         {
             Interfaces.LevelInfos.Transparency = StatusWindowOpacity;
             nexperience1dot4.DisplayExpRewardAsPercentage = ExpRewardAsPercentage;
+            nexperience1dot4.ShowExpGain = ShowExpGain;
         }
     }
 }
